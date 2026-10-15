@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buying Ops Blitz - Tesco Activity</title>
+    <!-- Confetti Canvas Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #003049 0%, #00121d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .card {
+            background: #0d1e2b;
+            border: 2px solid #0288d1;
+            border-radius: 24px;
+            padding: 40px 32px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(2, 136, 209, 0.25);
+            position: relative;
+        }
+
+        .brand-badge {
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #4fc3f7;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 2.1rem;
+            font-weight: 900;
+            color: #29b6f6;
+            margin-bottom: 8px;
+        }
+
+        .timer {
+            font-size: 3.6rem;
+            font-weight: 900;
+            color: #ffd166;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .timer.warning {
+            color: #ff5252;
+            animation: pulse 0.6s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(0.98);
+            }
+
+            to {
+                transform: scale(1.04);
+            }
+        }
+
+        p {
+            font-size: 1.05rem;
+            color: #cbd5e1;
+            margin-bottom: 22px;
+            line-height: 1.45;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 11px 22px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-start {
+            background: #0288d1;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(2, 136, 209, 0.4);
+        }
+
+        .btn-start:hover {
+            background: #039be5;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-reset:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #fff;
+        }
+
+        .btn-finish {
+            width: 100%;
+            background: linear-gradient(135deg, #ee1c2e 0%, #b91c1c 100%);
+            color: #fff;
+            padding: 13px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 800;
+            margin-top: 4px;
+            box-shadow: 0 4px 16px rgba(238, 28, 46, 0.4);
+        }
+
+        .btn-finish:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #ff2a3d 0%, #c41221 100%);
+        }
+
+        .back-btn {
+            display: inline-block;
+            text-decoration: none;
+            color: #64748b;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-top: 14px;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #94a3b8;
+            text-decoration: underline;
+        }
+
+        /* Redirect Countdown Box */
+        .redirect-notice {
+            display: none;
+            font-size: 0.92rem;
+            color: #4fc3f7;
+            margin-top: 12px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="brand-badge">TESCO CHALLENGE</div>
+        <h1>⚡ Buying Ops Blitz</h1>
+        <div class="timer" id="timer">45s</div>
+        <p>Rapid Fire! Answer 3 quick Buying Ops trivia questions before the clock hits zero!</p>
+
+        <div class="btn-row">
+            <button class="btn-start" onclick="startTimer()">▶ Start Timer</button>
+            <button class="btn-reset" onclick="resetTimer()">🔄 Reset</button>
+        </div>
+
+        <button class="btn-finish" id="finishBtn" onclick="finishBlitz()">
+            🎉 Finish Blitz &amp; Complete Round
+        </button>
+
+        <div class="redirect-notice" id="redirectNotice">
+            Directing to wrap-up video in <span id="countdownSec" style="font-weight: 900; color: #fff;">3</span>s...
+        </div>
+
+        <div>
+            <a href="index.html" class="back-btn">← Back to Wheel</a>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 45;
+        let timerId = null;
+        let finished = false;
+
+        function startTimer() {
+            if (timerId || finished) return;
+            const timerEl = document.getElementById('timer');
+
+            timerId = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = timeLeft + "s";
+
+                if (timeLeft <= 10) {
+                    timerEl.classList.add("warning");
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerId);
+                    timerId = null;
+                    finishBlitz(true);
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            if (finished) return;
+            clearInterval(timerId);
+            timerId = null;
+            timeLeft = 45;
+            const timerEl = document.getElementById('timer');
+            timerEl.classList.remove("warning");
+            timerEl.innerText = "45s";
+        }
+
+        function finishBlitz(timeExpired = false) {
+            if (finished) return;
+            finished = true;
+            clearInterval(timerId);
+
+            // Confetti shower
+            confetti({
+                particleCount: 110,
+                spread: 85,
+                origin: { y: 0.6 },
+                colors: ['#29b6f6', '#ffd166', '#0288d1', '#ee1c2e', '#ffffff']
+            });
+
+            const finishBtn = document.getElementById("finishBtn");
+            finishBtn.style.opacity = "0.7";
+            finishBtn.style.cursor = "default";
+            finishBtn.innerText = timeExpired ? "⏰ Time's Up!" : "✨ Blitz Finished!";
+
+            const notice = document.getElementById("redirectNotice");
+            notice.style.display = "block";
+
+            let seconds = 3;
+            const counter = document.getElementById("countdownSec");
+
+            const interval = setInterval(() => {
+                seconds--;
+                if (counter) counter.innerText = seconds;
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+
+            // Automatic navigation to thank-you.html
+            setTimeout(() => {
+                window.location.href = "thank-you.html";
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

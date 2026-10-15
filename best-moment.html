@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Best Moment at Tesco</title>
+    <!-- Confetti Canvas Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #2e1040 0%, #0e0514 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ambient-glow {
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(157, 78, 221, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+            filter: blur(50px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .card {
+            background: #1c0e29;
+            border: 2px solid #9d4edd;
+            border-radius: 26px;
+            padding: 40px 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(157, 78, 221, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+
+        .brand-badge {
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #ffd166;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .star {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            animation: pulseGlow 1.2s infinite alternate ease-in-out;
+            display: inline-block;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                transform: scale(0.95);
+                filter: drop-shadow(0 0 5px rgba(255, 209, 102, 0.4));
+            }
+
+            100% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 18px rgba(255, 209, 102, 0.9));
+            }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #c77dff;
+            margin-bottom: 12px;
+        }
+
+        p {
+            font-size: 1.12rem;
+            color: #e0aaff;
+            margin-bottom: 26px;
+            line-height: 1.5;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .complete-btn {
+            width: 100%;
+            padding: 13px 26px;
+            background: linear-gradient(135deg, #9d4edd 0%, #7b2cbf 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(157, 78, 221, 0.45);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .complete-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #c77dff 0%, #9d4edd 100%);
+            box-shadow: 0 10px 25px rgba(157, 78, 221, 0.6);
+        }
+
+        .back-link {
+            font-size: 0.85rem;
+            color: #c77dff;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 6px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #e0aaff;
+            text-decoration: underline;
+        }
+
+        /* -------------------------------------------------------------
+           RESULTS MODAL OVERLAY
+        ------------------------------------------------------------- */
+        .results-modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(7, 3, 12, 0.88);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .results-modal {
+            background: #ffffff;
+            width: 90%;
+            max-width: 480px;
+            border-radius: 24px;
+            padding: 34px 28px;
+            border: 4px solid #7b2cbf;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            color: #0b1f3a;
+            animation: popIn 0.35s cubic-bezier(0.17, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .results-modal h2 {
+            font-size: 1.8rem;
+            color: #3c096c;
+            margin-bottom: 6px;
+        }
+
+        .badge-pill {
+            display: inline-block;
+            background: #f3e8ff;
+            border: 2px solid #7b2cbf;
+            color: #7b2cbf;
+            font-size: 1.35rem;
+            font-weight: 900;
+            padding: 6px 20px;
+            border-radius: 30px;
+            margin: 12px 0;
+        }
+
+        .modal-text {
+            font-size: 0.95rem;
+            color: #4a5568;
+            margin-bottom: 16px;
+            line-height: 1.45;
+        }
+
+        .redirect-notice {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-bottom: 18px;
+        }
+
+        .modal-btn-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-action {
+            padding: 11px 22px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-retry {
+            background: #7b2cbf;
+            color: #fff;
+        }
+
+        .btn-video {
+            background: linear-gradient(135deg, #ee1c2e, #b91c1c);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <div class="card">
+        <div class="brand-badge">TEAM STORYTELLING</div>
+        <div class="star">⭐</div>
+        <h1>Best Moment at Tesco</h1>
+        <p>Share a proud win, a fun team memory, or your most memorable day working at Tesco!</p>
+
+        <div class="btn-group">
+            <button class="complete-btn" id="finishBtn" onclick="finishStory()">
+                ✨ Story Shared &amp; Complete Round
+            </button>
+            <a href="index.html" class="back-link">← Return to Spin Wheel</a>
+        </div>
+    </div>
+
+    <!-- POPUP RESULTS MODAL WITH AUTO-REDIRECT TO THANK-YOU.HTML -->
+    <div class="results-modal-backdrop" id="resultsModal">
+        <div class="results-modal">
+            <h2>🌟 Memory Shared!</h2>
+            <div class="badge-pill">Round Complete</div>
+            <p class="modal-text">
+                Thank you for celebrating that milestone! Moments like these make Tesco Better Together.
+            </p>
+
+            <div class="redirect-notice">
+                Directing to wrap-up video in <span id="countdownSec"
+                    style="font-weight: 800; color: #7b2cbf;">3</span>s...
+            </div>
+
+            <div class="modal-btn-row">
+                <button class="btn-action btn-retry" onclick="cancelRedirectAndRetry()">🔄 Share Another</button>
+                <a href="thank-you.html" class="btn-action btn-video">🎬 Go to Video</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let finished = false;
+        let redirectTimeout = null;
+        let countdownInterval = null;
+
+        function finishStory() {
+            if (finished) return;
+            finished = true;
+
+            // Golden-purple celebratory confetti
+            confetti({
+                particleCount: 110,
+                spread: 85,
+                origin: { y: 0.6 },
+                colors: ['#c77dff', '#9d4edd', '#ffd166', '#ffffff', '#ffeedb']
+            });
+
+            document.getElementById("resultsModal").style.display = "flex";
+
+            let seconds = 3;
+            const counter = document.getElementById("countdownSec");
+
+            countdownInterval = setInterval(() => {
+                seconds--;
+                if (counter) counter.innerText = seconds;
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+
+            // Automatic navigation to thank-you.html
+            redirectTimeout = setTimeout(() => {
+                window.location.href = "thank-you.html";
+            }, 3000);
+        }
+
+        function cancelRedirectAndRetry() {
+            clearTimeout(redirectTimeout);
+            clearInterval(countdownInterval);
+
+            finished = false;
+            document.getElementById("resultsModal").style.display = "none";
+            document.getElementById("countdownSec").innerText = "3";
+        }
+    </script>
+</body>
+
+</html>

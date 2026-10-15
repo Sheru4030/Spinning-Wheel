@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Depot Allocation</title>
+    <!-- Confetti Canvas Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #072a40 0%, #03121c 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .card {
+            background: #0d2131;
+            border: 2px solid #0288d1;
+            border-radius: 24px;
+            padding: 40px 32px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(2, 136, 209, 0.25);
+            position: relative;
+        }
+
+        .brand-badge {
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #4fc3f7;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .truck {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+            animation: drive 2s infinite ease-in-out alternate;
+        }
+
+        @keyframes drive {
+            from {
+                transform: translateX(-6px);
+            }
+
+            to {
+                transform: translateX(6px);
+            }
+        }
+
+        h1 {
+            font-size: 2.1rem;
+            font-weight: 900;
+            color: #4fc3f7;
+            margin-bottom: 12px;
+        }
+
+        p {
+            font-size: 1.05rem;
+            color: #cfd8dc;
+            margin-bottom: 26px;
+            line-height: 1.5;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .complete-btn {
+            width: 100%;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(2, 136, 209, 0.4);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .complete-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #039be5 0%, #0288d1 100%);
+            box-shadow: 0 10px 25px rgba(2, 136, 209, 0.55);
+        }
+
+        .back-link {
+            font-size: 0.85rem;
+            color: #0288d1;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 8px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #4fc3f7;
+            text-decoration: underline;
+        }
+
+        /* Redirect Countdown Notice */
+        .redirect-notice {
+            display: none;
+            font-size: 0.92rem;
+            color: #81d4fa;
+            margin-top: 14px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="brand-badge">LOGISTICS CHALLENGE</div>
+        <div class="truck">🚚</div>
+        <h1>Depot Allocation</h1>
+        <p>A high-demand seasonal stock has arrived at the distribution centre! Solve the logistics puzzle to allocate
+            stock across 3 target stores.</p>
+
+        <div class="btn-group">
+            <button class="complete-btn" id="finishBtn" onclick="completeAllocation()">
+                📦 Stock Allocated &amp; Finish
+            </button>
+            <div class="redirect-notice" id="redirectNotice">
+                Directing to wrap-up video in <span id="countdownSec"
+                    style="font-weight: 900; color: #fff;">3</span>s...
+            </div>
+            <a href="index.html" class="back-link">← Return to Spin Wheel</a>
+        </div>
+    </div>
+
+    <script>
+        let completed = false;
+
+        function completeAllocation() {
+            if (completed) return;
+            completed = true;
+
+            // Confetti shower
+            confetti({
+                particleCount: 110,
+                spread: 85,
+                origin: { y: 0.6 },
+                colors: ['#4fc3f7', '#0288d1', '#ffd166', '#00e676', '#ffffff']
+            });
+
+            // Update button status
+            const btn = document.getElementById("finishBtn");
+            btn.style.opacity = "0.7";
+            btn.style.cursor = "default";
+            btn.innerText = "✨ Allocation Complete!";
+
+            // Show countdown
+            const notice = document.getElementById("redirectNotice");
+            notice.style.display = "block";
+
+            let seconds = 3;
+            const counter = document.getElementById("countdownSec");
+
+            const interval = setInterval(() => {
+                seconds--;
+                if (counter) counter.innerText = seconds;
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                }
+            }, 1000);
+
+            // Redirect to thank you video page
+            setTimeout(() => {
+                window.location.href = "thank-you.html";
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

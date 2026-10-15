@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spot the Error - Tesco Data Accuracy</title>
+    <!-- Confetti Canvas Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(180deg, #dcf0fa 0%, #b8def5 35%, #e8f4fc 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            color: #0b1f3a;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .board-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 1280px;
+            border-radius: 24px;
+            box-shadow: 0 15px 40px rgba(7, 43, 90, 0.15);
+            border: 3px solid #00539f;
+            padding: 24px 32px 18px 32px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+        }
+
+        .tesco-logo {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #ee1c2e;
+            letter-spacing: -1px;
+        }
+
+        .game-tag {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #00539f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .top-slogan {
+            font-family: 'Brush Script MT', 'Caveat', cursive, sans-serif;
+            font-size: 1.8rem;
+            color: #00539f;
+            transform: rotate(-3deg);
+        }
+
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .title-left h1 {
+            font-size: 2.6rem;
+            font-weight: 900;
+            color: #002d62;
+            line-height: 1.1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .title-left p.sub {
+            font-style: italic;
+            font-size: 1.15rem;
+            color: #315374;
+            font-weight: 600;
+            margin-top: 3px;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr 270px;
+            gap: 22px;
+            margin-top: 8px;
+            align-items: start;
+        }
+
+        /* LEFT: Product Artwork & Rules */
+        .col-left {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .pack-image-card {
+            background: #ffffff;
+            border: 2px solid #00539f;
+            border-radius: 18px;
+            padding: 14px;
+            box-shadow: 0 6px 16px rgba(0, 83, 159, 0.1);
+            text-align: center;
+        }
+
+        .pack-tag {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #00539f;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .pack-category {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #00539f;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .product-art-preview {
+            background: linear-gradient(180deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 14px;
+            padding: 16px;
+            border: 1.5px dashed #90caf9;
+            position: relative;
+        }
+
+        .milk-pack-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pack-badge-brand {
+            font-weight: 900;
+            color: #ee1c2e;
+            font-size: 1.3rem;
+        }
+
+        .pack-badge-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0d47a1;
+            margin-top: 2px;
+        }
+
+        .pack-illustration {
+            font-size: 3rem;
+            margin: 8px 0;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+        }
+
+        .pack-details-strip {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #1565c0;
+            line-height: 1.35;
+        }
+
+        .how-to-play {
+            background: #f1f8fe;
+            border: 1.5px solid #bce1fb;
+            border-radius: 14px;
+            padding: 12px 14px;
+        }
+
+        .how-to-play h3 {
+            font-size: 0.95rem;
+            color: #00539f;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .how-to-play ol {
+            padding-left: 18px;
+            font-size: 0.82rem;
+            color: #264360;
+            line-height: 1.4;
+        }
+
+        /* CENTER: Product Record Table */
+        .col-center {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .record-card {
+            background: #ffffff;
+            border: 2px solid #bce1fb;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 83, 159, 0.08);
+        }
+
+        .record-header {
+            background: #00539f;
+            color: #ffffff;
+            padding: 10px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .record-header h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .find-badge {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .record-rows {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .record-row {
+            display: grid;
+            grid-template-columns: 180px 1fr 36px;
+            align-items: center;
+            padding: 12px 20px;
+            border-bottom: 1px solid #eef4f9;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            background: #ffffff;
+        }
+
+        .record-row:last-child {
+            border-bottom: none;
+        }
+
+        .record-row:hover:not(.locked) {
+            background: #f0f7ff;
+            transform: translateX(4px);
+        }
+
+        .field-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            color: #173b61;
+        }
+
+        .field-value {
+            font-size: 0.98rem;
+            font-weight: 600;
+            color: #2b3b4f;
+        }
+
+        .field-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .record-row.error-selected {
+            background: #ffebee !important;
+            border-left: 6px solid #ee1c2e;
+        }
+
+        .record-row.error-selected .field-value {
+            color: #d32f2f;
+            font-weight: 800;
+        }
+
+        .error-tag {
+            background: #ee1c2e;
+            color: #fff;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 0.85rem;
+            animation: popAlert 0.3s cubic-bezier(0.17, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes popAlert {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .record-row.wrong-choice {
+            background: #fff3e0 !important;
+            border-left: 6px solid #ff9800;
+        }
+
+        .callout-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 4px;
+            color: #00539f;
+            font-family: 'Brush Script MT', 'Caveat', cursive, sans-serif;
+            font-size: 1.5rem;
+        }
+
+        /* RIGHT COLUMN */
+        .col-right {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .timer-card {
+            background: #00539f;
+            border-radius: 18px;
+            padding: 14px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            box-shadow: 0 6px 18px rgba(0, 83, 159, 0.3);
+        }
+
+        .timer-icon {
+            font-size: 2.4rem;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(0.95);
+            }
+
+            to {
+                transform: scale(1.05);
+            }
+        }
+
+        .timer-content .label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #bbdefb;
+            text-transform: uppercase;
+        }
+
+        .timer-content .time-digits {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+
+        .time-digits.warning {
+            color: #ff5252;
+            animation: flash 0.5s infinite;
+        }
+
+        @keyframes flash {
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .score-card {
+            background: #f1f8fe;
+            border: 2px solid #bce1fb;
+            border-radius: 18px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .score-card .score-label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #00539f;
+            text-transform: uppercase;
+        }
+
+        .score-card .score-value {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #002d62;
+            margin-top: 2px;
+        }
+
+        .score-card .score-value span {
+            font-size: 1.2rem;
+            color: #7b9bb6;
+        }
+
+        /* Question & Progression Tracker */
+        .question-nav {
+            background: #002d62;
+            border-radius: 16px;
+            padding: 12px;
+            color: #fff;
+            text-align: center;
+            box-shadow: 0 4px 14px rgba(0, 45, 98, 0.25);
+        }
+
+        .question-nav .q-label {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #ffd166;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .q-label.highlight-pulse {
+            animation: textPop 0.5s ease-out;
+        }
+
+        @keyframes textPop {
+            0% {
+                transform: scale(0.9);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: scale(1.1);
+                color: #fff;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .q-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .q-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.82rem;
+            font-weight: 800;
+            transition: all 0.25s ease;
+            border: 2px solid transparent;
+        }
+
+        .q-dot.active {
+            background: #ffffff !important;
+            color: #002d62 !important;
+            transform: scale(1.15);
+            border-color: #ffd166;
+            box-shadow: 0 0 10px rgba(255, 209, 102, 0.8);
+        }
+
+        .q-dot.completed-dot {
+            background: #2e7d32 !important;
+            color: #ffffff !important;
+        }
+
+        .identified-badge {
+            display: none;
+            background: #ee1c2e;
+            color: #fff;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-family: 'Brush Script MT', 'Caveat', cursive, sans-serif;
+            font-size: 1.6rem;
+            line-height: 1.15;
+            text-align: center;
+            box-shadow: 0 6px 16px rgba(238, 28, 46, 0.35);
+            transform: rotate(2deg);
+            animation: stampIn 0.3s cubic-bezier(0.17, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes stampIn {
+            from {
+                transform: scale(0.6) rotate(-10deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1) rotate(2deg);
+                opacity: 1;
+            }
+        }
+
+        .bottom-info-strip {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .info-card {
+            background: #f7fbff;
+            border: 1.5px solid #d4e8f7;
+            border-radius: 14px;
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            color: #27435f;
+            line-height: 1.45;
+        }
+
+        .info-card h4 {
+            color: #00539f;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .footer-bar {
+            margin-top: 14px;
+            border-top: 2px solid #e0edf7;
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #00539f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .back-link {
+            color: #ee1c2e;
+            text-decoration: none;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Modal */
+        .results-modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(7, 30, 58, 0.85);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .results-modal {
+            background: #ffffff;
+            width: 90%;
+            max-width: 480px;
+            border-radius: 24px;
+            padding: 30px;
+            border: 4px solid #00539f;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: popIn 0.35s cubic-bezier(0.17, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .results-modal h2 {
+            font-size: 1.8rem;
+            color: #002d62;
+            margin-bottom: 6px;
+        }
+
+        .results-score-pill {
+            display: inline-block;
+            background: #eef7fd;
+            border: 2px solid #00539f;
+            color: #00539f;
+            font-size: 2rem;
+            font-weight: 900;
+            padding: 6px 24px;
+            border-radius: 30px;
+            margin: 12px 0;
+        }
+
+        .results-explanation {
+            background: #f8fbfe;
+            border: 1px solid #dcecf8;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 0.9rem;
+            color: #27435f;
+            margin-bottom: 14px;
+            text-align: left;
+            line-height: 1.45;
+        }
+
+        .redirect-note {
+            font-size: 0.82rem;
+            color: #64748b;
+            margin-bottom: 14px;
+        }
+
+        .modal-btn-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-action {
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-retry {
+            background: #00539f;
+            color: #fff;
+        }
+
+        .btn-finish {
+            background: linear-gradient(135deg, #ee1c2e, #b91c1c);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="board-container">
+        <div class="top-bar">
+            <div class="brand-group">
+                <span class="tesco-logo">TESCO</span>
+                <span class="game-tag">GAME 1 | DATA ACCURACY</span>
+            </div>
+            <div class="top-slogan">Small details.<br>Big impact.</div>
+        </div>
+
+        <div class="title-row">
+            <div class="title-left">
+                <h1>Spot the Error 🔍</h1>
+                <p class="sub">Can you identify the incorrect field before the timer runs out?</p>
+            </div>
+        </div>
+
+        <div class="game-grid">
+            <!-- LEFT COLUMN -->
+            <div class="col-left">
+                <div class="pack-image-card">
+                    <div class="pack-tag">Product Artwork</div>
+                    <div class="pack-category" id="packCategory"></div>
+                    <div class="product-art-preview">
+                        <div class="milk-pack-visual">
+                            <div class="pack-badge-brand">TESCO</div>
+                            <div class="pack-badge-title" id="packTitle"></div>
+                            <div class="pack-illustration" id="packIcon"></div>
+                            <div class="pack-details-strip" id="packDetails"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="how-to-play">
+                    <h3>💡 How to play</h3>
+                    <ol>
+                        <li>Compare the <strong>artwork image</strong> above with the record on the right.</li>
+                        <li>Spot the incorrect field (name, format, or values).</li>
+                        <li><strong>Click the field row</strong> to submit before 00:30!</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- CENTER COLUMN -->
+            <div class="col-center">
+                <div class="record-card">
+                    <div class="record-header">
+                        <h2>Product Record</h2>
+                        <div class="find-badge">Find the error</div>
+                    </div>
+
+                    <div class="record-rows" id="recordList"></div>
+                </div>
+
+                <div class="callout-row">
+                    <span>Look closely...</span>
+                    <span>🔍</span>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-right">
+                <div class="timer-card">
+                    <div class="timer-icon">⏱️</div>
+                    <div class="timer-content">
+                        <div class="label">Time Left</div>
+                        <div class="time-digits" id="timerDisplay">00:30</div>
+                    </div>
+                </div>
+
+                <!-- Cumulative Score Display -->
+                <div class="score-card">
+                    <div class="score-label">Score</div>
+                    <div class="score-value" id="scoreDisplay">0 <span>/ 10</span></div>
+                </div>
+
+                <!-- Highlighted Question & Dot Progression Tracker -->
+                <div class="question-nav">
+                    <div class="q-label" id="questionTrackerText">Question 1 of 5</div>
+                    <div class="q-dots">
+                        <div class="q-dot active" id="dot1">1</div>
+                        <div class="q-dot" id="dot2">2</div>
+                        <div class="q-dot" id="dot3">3</div>
+                        <div class="q-dot" id="dot4">4</div>
+                        <div class="q-dot" id="dot5">5</div>
+                    </div>
+                </div>
+
+                <div class="identified-badge" id="identifiedStamp">
+                    Correctly<br>identified!
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-info-strip">
+            <div class="info-card">
+                <h4>🎯 Remember</h4>
+                <div>• Check spelling, digits, and format (e.g. units, sizes).</div>
+                <div>• Ensure record strictly matches approved artwork specifications.</div>
+                <div>• Accurate data ensures products get onto store shelves on time!</div>
+            </div>
+
+            <div class="info-card">
+                <h4>👥 Team Takeaway</h4>
+                <div>Attention to detail keeps our shelves stocked and customers happy!</div>
+            </div>
+        </div>
+
+        <div class="footer-bar">
+            <div class="footer-links">
+                <span>RIGHT PRODUCT</span>
+                <span>/</span>
+                <span>RIGHT INFORMATION</span>
+                <span>/</span>
+                <span>RIGHT TIME</span>
+                <span>/</span>
+                <span>HAPPY CUSTOMERS</span>
+            </div>
+            <a href="thank-you.html" class="back-link">→ Go to Wrap-up Video</a>
+        </div>
+    </div>
+
+    <!-- RESULTS MODAL -->
+    <div class="results-modal-backdrop" id="resultsModal">
+        <div class="results-modal">
+            <h2 id="modalHeadline">Challenge Complete!</h2>
+            <div class="results-score-pill" id="finalScorePill">0 / 10</div>
+            <div class="results-explanation" id="modalExplanation"></div>
+
+            <div class="redirect-note" id="redirectNotice" style="display: none;">
+                Directing to wrap-up video in <span id="countdownSec"
+                    style="font-weight: 800; color: #00539f;">4</span>s...
+            </div>
+
+            <div class="modal-btn-row">
+                <button class="btn-action btn-retry" id="playAgainBtn" onclick="handlePlayAgain()">🔄 Play
+                    Again</button>
+                <a href="thank-you.html" class="btn-action btn-finish" id="modalFinishBtn">🎬 Go to Video</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const FIELDS = [
+            { key: "barcode", icon: "🏷️", label: "Barcode" },
+            { key: "product_name", icon: "📦", label: "Product Name" },
+            { key: "department", icon: "🏬", label: "Department" },
+            { key: "weight", icon: "⚖️", label: "Weight / Size" },
+            { key: "dimensions", icon: "📐", label: "Dimensions" },
+            { key: "supplier", icon: "👥", label: "Supplier" },
+            { key: "artwork", icon: "🖼️", label: "Artwork" }
+        ];
+
+        // 20 PRODUCTS POOL
+        const RECORDS = [
+            {
+                category: "Dairy & Chilled", short: "DAIRY",
+                pack: { title: "British Whole Milk", icon: "🥛🐄", dept: "Dairy & Chilled", lines: ["1 Litre (1 Ltr)", "Supplier: Dairy Farmers Ltd", "Pack: 23 x 12 x 10 cm"], barcode: "5012345678901", asset: "Artwork_V2.jpg" },
+                values: { barcode: "5012345678901", product_name: "Tesco Organic Milk", department: "Dairy & Chilled", weight: "1 Ltr", dimensions: "23 x 12 x 10 cm", supplier: "Dairy Farmers Ltd", artwork: "Artwork_V2.jpg" },
+                errorKey: "product_name", reason: "The artwork specifies <strong>'British Whole Milk'</strong>, but the record incorrectly entered <strong>'Tesco Organic Milk'</strong>."
+            },
+            {
+                category: "Household", short: "HH",
+                pack: { title: "Antibacterial Kitchen Cleaner", icon: "🧽🧴", dept: "Household Cleaning", lines: ["750 ml spray", "Supplier: CleanCo Ltd", "Pack size: 24 x 8 x 6 cm"], barcode: "5012345600011", asset: "Artwork_Cleaner_V1.jpg" },
+                values: { barcode: "5012345600011", product_name: "Tesco Antibacterial Kitchen Cleaner", department: "Household Cleaning", weight: "750 ml", dimensions: "42 x 8 x 6 cm", supplier: "CleanCo Ltd", artwork: "Artwork_Cleaner_V1.jpg" },
+                errorKey: "dimensions", reason: "The artwork shows pack size <strong>24 x 8 x 6 cm</strong>, but the record has digits swapped as <strong>42 x 8 x 6 cm</strong>."
+            },
+            {
+                category: "Toys & Entertainment", short: "ENT",
+                pack: { title: "Kids Jigsaw Puzzle", icon: "🧩🎨", dept: "Toys & Games", lines: ["100 pieces · Age 5+", "Supplier: PlayTime Toys Ltd", "Box: 30 x 22 x 5 cm"], barcode: "5012345600028", asset: "Artwork_Jigsaw_V3.jpg" },
+                values: { barcode: "5012345600028", product_name: "Tesco Kids Jigsaw Puzzle", department: "Toys & Games", weight: "200 pieces", dimensions: "30 x 22 x 5 cm", supplier: "PlayTime Toys Ltd", artwork: "Artwork_Jigsaw_V3.jpg" },
+                errorKey: "weight", reason: "The artwork specifies <strong>100 pieces</strong>, but the record incorrectly states <strong>200 pieces</strong>."
+            },
+            {
+                category: "Fresh Produce", short: "PRD",
+                pack: { title: "Finest Cherry Tomatoes", icon: "🍅🌿", dept: "Fresh Produce", lines: ["250 g punnet", "Supplier: Fresh Fields Ltd", "Punnet: 14 x 10 x 6 cm"], barcode: "5012345600035", asset: "Artwork_Tomatoes_V2.jpg" },
+                values: { barcode: "5012345600035", product_name: "Tesco Finest Cherry Tomatoes", department: "Fresh Produce", weight: "250 g", dimensions: "14 x 10 x 6 cm", supplier: "Fresh Fiels Ltd", artwork: "Artwork_Tomatoes_V2.jpg" },
+                errorKey: "supplier", reason: "Typo in supplier name! The artwork says <strong>Fresh Fields Ltd</strong>, but the record logged <strong>Fresh Fiels Ltd</strong>."
+            },
+            {
+                category: "Seasonal Home", short: "SH",
+                pack: { title: "Christmas Scented Candle", icon: "🕯️🎄", dept: "Seasonal & Gifts", lines: ["Cinnamon & Orange · 220 g", "Supplier: Glow Home Ltd", "Jar: 9 x 9 x 10 cm"], barcode: "5012345600042", asset: "Artwork_Xmas_Candle_V1.jpg" },
+                values: { barcode: "5012345600042", product_name: "Tesco Christmas Scented Candle", department: "Seasonal & Gifts", weight: "220 g", dimensions: "9 x 9 x 10 cm", supplier: "Glow Home Ltd", artwork: "Artwork_Easter_Candle_V1.jpg" },
+                errorKey: "artwork", reason: "Wrong asset link! The artwork states <strong>Artwork_Xmas_Candle_V1.jpg</strong>, but the record links to <strong>Artwork_Easter_Candle_V1.jpg</strong>."
+            },
+            {
+                category: "Greetings & Stationery", short: "CARDS",
+                pack: { title: "Birthday Card - Age 40", icon: "🎂🎈", dept: "Stationery & Cards", lines: ["1 card (A5)", "Supplier: Card Studio Ltd", "Size: 21 x 14.8 x 0.5 cm"], barcode: "5012345600059", asset: "Artwork_Card40_V1.jpg" },
+                values: { barcode: "5012345600059", product_name: "Tesco Birthday Card - Age 30", department: "Stationery & Cards", weight: "1 card (A5)", dimensions: "21 x 14.8 x 0.5 cm", supplier: "Card Studio Ltd", artwork: "Artwork_Card40_V1.jpg" },
+                errorKey: "product_name", reason: "The card artwork explicitly says <strong>Age 40</strong>, while the record has logged <strong>Age 30</strong>."
+            },
+            {
+                category: "Pet Care", short: "PET",
+                pack: { title: "Dry Dog Food - Chicken & Rice", icon: "🐕🦴", dept: "Pet Food & Care", lines: ["2 kg bag", "Supplier: Pawfect Foods Ltd", "Bag: 40 x 25 x 10 cm"], barcode: "5012345600066", asset: "Artwork_DogFood_V2.jpg" },
+                values: { barcode: "501234560006", product_name: "Tesco Dry Dog Food - Chicken & Rice", department: "Pet Food & Care", weight: "2 kg", dimensions: "40 x 25 x 10 cm", supplier: "Pawfect Foods Ltd", artwork: "Artwork_DogFood_V2.jpg" },
+                errorKey: "barcode", reason: "Truncated barcode! The artwork barcode has 13 digits (<strong>5012345600066</strong>), while the record has only 12."
+            },
+            {
+                category: "Health & Beauty", short: "HBW",
+                pack: { title: "Vitamin C 1000 mg Tablets", icon: "💊🍊", dept: "Health & Wellness", lines: ["60 tablets", "Supplier: VitaCare Ltd", "Tub: 6 x 6 x 11 cm"], barcode: "5012345600073", asset: "Artwork_VitC_V1.jpg" },
+                values: { barcode: "5012345600073", product_name: "Tesco Vitamin C 1000 mg Tablets", department: "Health & Wellness", weight: "30 tablets", dimensions: "6 x 6 x 11 cm", supplier: "VitaCare Ltd", artwork: "Artwork_VitC_V1.jpg" },
+                errorKey: "weight", reason: "Pack count mismatch! Artwork shows <strong>60 tablets</strong>, but record was entered as <strong>30 tablets</strong>."
+            },
+            {
+                category: "Bakery", short: "BKR",
+                pack: { title: "Wholemeal Toastie Bread", icon: "🍞🌾", dept: "Bakery", lines: ["800 g sliced loaf", "Supplier: Kingsmill Mills Ltd", "Pack: 28 x 12 x 12 cm"], barcode: "5012345600080", asset: "Artwork_Bread_V1.jpg" },
+                values: { barcode: "5012345600080", product_name: "Tesco Wholemeal Toastie Bread", department: "Frozen Foods", weight: "800 g", dimensions: "28 x 12 x 12 cm", supplier: "Kingsmill Mills Ltd", artwork: "Artwork_Bread_V1.jpg" },
+                errorKey: "department", reason: "Wrong Department! Wholemeal bread belongs in <strong>Bakery</strong>, not <strong>Frozen Foods</strong>."
+            },
+            {
+                category: "Beverages", short: "BEV",
+                pack: { title: "Pure Orange Juice Smooth", icon: "🧃🍊", dept: "Chilled Juices", lines: ["1 Litre (1 Ltr)", "Supplier: Citrus Grove Ltd", "Carton: 20 x 7 x 7 cm"], barcode: "5012345600097", asset: "Artwork_Orange_V4.jpg" },
+                values: { barcode: "5012345600097", product_name: "Tesco Pure Orange Juice Smooth", department: "Chilled Juices", weight: "1 Ltr", dimensions: "20 x 7 x 7 cm", supplier: "Sunny Citrus Co", artwork: "Artwork_Orange_V4.jpg" },
+                errorKey: "supplier", reason: "The supplier on the pack is <strong>Citrus Grove Ltd</strong>, but the record incorrectly entered <strong>Sunny Citrus Co</strong>."
+            },
+            {
+                category: "Frozen Foods", short: "FRZ",
+                pack: { title: "Finest Battered Cod Fillets", icon: "🐟❄️", dept: "Frozen Foods", lines: ["400 g (2 fillets)", "Supplier: Ocean Fresh Seafood Ltd", "Box: 22 x 16 x 4 cm"], barcode: "5012345600103", asset: "Artwork_Cod_V2.jpg" },
+                values: { barcode: "5012345600103", product_name: "Tesco Finest Battered Haddock Fillets", department: "Frozen Foods", weight: "400 g", dimensions: "22 x 16 x 4 cm", supplier: "Ocean Fresh Seafood Ltd", artwork: "Artwork_Cod_V2.jpg" },
+                errorKey: "product_name", reason: "Fish species mismatch! Artwork is <strong>Battered Cod Fillets</strong>, but record was saved as <strong>Battered Haddock</strong>."
+            },
+            {
+                category: "Grocery & Pantry", short: "PNT",
+                pack: { title: "Italian Chopped Tomatoes in Juice", icon: "🥫🍅", dept: "Canned Goods", lines: ["400 g can", "Supplier: Mediterranean Foods Ltd", "Can: 11 x 7.5 x 7.5 cm"], barcode: "5012345600110", asset: "Artwork_CanTom_V1.jpg" },
+                values: { barcode: "5012345600110", product_name: "Tesco Italian Chopped Tomatoes in Juice", department: "Canned Goods", weight: "500 g", dimensions: "11 x 7.5 x 7.5 cm", supplier: "Mediterranean Foods Ltd", artwork: "Artwork_CanTom_V1.jpg" },
+                errorKey: "weight", reason: "Standard can size on artwork is <strong>400 g</strong>, but recorded as <strong>500 g</strong>."
+            },
+            {
+                category: "Confectionery", short: "CNF",
+                pack: { title: "Swiss Dark Chocolate 70%", icon: "🍫🇨🇭", dept: "Confectionery", lines: ["100 g bar", "Supplier: Alps Confectionery AG", "Bar: 18 x 9 x 1 cm"], barcode: "5012345600127", asset: "Artwork_DarkChoc_V2.jpg" },
+                values: { barcode: "5012345600127", product_name: "Tesco Swiss Milk Chocolate 70%", department: "Confectionery", weight: "100 g", dimensions: "18 x 9 x 1 cm", supplier: "Alps Confectionery AG", artwork: "Artwork_DarkChoc_V2.jpg" },
+                errorKey: "product_name", reason: "Artwork specifies <strong>Swiss Dark Chocolate 70%</strong>, but the record was mistyped as <strong>Milk Chocolate</strong>."
+            },
+            {
+                category: "Hot Beverages", short: "BEV",
+                pack: { title: "Gold Roast Instant Coffee", icon: "☕✨", dept: "Hot Beverages", lines: ["200 g jar", "Supplier: Roast Masters Ltd", "Jar: 18 x 9 x 9 cm"], barcode: "5012345600134", asset: "Artwork_GoldCoffee_V1.jpg" },
+                values: { barcode: "5012345600134", product_name: "Tesco Gold Roast Instant Coffee", department: "Hot Beverages", weight: "200 g", dimensions: "28 x 9 x 9 cm", supplier: "Roast Masters Ltd", artwork: "Artwork_GoldCoffee_V1.jpg" },
+                errorKey: "dimensions", reason: "Height error! Artwork specifies <strong>18 x 9 x 9 cm</strong>, but record has an inflated height of <strong>28 x 9 x 9 cm</strong>."
+            },
+            {
+                category: "Bakery & Biscuits", short: "BSC",
+                pack: { title: "All Butter Shortbread Fingers", icon: "🍪🧈", dept: "Biscuits", lines: ["210 g pack", "Supplier: Highland Bakery Ltd", "Box: 20 x 8 x 4 cm"], barcode: "5012345600141", asset: "Artwork_Shortbread_V1.jpg" },
+                values: { barcode: "5012345600141", product_name: "Tesco All Butter Shortbread Fingers", department: "Fresh Produce", weight: "210 g", dimensions: "20 x 8 x 4 cm", supplier: "Highland Bakery Ltd", artwork: "Artwork_Shortbread_V1.jpg" },
+                errorKey: "department", reason: "Wrong Department! Shortbread biscuits belong under <strong>Biscuits</strong>, not <strong>Fresh Produce</strong>."
+            },
+            {
+                category: "Baby Care", short: "BBY",
+                pack: { title: "Fragrance Free Baby Wipes", icon: "👶🍼", dept: "Baby Care", lines: ["64 wipes pack", "Supplier: Gentle Care Ltd", "Pack: 16 x 10 x 5 cm"], barcode: "5012345600158", asset: "Artwork_BabyWipes_V3.jpg" },
+                values: { barcode: "5012345600158", product_name: "Tesco Fragrance Free Baby Wipes", department: "Baby Care", weight: "64 wipes", dimensions: "16 x 10 x 5 cm", supplier: "Gentle Care Ltd", artwork: "Artwork_BabyWipes_V1.jpg" },
+                errorKey: "artwork", reason: "Obsolete artwork asset! The current pack uses <strong>Artwork_BabyWipes_V3.jpg</strong>, but the record links to <strong>V1</strong>."
+            },
+            {
+                category: "Laundry", short: "LND",
+                pack: { title: "Bio Laundry Liquid Detergent", icon: "🧺🫧", dept: "Laundry Care", lines: ["1.5 Litres (42 Washes)", "Supplier: CleanCo Ltd", "Bottle: 30 x 14 x 9 cm"], barcode: "5012345600165", asset: "Artwork_BioLaundry_V2.jpg" },
+                values: { barcode: "5012345600165", product_name: "Tesco Non-Bio Laundry Liquid Detergent", department: "Laundry Care", weight: "1.5 Litres", dimensions: "30 x 14 x 9 cm", supplier: "CleanCo Ltd", artwork: "Artwork_BioLaundry_V2.jpg" },
+                errorKey: "product_name", reason: "Critical allergy mismatch! Artwork is <strong>Bio</strong>, but record was entered as <strong>Non-Bio</strong>."
+            },
+            {
+                category: "Snacks", short: "SNK",
+                pack: { title: "Lightly Salted Tortilla Chips", icon: "🌽🌮", dept: "Crisps & Snacks", lines: ["200 g sharing bag", "Supplier: SnackWorks UK Ltd", "Bag: 28 x 18 x 6 cm"], barcode: "5012345600172", asset: "Artwork_Tortilla_V1.jpg" },
+                values: { barcode: "5012345600999", product_name: "Tesco Lightly Salted Tortilla Chips", department: "Crisps & Snacks", weight: "200 g", dimensions: "28 x 18 x 6 cm", supplier: "SnackWorks UK Ltd", artwork: "Artwork_Tortilla_V1.jpg" },
+                errorKey: "barcode", reason: "Barcode mismatch! Artwork barcode is <strong>5012345600172</strong>, but record shows <strong>5012345600999</strong>."
+            },
+            {
+                category: "Fresh Meat", short: "MET",
+                pack: { title: "British Lean Beef Steak Mince 5% Fat", icon: "🥩🥩", dept: "Fresh Meat & Poultry", lines: ["500 g tray", "Supplier: Stoddart British Meats", "Tray: 19 x 14 x 5 cm"], barcode: "5012345600189", asset: "Artwork_BeefMince_V2.jpg" },
+                values: { barcode: "5012345600189", product_name: "Tesco British Lean Beef Steak Mince 5% Fat", department: "Fresh Meat & Poultry", weight: "500 g", dimensions: "19 x 14 x 5 cm", supplier: "Stoddart Scottish Meats", artwork: "Artwork_BeefMince_V2.jpg" },
+                errorKey: "supplier", reason: "The artwork supplier is <strong>Stoddart British Meats</strong>, but record reads <strong>Stoddart Scottish Meats</strong>."
+            },
+            {
+                category: "Condiments & Sauces", short: "CND",
+                pack: { title: "Extra Virgin Olive Oil", icon: "🫒🍶", dept: "Oils & Vinegars", lines: ["500 ml glass bottle", "Supplier: Iberian Oils S.L.", "Bottle: 26 x 6 x 6 cm"], barcode: "5012345600196", asset: "Artwork_OliveOil_V1.jpg" },
+                values: { barcode: "5012345600196", product_name: "Tesco Extra Virgin Olive Oil", department: "Oils & Vinegars", weight: "750 ml", dimensions: "26 x 6 x 6 cm", supplier: "Iberian Oils S.L.", artwork: "Artwork_OliveOil_V1.jpg" },
+                errorKey: "weight", reason: "Bottle volume mismatch! Artwork states <strong>500 ml</strong>, but the record was entered as <strong>750 ml</strong>."
+            }
+        ];
+
+        // 5-ATTEMPT TRACKER STATE
+        const MAX_ROUNDS = 5;
+        let currentRound = 1;
+        let cumulativeScore = 0;
+
+        let deck = [];
+        let lastIndex = -1;
+        let currentRecord = null;
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function pickRecordIndex() {
+            if (deck.length === 0) {
+                deck = shuffle(RECORDS.map((_, i) => i));
+            }
+            let idx = deck.pop();
+            if (idx === lastIndex && deck.length > 0) {
+                deck.unshift(idx);
+                idx = deck.pop();
+            }
+            lastIndex = idx;
+            return idx;
+        }
+
+        function labelFor(key) {
+            return FIELDS.find(f => f.key === key).label;
+        }
+
+        function updateTrackerUI() {
+            const trackerText = document.getElementById("questionTrackerText");
+            trackerText.innerText = `Question ${currentRound} of ${MAX_ROUNDS}`;
+
+            // Pulse animation trigger on header text
+            trackerText.classList.remove("highlight-pulse");
+            void trackerText.offsetWidth; // Force reflow
+            trackerText.classList.add("highlight-pulse");
+
+            // Update Dot highlights
+            for (let i = 1; i <= MAX_ROUNDS; i++) {
+                const dot = document.getElementById("dot" + i);
+                dot.className = "q-dot";
+                if (i < currentRound) {
+                    dot.classList.add("completed-dot");
+                } else if (i === currentRound) {
+                    dot.classList.add("active");
+                }
+            }
+        }
+
+        function loadRound() {
+            updateTrackerUI();
+            currentRecord = RECORDS[pickRecordIndex()];
+            const pack = currentRecord.pack;
+
+            document.getElementById("packCategory").textContent = "Category: " + currentRecord.short;
+            document.getElementById("packTitle").textContent = pack.title;
+            document.getElementById("packIcon").textContent = pack.icon;
+
+            const details = document.getElementById("packDetails");
+            details.innerHTML = "";
+
+            const deptLine = document.createElement("div");
+            deptLine.textContent = "Dept: " + pack.dept;
+            details.appendChild(deptLine);
+
+            pack.lines.forEach(text => {
+                const line = document.createElement("div");
+                line.textContent = text;
+                details.appendChild(line);
+            });
+
+            const barcodeLine = document.createElement("div");
+            barcodeLine.textContent = "Barcode: " + pack.barcode;
+            details.appendChild(barcodeLine);
+
+            const assetLine = document.createElement("div");
+            assetLine.style.fontSize = "0.7rem";
+            assetLine.style.color = "#1e3a5f";
+            assetLine.style.marginTop = "4px";
+            assetLine.textContent = "Asset: " + pack.asset;
+            details.appendChild(assetLine);
+
+            const list = document.getElementById("recordList");
+            list.innerHTML = "";
+            FIELDS.forEach(f => {
+                const row = document.createElement("div");
+                row.className = "record-row";
+                row.dataset.key = f.key;
+                row.innerHTML = `
+                    <div class="field-name">${f.icon} <span>${f.label}</span></div>
+                    <div class="field-value">${currentRecord.values[f.key]}</div>
+                    <div class="field-status"></div>
+                `;
+                row.addEventListener("click", () => handleFieldClick(f.key, row));
+                list.appendChild(row);
+            });
+        }
+
+        function getCorrectRow() {
+            return document.querySelector(`.record-row[data-key="${currentRecord.errorKey}"]`);
+        }
+
+        // TIMER & ROUND PROGRESSION
+        let timeLeft = 30;
+        let timerInterval = null;
+        let answered = false;
+        let redirectTimeout = null;
+        let countdownInterval = null;
+
+        const timerDisplay = document.getElementById("timerDisplay");
+        const scoreDisplay = document.getElementById("scoreDisplay");
+        const identifiedStamp = document.getElementById("identifiedStamp");
+        const resultsModal = document.getElementById("resultsModal");
+        const modalHeadline = document.getElementById("modalHeadline");
+        const finalScorePill = document.getElementById("finalScorePill");
+        const modalExplanation = document.getElementById("modalExplanation");
+        const redirectNotice = document.getElementById("redirectNotice");
+        const playAgainBtn = document.getElementById("playAgainBtn");
+        const modalFinishBtn = document.getElementById("modalFinishBtn");
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const secs = String(timeLeft).padStart(2, '0');
+                timerDisplay.innerText = `00:${secs}`;
+
+                if (timeLeft <= 5) {
+                    timerDisplay.classList.add("warning");
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    finishRound(false, true);
+                }
+            }, 1000);
+        }
+
+        function handleFieldClick(fieldKey, rowElement) {
+            if (answered) return;
+            answered = true;
+            clearInterval(timerInterval);
+
+            document.querySelectorAll(".record-row").forEach(r => r.classList.add("locked"));
+
+            if (fieldKey === currentRecord.errorKey) {
+                // Award +2 points per correct question (accumulates up to 10/10)
+                cumulativeScore += 2;
+                scoreDisplay.innerHTML = `${cumulativeScore} <span>/ 10</span>`;
+
+                rowElement.classList.add("error-selected");
+                rowElement.querySelector(".field-status").innerHTML = `<div class="error-tag">!</div>`;
+                identifiedStamp.style.display = "block";
+
+                confetti({
+                    particleCount: 100,
+                    spread: 75,
+                    origin: { y: 0.6 }
+                });
+
+                setTimeout(() => { finishRound(true, false); }, 1100);
+            } else {
+                rowElement.classList.add("wrong-choice");
+                rowElement.querySelector(".field-status").innerHTML = `❌`;
+
+                const correctRow = getCorrectRow();
+                correctRow.classList.add("error-selected");
+                correctRow.querySelector(".field-status").innerHTML = `<div class="error-tag">!</div>`;
+
+                setTimeout(() => { finishRound(false, false); }, 1200);
+            }
+        }
+
+        function finishRound(isCorrect, isTimeout) {
+            const errorLabel = labelFor(currentRecord.errorKey);
+            finalScorePill.innerText = `${cumulativeScore} / 10`;
+
+            const isMaxReached = (currentRound >= MAX_ROUNDS);
+
+            if (isCorrect) {
+                modalHeadline.innerText = isMaxReached ? "🎉 5 Attempts Completed!" : "🎉 Correctly Identified!";
+                modalHeadline.style.color = "#2e7d32";
+                modalExplanation.innerHTML = `
+                    <strong>Spot On!</strong> You caught the inconsistency in <strong>${errorLabel}</strong>.<br><br>
+                    ${currentRecord.reason}
+                `;
+            } else if (isTimeout) {
+                modalHeadline.innerText = isMaxReached ? "⏰ 5 Attempts Completed!" : "⏰ Time's Up!";
+                modalHeadline.style.color = "#d32f2f";
+                modalExplanation.innerHTML = `
+                    The 30-second timer expired!<br><br>
+                    The error was in <strong>${errorLabel}</strong>: ${currentRecord.reason}
+                `;
+            } else {
+                modalHeadline.innerText = isMaxReached ? "❌ 5 Attempts Completed!" : "❌ Incorrect Field";
+                modalHeadline.style.color = "#d32f2f";
+                modalExplanation.innerHTML = `
+                    That field was accurate. The inconsistency was in <strong>${errorLabel}</strong>.<br><br>
+                    ${currentRecord.reason}
+                `;
+            }
+
+            if (isMaxReached) {
+                // MAX 5 ATTEMPTS REACHED: Disable Play Again and auto-redirect to thank-you.html
+                playAgainBtn.style.display = "none";
+                modalFinishBtn.innerText = "🎬 Go to Video";
+                redirectNotice.style.display = "block";
+
+                let secondsRemaining = 4;
+                const countdownSec = document.getElementById("countdownSec");
+                countdownInterval = setInterval(() => {
+                    secondsRemaining--;
+                    if (countdownSec) countdownSec.innerText = secondsRemaining;
+                    if (secondsRemaining <= 0) clearInterval(countdownInterval);
+                }, 1000);
+
+                redirectTimeout = setTimeout(() => {
+                    window.location.href = "thank-you.html";
+                }, 4000);
+            } else {
+                // ATTEMPTS STILL REMAIN: Allow user to click Play Again
+                playAgainBtn.style.display = "inline-block";
+                playAgainBtn.innerText = `🔄 Play Again (${currentRound}/${MAX_ROUNDS})`;
+                redirectNotice.style.display = "none";
+            }
+
+            resultsModal.style.display = "flex";
+        }
+
+        function handlePlayAgain() {
+            clearTimeout(redirectTimeout);
+            clearInterval(countdownInterval);
+
+            // Increment attempt and load next question
+            currentRound++;
+            answered = false;
+            timeLeft = 30;
+
+            timerDisplay.classList.remove("warning");
+            timerDisplay.innerText = "00:30";
+            identifiedStamp.style.display = "none";
+            resultsModal.style.display = "none";
+
+            // Loads fresh product, highlights next dot, updates question header
+            loadRound();
+            startTimer();
+        }
+
+        // Direct Launch on Load (No QR Screen)
+        window.addEventListener("DOMContentLoaded", () => {
+            loadRound();
+            startTimer();
+        });
+    </script>
+</body>
+
+</html>

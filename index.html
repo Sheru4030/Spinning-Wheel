@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tesco Activity Spin Wheel</title>
+    <!-- Confetti Canvas Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 40%, #1a2849 0%, #0c1424 50%, #05080f 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        /* Ambient spotlight glow behind wheel */
+        .spotlight {
+            position: absolute;
+            width: 680px;
+            height: 680px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(2, 136, 209, 0.22) 0%, rgba(0, 0, 0, 0) 70%);
+            filter: blur(40px);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Header styling with arcade metallic glow */
+        .header-box {
+            z-index: 10;
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            font-size: 2.3rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #fff3c4 0%, #ffc107 45%, #ff8f00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 3px 12px rgba(255, 179, 0, 0.45));
+        }
+
+        .sub-badge {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 4px 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 0.85rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #cbd5e1;
+        }
+
+        /* Wheel stage */
+        .wheel-stage {
+            position: relative;
+            width: 580px;
+            height: 580px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        /* Ticker Pointer with Spring Flap Effect */
+        .indicator-box {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 40;
+            pointer-events: none;
+            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.8));
+        }
+
+        .indicator-needle {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 38px solid #ff1744;
+            transform-origin: 50% 0%;
+            transition: transform 0.08s ease-out;
+        }
+
+        .indicator-needle::after {
+            content: '';
+            position: absolute;
+            top: -38px;
+            left: -9px;
+            width: 18px;
+            height: 14px;
+            background: #ffebee;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        /* Outer 3D Beveled Wheel Rim */
+        .rim-overlay {
+            position: absolute;
+            width: 550px;
+            height: 550px;
+            border-radius: 50%;
+            border: 18px solid #0a111c;
+            box-shadow:
+                0 15px 45px rgba(0, 0, 0, 0.9),
+                inset 0 0 15px rgba(0, 0, 0, 0.9),
+                0 0 0 3px rgba(255, 215, 0, 0.3);
+            pointer-events: none;
+            z-index: 25;
+        }
+
+        /* Wheel Canvas */
+        #wheelCanvas {
+            width: 550px;
+            height: 550px;
+            border-radius: 50%;
+            transition: transform 5s cubic-bezier(0.12, 0.95, 0.18, 1);
+        }
+
+        /* Flashing Light Bulbs on Rim */
+        .bulb {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffe082;
+            box-shadow: 0 0 10px #ffca28, inset 0 0 3px #fff;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .bulb.flash {
+            background: #ffffff;
+            box-shadow: 0 0 18px #fff, 0 0 26px #ffea00;
+        }
+
+        /* Center Spin Button with Metallic Polish */
+        .center-spin-btn {
+            position: absolute;
+            width: 104px;
+            height: 104px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 60%, #cbd5e1 100%);
+            border: 6px solid #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            box-shadow:
+                0 6px 20px rgba(0, 0, 0, 0.6),
+                inset 0 3px 6px rgba(255, 255, 255, 0.9),
+                inset 0 -4px 6px rgba(0, 0, 0, 0.25);
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .center-spin-btn span {
+            font-size: 1.35rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            color: #0f172a;
+        }
+
+        .wheel-stage:hover .center-spin-btn {
+            transform: scale(1.08);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4), inset 0 2px 5px #fff;
+        }
+
+        .wheel-stage:active .center-spin-btn {
+            transform: scale(0.95);
+        }
+
+        /* Bottom Prompt Pill */
+        .instruction-pill {
+            margin-top: 24px;
+            z-index: 10;
+            padding: 10px 28px;
+            border-radius: 30px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #94a3b8;
+            transition: all 0.3s;
+        }
+
+        .instruction-pill.spinning {
+            color: #ffca28;
+            border-color: rgba(255, 202, 40, 0.4);
+            box-shadow: 0 0 20px rgba(255, 202, 40, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="spotlight"></div>
+
+    <div class="header-box">
+        <h1>Activity Spin Wheel</h1>
+        <div class="sub-badge">RPI Team Presents</div>
+    </div>
+
+    <div class="wheel-stage" id="wheelContainer">
+        <!-- Pointer -->
+        <div class="indicator-box">
+            <div class="indicator-needle" id="needle"></div>
+        </div>
+
+        <!-- Outer Rim with Light Bulbs -->
+        <div class="rim-overlay" id="rimOverlay"></div>
+
+        <!-- Canvas -->
+        <canvas id="wheelCanvas" width="1100" height="1100"></canvas>
+
+        <!-- Center Button -->
+        <div class="center-spin-btn">
+            <span>SPIN</span>
+        </div>
+    </div>
+
+    <div class="instruction-pill" id="statusToast">✨ Tap anywhere on the wheel to spin!</div>
+
+    <script>
+        // 10 Segments mapped to your specific pages[cite: 1]
+        const segments = [
+            { text: "SPOT THE\nERROR", color: "#0d5ca8", icon: "🔍", url: "spot-the-error.html" },
+            { text: "TRUTH OR\nDARE", color: "#d9232a", icon: "🎭", url: "truth-or-dare.html" },
+            { text: "PRODUCT\nJOURNEY", color: "#083769", icon: "🛒", url: "product-journey.html" },
+            { text: "SING A\nSONG", color: "#e89923", icon: "🎤", url: "sing-a-song.html" },
+            { text: "BUYING OPS\nBLITZ", color: "#0277bd", icon: "⚡", url: "buying-ops-blitz.html" },
+            { text: "BEST MOMENT\nAT TESCO", color: "#6a2d8a", icon: "⭐", url: "best-moment.html" },
+            { text: "BUILD THE\nPRODUCT", color: "#004b91", icon: "📦", url: "build-the-product.html" },
+            { text: "TRUTH OR\nDARE", color: "#d9232a", icon: "🎭", url: "truth-or-dare.html" },
+            { text: "DEPOT\nALLOCATION", color: "#0a2e5c", icon: "🚚", url: "depot-allocation.html" },
+            { text: "MYSTERY\nBONUS ROUND", color: "#0288d1", icon: "🎁", url: "mystery-round.html" }
+        ];
+
+        const canvas = document.getElementById("wheelCanvas");
+        const ctx = canvas.getContext("2d");
+        const wheelContainer = document.getElementById("wheelContainer");
+        const statusToast = document.getElementById("statusToast");
+        const needle = document.getElementById("needle");
+        const rim = document.getElementById("rimOverlay");
+
+        const totalSegments = segments.length;
+        const arc = (2 * Math.PI) / totalSegments;
+        const center = canvas.width / 2;
+        const radius = center - 30;
+
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        // -------------------------------------------------------------
+        // Synthesized Audio System (Zero external files needed)
+        // -------------------------------------------------------------
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playTickSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.04);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+
+            // Flap needle animation
+            needle.style.transform = "rotate(-14deg)";
+            setTimeout(() => { needle.style.transform = "rotate(0deg)"; }, 60);
+        }
+
+        function playVictoryChime() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C Major arpeggio
+            notes.forEach((freq, idx) => {
+                setTimeout(() => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = "sine";
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.6);
+                }, idx * 110);
+            });
+        }
+
+        // -------------------------------------------------------------
+        // High-Resolution Wheel Rendering with Gradients & Polish
+        // -------------------------------------------------------------
+        function drawWheel() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < totalSegments; i++) {
+                const angle = i * arc;
+
+                // Slice Wedge with Radial Shading for 3D depth
+                ctx.beginPath();
+                ctx.moveTo(center, center);
+                ctx.arc(center, center, radius, angle, angle + arc);
+                ctx.lineTo(center, center);
+
+                const grad = ctx.createRadialGradient(center, center, 80, center, center, radius);
+                grad.addColorStop(0, segments[i].color);
+                grad.addColorStop(1, shadeColor(segments[i].color, -22));
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                // White border dividers
+                ctx.lineWidth = 4;
+                ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+                ctx.stroke();
+
+                // Draw Upright Segment Text
+                ctx.save();
+                ctx.translate(center, center);
+                ctx.rotate(angle + arc / 2);
+
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "#ffffff";
+                ctx.shadowColor = "rgba(0,0,0,0.6)";
+                ctx.shadowBlur = 6;
+                ctx.shadowOffsetY = 2;
+                ctx.font = "900 28px 'Montserrat', sans-serif";
+
+                const lines = segments[i].text.split("\n");
+                const outerOffset = radius * 0.73;
+
+                if (lines.length > 1) {
+                    ctx.fillText(lines[0], outerOffset, -16);
+                    ctx.fillText(lines[1], outerOffset, 16);
+                } else {
+                    ctx.fillText(lines[0], outerOffset, 0);
+                }
+
+                // Inner Icons
+                ctx.shadowBlur = 0;
+                ctx.font = "44px sans-serif";
+                ctx.fillText(segments[i].icon, radius * 0.38, 0);
+
+                ctx.restore();
+            }
+
+            // Center Hub Ring Border
+            ctx.beginPath();
+            ctx.arc(center, center, 120, 0, 2 * Math.PI);
+            ctx.lineWidth = 9;
+            ctx.strokeStyle = "#ffffff";
+            ctx.stroke();
+        }
+
+        // Helper for darker wedge edges
+        function shadeColor(color, percent) {
+            let num = parseInt(color.replace("#", ""), 16),
+                amt = Math.round(2.55 * percent),
+                R = (num >> 16) + amt,
+                B = (num >> 8 & 0x00FF) + amt,
+                G = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + (B < 255 ? B < 1 ? 0 : B : 255) * 0x100 + (G < 255 ? G < 1 ? 0 : G : 255)).toString(16).slice(1);
+        }
+
+        drawWheel();
+
+        // -------------------------------------------------------------
+        // Build 12 Vegas Rim Light Bulbs
+        // -------------------------------------------------------------
+        const bulbs = [];
+        const numBulbs = 12;
+        for (let i = 0; i < numBulbs; i++) {
+            const b = document.createElement("div");
+            b.className = "bulb";
+            const rad = (i * (360 / numBulbs)) * (Math.PI / 180);
+            const r = 265;
+            const x = 275 + r * Math.cos(rad) - 8;
+            const y = 275 + r * Math.sin(rad) - 8;
+            b.style.left = `${x}px`;
+            b.style.top = `${y}px`;
+            rim.appendChild(b);
+            bulbs.push(b);
+        }
+
+        // Pulsing / Chasing Bulbs while idle
+        let bulbStep = 0;
+        setInterval(() => {
+            bulbs.forEach((bulb, idx) => {
+                if ((idx + bulbStep) % 2 === 0) {
+                    bulb.classList.add("flash");
+                } else {
+                    bulb.classList.remove("flash");
+                }
+            });
+            bulbStep++;
+        }, 450);
+
+        // -------------------------------------------------------------
+        // Fullscreen Multi-Cannon Confetti Fiesta
+        // -------------------------------------------------------------
+        function triggerMassiveConfetti() {
+            // 1. Center burst
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.6 },
+                colors: ['#ffd166', '#ef476f', '#06d6a0', '#118ab2', '#073b4c']
+            });
+
+            // 2. Continuous side cannons
+            const duration = 1500;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 6,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0, y: 0.7 },
+                    colors: ['#ffbe0b', '#fb5607', '#ff006e', '#8338ec', '#3a86ff']
+                });
+                confetti({
+                    particleCount: 6,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1, y: 0.7 },
+                    colors: ['#ffbe0b', '#fb5607', '#ff006e', '#8338ec', '#3a86ff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            })();
+
+            // 3. Falling gold star shower
+            setTimeout(() => {
+                confetti({
+                    particleCount: 50,
+                    spread: 360,
+                    ticks: 100,
+                    gravity: 0.6,
+                    decay: 0.94,
+                    startVelocity: 30,
+                    shapes: ['star'],
+                    colors: ['#FFE838', '#FFD700', '#FFA500'],
+                    origin: { y: 0.4 }
+                });
+            }, 350);
+        }
+
+        // -------------------------------------------------------------
+        // Spin Mechanics with Dynamic Audio Tick Tracking
+        // -------------------------------------------------------------
+        function startSpin() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            statusToast.classList.add("spinning");
+            statusToast.innerText = "⚡ Spinning in progress...";
+
+            // Random 6-9 complete spins + target angle
+            const extraAngle = Math.floor(Math.random() * 360);
+            const spinDelta = 360 * 7 + extraAngle;
+            const startRot = currentRotation;
+            const targetRot = currentRotation + spinDelta;
+            currentRotation = targetRot;
+
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            // Audio Ticker Simulation based on decelerating bezier curve
+            let lastSliceIndex = -1;
+            const startTime = performance.now();
+            const duration = 5000;
+
+            function checkTicks(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                // Approximate cubic-bezier deceleration
+                const easeOut = 1 - Math.pow(1 - progress, 3.5);
+                const currentDeg = startRot + spinDelta * easeOut;
+
+                const currentSlice = Math.floor(currentDeg / (360 / totalSegments));
+                if (currentSlice !== lastSliceIndex) {
+                    playTickSound();
+                    lastSliceIndex = currentSlice;
+                }
+
+                if (progress < 1) {
+                    requestAnimationFrame(checkTicks);
+                }
+            }
+            requestAnimationFrame(checkTicks);
+
+            // On Spin Finish
+            setTimeout(() => {
+                isSpinning = false;
+                statusToast.classList.remove("spinning");
+
+                const normalizedDeg = (currentRotation % 360);
+                const topDeg = (360 - normalizedDeg + 270) % 360;
+                const selectedIndex = Math.floor(topDeg / (360 / totalSegments)) % totalSegments;
+                const chosen = segments[selectedIndex];
+
+                // Play Victory Chime & Multi-Cannon Confetti
+                playVictoryChime();
+                triggerMassiveConfetti();
+
+                statusToast.innerText = `🎉 Selected: ${chosen.text.replace("\n", " ")}! Launching...`;
+
+                // 2.4s pause so the confetti celebration is visible before redirecting
+                setTimeout(() => {
+                    window.location.href = chosen.url;
+                }, 2400);
+
+            }, 5000);
+        }
+
+        wheelContainer.addEventListener("click", startSpin);
+    </script>
+</body>
+
+</html>

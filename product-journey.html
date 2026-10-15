@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Journey - Tesco Process Awareness</title>
+    <!-- Confetti Canvas Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(180deg, #d8eefc 0%, #b2dcf7 35%, #e6f3fc 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            color: #0b2546;
+            overflow-x: hidden;
+        }
+
+        /* Outer Dashboard Container */
+        .board-container {
+            background: #ffffff;
+            width: 100%;
+            max-width: 1320px;
+            border-radius: 24px;
+            box-shadow: 0 16px 45px rgba(5, 41, 88, 0.16);
+            border: 3px solid #00539f;
+            padding: 20px 28px 14px 28px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Header */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+        }
+
+        .tesco-logo {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #ee1c2e;
+            letter-spacing: -1.5px;
+            line-height: 1;
+        }
+
+        .game-tag {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: #00539f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .top-slogan {
+            font-family: 'Brush Script MT', 'Caveat', cursive, sans-serif;
+            font-size: 1.7rem;
+            color: #00539f;
+            transform: rotate(-3deg);
+            line-height: 1.1;
+            text-align: right;
+        }
+
+        /* Title Area */
+        .title-row {
+            margin-bottom: 8px;
+        }
+
+        .title-row h1 {
+            font-size: 2.3rem;
+            font-weight: 900;
+            color: #003066;
+            line-height: 1.1;
+        }
+
+        .title-row p.sub {
+            font-style: italic;
+            font-size: 1.05rem;
+            color: #2b5885;
+            font-weight: 600;
+        }
+
+        /* Core 3-Column Grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 290px 1fr 240px;
+            gap: 18px;
+            align-items: start;
+        }
+
+        /* LEFT COLUMN */
+        .col-left {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .how-to-box {
+            background: #f0f7fe;
+            border: 1.5px solid #bce1fb;
+            border-radius: 16px;
+            padding: 12px 14px;
+        }
+
+        .how-to-box h3 {
+            font-size: 0.95rem;
+            color: #00539f;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+
+        .step-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: #1e3a5f;
+            line-height: 1.35;
+        }
+
+        .step-num {
+            background: #00539f;
+            color: #fff;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+
+        .points-badge {
+            background: #ffe875;
+            border: 1.5px dashed #d4af37;
+            border-radius: 14px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            color: #533e00;
+            font-size: 0.85rem;
+        }
+
+        .basket-art {
+            background: #eef7fd;
+            border-radius: 16px;
+            padding: 10px;
+            text-align: center;
+            border: 1.5px solid #d4e8f7;
+            position: relative;
+        }
+
+        .basket-graphic {
+            font-size: 3rem;
+            line-height: 1;
+        }
+
+        .better-together {
+            font-family: 'Brush Script MT', 'Caveat', cursive, sans-serif;
+            font-size: 1.6rem;
+            color: #00539f;
+            transform: rotate(-5deg);
+            margin-top: 4px;
+        }
+
+        /* CENTER COLUMN: PROCESS TILES & DROP ZONE */
+        .col-center {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Upper Pool Container */
+        .pool-panel {
+            background: #ffffff;
+            border: 2px solid #bce1fb;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+        }
+
+        .pool-header {
+            background: #00539f;
+            color: #ffffff;
+            padding: 8px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pool-header span {
+            font-weight: 800;
+            font-size: 0.92rem;
+            letter-spacing: 0.5px;
+        }
+
+        .pool-header small {
+            background: #ffffff;
+            color: #00539f;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+        }
+
+        /* 8 Step Tiles Grid */
+        .tiles-grid {
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            min-height: 170px;
+            background: #fbfdff;
+        }
+
+        .drag-tile {
+            background: #ffffff;
+            border: 2px solid #d4e5f5;
+            border-radius: 14px;
+            padding: 10px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: grab;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s;
+            box-shadow: 0 4px 10px rgba(0, 83, 159, 0.06);
+            position: relative;
+        }
+
+        .drag-tile:hover {
+            transform: translateY(-2px);
+            border-color: #00539f;
+            box-shadow: 0 6px 14px rgba(0, 83, 159, 0.15);
+        }
+
+        .drag-tile:active {
+            cursor: grabbing;
+        }
+
+        .drag-tile.dragging {
+            opacity: 0.45;
+            transform: scale(0.95);
+        }
+
+        .tile-icon {
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+            line-height: 1;
+        }
+
+        .tile-name {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #0c2d52;
+            line-height: 1.25;
+        }
+
+        /* Drop Zone Area */
+        .drop-panel {
+            background: #ffffff;
+            border: 2px solid #bce1fb;
+            border-radius: 18px;
+            padding: 12px 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            position: relative;
+        }
+
+        .drop-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .drop-title-row span {
+            font-weight: 800;
+            font-size: 0.9rem;
+            color: #003066;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-reset-pool {
+            background: #eef7fd;
+            border: 1px solid #bce1fb;
+            color: #00539f;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-reset-pool:hover {
+            background: #d9edf9;
+        }
+
+        /* 8 Slots Layout */
+        .slots-container {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            align-items: stretch;
+        }
+
+        .slot-box {
+            background: #f7faff;
+            border: 2px dashed #b8d9f2;
+            border-radius: 12px;
+            min-height: 110px;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .slot-box.drag-over {
+            background: #e1f3ff;
+            border-color: #00539f;
+            transform: scale(1.02);
+        }
+
+        .slot-badge {
+            background: #eaf3fa;
+            color: #00539f;
+            font-size: 0.72rem;
+            font-weight: 900;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 4px;
+        }
+
+        .slot-box .drag-tile {
+            width: 100%;
+            height: 100%;
+            padding: 6px 2px;
+            box-shadow: none;
+            border-color: #00539f;
+            background: #ffffff;
+        }
+
+        .slot-box .drag-tile .tile-icon {
+            font-size: 1.4rem;
+        }
+
+        .slot-box .drag-tile .tile-name {
+            font-size: 0.72rem;
+        }
+
+        .slot-hint {
+            font-size: 0.7rem;
+            color: #8da4be;
+            font-weight: 700;
+            margin-top: 20px;
+            pointer-events: none;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            background: linear-gradient(135deg, #ee1c2e 0%, #ba1220 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 1.05rem;
+            font-weight: 900;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(238, 28, 46, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, background 0.2s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(238, 28, 46, 0.55);
+        }
+
+        /* RIGHT COLUMN: TIMER, SCORE & ATTEMPTS TRACKER */
+        .col-right {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .timer-card {
+            background: #00539f;
+            border-radius: 18px;
+            padding: 12px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 6px 16px rgba(0, 83, 159, 0.25);
+        }
+
+        .timer-icon {
+            font-size: 2.2rem;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(0.95);
+            }
+
+            to {
+                transform: scale(1.05);
+            }
+        }
+
+        .timer-info .label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #bbdefb;
+            text-transform: uppercase;
+        }
+
+        .timer-info .time-digits {
+            font-size: 2.1rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        .time-digits.warning {
+            color: #ff5252;
+            animation: flash 0.5s infinite;
+        }
+
+        @keyframes flash {
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .score-card {
+            background: #f1f8fe;
+            border: 2px solid #bce1fb;
+            border-radius: 18px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .score-card .score-label {
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #00539f;
+            text-transform: uppercase;
+        }
+
+        .score-card .score-value {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #002d62;
+            line-height: 1;
+            margin-top: 4px;
+        }
+
+        .score-card .score-value span {
+            font-size: 1.1rem;
+            color: #7b9bb6;
+        }
+
+        /* 3-Question Tracker Box with Completed Highlights */
+        .tracker-box {
+            background: #002d62;
+            border-radius: 14px;
+            padding: 12px 10px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .tracker-box .t-label {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #ffd166;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .t-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .t-dot {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 900;
+            transition: all 0.25s ease;
+            border: 2px solid transparent;
+        }
+
+        /* Highlight for current active attempt */
+        .t-dot.active {
+            background: #ffffff !important;
+            color: #002d62 !important;
+            transform: scale(1.15);
+            border-color: #ffd166;
+            box-shadow: 0 0 10px rgba(255, 209, 102, 0.85);
+        }
+
+        /* Highlight for past attempts that are officially over */
+        .t-dot.completed-dot {
+            background: #2e7d32 !important;
+            color: #ffffff !important;
+            border-color: #a5d6a7;
+            box-shadow: 0 2px 8px rgba(46, 125, 50, 0.45);
+        }
+
+        .arrange-stamp {
+            background: #ee1c2e;
+            color: #fff;
+            padding: 12px;
+            border-radius: 18px;
+            font-family: 'Brush Script MT', 'Caveat', cursive, sans-serif;
+            font-size: 1.6rem;
+            line-height: 1.1;
+            text-align: center;
+            box-shadow: 0 6px 14px rgba(238, 28, 46, 0.35);
+            transform: rotate(3deg);
+        }
+
+        /* Footer */
+        .footer-bar {
+            margin-top: 14px;
+            border-top: 2px solid #e0edf7;
+            padding-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #00539f;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .back-link {
+            color: #ee1c2e;
+            text-decoration: none;
+            font-weight: 800;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* RESULTS MODAL */
+        .results-modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(7, 30, 58, 0.85);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .results-modal {
+            background: #ffffff;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 22px;
+            padding: 28px;
+            border: 4px solid #00539f;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: popIn 0.3s cubic-bezier(0.17, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.7);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .results-modal h2 {
+            font-size: 1.8rem;
+            color: #002d62;
+            margin-bottom: 4px;
+        }
+
+        .results-score-pill {
+            display: inline-block;
+            background: #eef7fd;
+            border: 2px solid #00539f;
+            color: #00539f;
+            font-size: 2.2rem;
+            font-weight: 900;
+            padding: 6px 26px;
+            border-radius: 30px;
+            margin: 12px 0;
+        }
+
+        .feedback-text {
+            font-size: 0.95rem;
+            color: #475569;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+
+        .redirect-note {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .modal-btn-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-modal {
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-modal-retry {
+            background: #00539f;
+            color: #fff;
+        }
+
+        .btn-modal-video {
+            background: linear-gradient(135deg, #ee1c2e, #ba1220);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="board-container">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="brand-group">
+                <span class="tesco-logo">TESCO</span>
+                <span class="game-tag">GAME 3 | PROCESS AWARENESS</span>
+            </div>
+            <div class="top-slogan">Small details.<br>Big impact.</div>
+        </div>
+
+        <!-- Title -->
+        <div class="title-row">
+            <h1>Product Journey 🛒</h1>
+            <p class="sub">Arrange the mixed-up process in the correct order.</p>
+        </div>
+
+        <!-- 3-Column Core Grid -->
+        <div class="main-grid">
+
+            <!-- LEFT COLUMN: Instructions + Basket Art -->
+            <div class="col-left">
+                <div class="how-to-box">
+                    <h3>💡 How to play</h3>
+                    <div class="step-list">
+                        <div class="step-item">
+                            <span class="step-num">1</span>
+                            <span><strong>Drag</strong> the tiles and drop them into the correct slot below.</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-num">2</span>
+                            <span>Think about the <strong>product's journey</strong> from supplier to the
+                                customer.</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-num">3</span>
+                            <span>Arrange all <strong>8 steps</strong> in proper sequence.</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-num">4</span>
+                            <span>Click <strong>Submit</strong> when you're ready!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="points-badge">
+                    <span style="font-size: 1.3rem;">🏆</span>
+                    <span><strong>+10 points</strong> for a correct answer</span>
+                </div>
+
+                <div class="basket-art">
+                    <div class="basket-graphic">🧺🍌🍞</div>
+                    <div class="better-together">Better Together 💙</div>
+                </div>
+            </div>
+
+            <!-- CENTER COLUMN: Tile Pool + Drop Answers -->
+            <div class="col-center">
+                <!-- Available Tiles Pool -->
+                <div class="pool-panel">
+                    <div class="pool-header">
+                        <span>Process Steps (Drag &amp; Drop)</span>
+                        <small>👆 Drag each step to arrange the correct order</small>
+                    </div>
+                    <div class="tiles-grid" id="tilesPool">
+                        <!-- 8 Process Tiles -->
+                        <div class="drag-tile" draggable="true" data-id="step-supplier">
+                            <div class="tile-icon">🏭</div>
+                            <div class="tile-name">Supplier</div>
+                        </div>
+                        <div class="drag-tile" draggable="true" data-id="step-buying">
+                            <div class="tile-icon">🛒</div>
+                            <div class="tile-name">Buying Associate</div>
+                        </div>
+                        <div class="drag-tile" draggable="true" data-id="step-induction">
+                            <div class="tile-icon">📋</div>
+                            <div class="tile-name">Product Induction</div>
+                        </div>
+                        <div class="drag-tile" draggable="true" data-id="step-rpi">
+                            <div class="tile-icon">📦</div>
+                            <div class="tile-name">RPI / Buying Operations</div>
+                        </div>
+                        <div class="drag-tile" draggable="true" data-id="step-roi">
+                            <div class="tile-icon">📈</div>
+                            <div class="tile-name">ROI</div>
+                        </div>
+                        <div class="drag-tile" draggable="true" data-id="step-barcode">
+                            <div class="tile-icon">|||||</div>
+                            <div class="tile-name">Barcode Verification</div>
+                        </div>
+                        <div class="drag-tile" draggable="true" data-id="step-store">
+                            <div class="tile-icon">🏪</div>
+                            <div class="tile-name">Store Ready</div>
+                        </div>
+                        <div class="drag-tile" draggable="true" data-id="step-customer">
+                            <div class="tile-icon">👥</div>
+                            <div class="tile-name">Customer</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Answer Drop Slots -->
+                <div class="drop-panel">
+                    <div class="drop-title-row">
+                        <span>🏁 Your Answers (Drop here in correct order)</span>
+                        <button class="btn-reset-pool" onclick="resetToPool()">Reset Tiles</button>
+                    </div>
+
+                    <div class="slots-container" id="slotsContainer">
+                        <!-- 8 Drop Target Slots -->
+                        <div class="slot-box" data-slot="1">
+                            <div class="slot-badge">1</div><span class="slot-hint">Drop here</span>
+                        </div>
+                        <div class="slot-box" data-slot="2">
+                            <div class="slot-badge">2</div><span class="slot-hint">Drop here</span>
+                        </div>
+                        <div class="slot-box" data-slot="3">
+                            <div class="slot-badge">3</div><span class="slot-hint">Drop here</span>
+                        </div>
+                        <div class="slot-box" data-slot="4">
+                            <div class="slot-badge">4</div><span class="slot-hint">Drop here</span>
+                        </div>
+                        <div class="slot-box" data-slot="5">
+                            <div class="slot-badge">5</div><span class="slot-hint">Drop here</span>
+                        </div>
+                        <div class="slot-box" data-slot="6">
+                            <div class="slot-badge">6</div><span class="slot-hint">Drop here</span>
+                        </div>
+                        <div class="slot-box" data-slot="7">
+                            <div class="slot-badge">7</div><span class="slot-hint">Drop here</span>
+                        </div>
+                        <div class="slot-box" data-slot="8">
+                            <div class="slot-badge">8</div><span class="slot-hint">Drop here</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-submit" onclick="submitAnswers(false)">
+                    <span>✅</span> Submit Process Order
+                </button>
+            </div>
+
+            <!-- RIGHT COLUMN: Countdown, Score, Tracker -->
+            <div class="col-right">
+                <div class="timer-card">
+                    <div class="timer-icon">⏱️</div>
+                    <div class="timer-info">
+                        <div class="label">Time Left</div>
+                        <div class="time-digits" id="timerDisplay">00:45</div>
+                    </div>
+                </div>
+
+                <div class="score-card">
+                    <div class="score-label">Score</div>
+                    <div class="score-value" id="scoreDisplay">0 <span>/ 10</span></div>
+                </div>
+
+                <!-- 3-Attempt Tracker Box -->
+                <div class="tracker-box">
+                    <div class="t-label" id="questionTrackerHeader">Question 1 of 3</div>
+                    <div class="t-dots">
+                        <div class="t-dot active" id="dot1">1</div>
+                        <div class="t-dot" id="dot2">2</div>
+                        <div class="t-dot" id="dot3">3</div>
+                    </div>
+                </div>
+
+                <div class="arrange-stamp">
+                    Arrange<br>it right! 🚀
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-bar">
+            <div class="footer-links">
+                <span>RIGHT PRODUCT</span>
+                <span>/</span>
+                <span>RIGHT INFORMATION</span>
+                <span>/</span>
+                <span>RIGHT TIME</span>
+                <span>/</span>
+                <span>HAPPY CUSTOMERS</span>
+            </div>
+            <a href="thank-you.html" class="back-link">→ Go to Wrap-up Video</a>
+        </div>
+    </div>
+
+    <!-- Results Modal -->
+    <div class="results-modal-backdrop" id="resultsModal">
+        <div class="results-modal">
+            <h2 id="modalHeadline">Process Complete!</h2>
+            <div class="results-score-pill" id="modalScorePill">0 / 10</div>
+            <p class="feedback-text" id="modalFeedback">Great effort sorting the product journey!</p>
+
+            <div class="redirect-note" id="redirectNotice" style="display: none;">
+                Directing to wrap-up video in <span id="countdownSec"
+                    style="font-weight: 900; color: #00539f;">4</span>s...
+            </div>
+
+            <div class="modal-btn-row">
+                <button class="btn-modal btn-modal-retry" id="retryBtn" onclick="handleRetry()">🔄 Try Again</button>
+                <a href="thank-you.html" class="btn-modal btn-modal-video" id="modalFinishBtn">🎬 Go to Video</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Official Journey Sequence
+        const correctSequence = [
+            "step-supplier",    // 1. Supplier
+            "step-buying",      // 2. Buying Associate
+            "step-induction",   // 3. Product Induction
+            "step-rpi",         // 4. RPI / Buying Operations
+            "step-roi",         // 5. ROI
+            "step-barcode",     // 6. Barcode Verification
+            "step-store",       // 7. Store Ready
+            "step-customer"     // 8. Customer
+        ];
+
+        // 3-ATTEMPT TRACKER STATE
+        const MAX_ATTEMPTS = 3;
+        let currentAttempt = 1;
+
+        // Drag and Drop Logic
+        let draggedTile = null;
+        const tilesPool = document.getElementById("tilesPool");
+        const slots = document.querySelectorAll(".slot-box");
+
+        // Timer Logic
+        let timeLeft = 45;
+        let timerInterval = null;
+        let submitted = false;
+        let redirectTimeout = null;
+        let countdownInterval = null;
+
+        window.addEventListener("DOMContentLoaded", () => {
+            updateTrackerUI();
+            shufflePoolTiles();
+            initDragAndDrop();
+            startTimer();
+        });
+
+        // Highlights completed attempts in green (with checkmark) and active attempt in bold white
+        function updateTrackerUI() {
+            document.getElementById("questionTrackerHeader").innerText = `Question ${currentAttempt} of ${MAX_ATTEMPTS}`;
+
+            for (let i = 1; i <= MAX_ATTEMPTS; i++) {
+                const dot = document.getElementById("dot" + i);
+                dot.className = "t-dot";
+
+                if (i < currentAttempt) {
+                    // Attempt is finished and over: turn green and display checkmark
+                    dot.classList.add("completed-dot");
+                    dot.innerHTML = "✓";
+                } else if (i === currentAttempt) {
+                    // Current active attempt
+                    dot.classList.add("active");
+                    dot.innerText = i;
+                } else {
+                    // Future attempt
+                    dot.innerText = i;
+                }
+            }
+        }
+
+        function shufflePoolTiles() {
+            const tiles = Array.from(tilesPool.children);
+            for (let i = tiles.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                tilesPool.appendChild(tiles[j]);
+            }
+        }
+
+        function initDragAndDrop() {
+            const allTiles = document.querySelectorAll(".drag-tile");
+
+            allTiles.forEach(tile => {
+                tile.addEventListener("dragstart", (e) => {
+                    draggedTile = tile;
+                    tile.classList.add("dragging");
+                    e.dataTransfer.setData("text/plain", tile.dataset.id);
+                });
+
+                tile.addEventListener("dragend", () => {
+                    tile.classList.remove("dragging");
+                    draggedTile = null;
+                });
+            });
+
+            // Target Drop Slots
+            slots.forEach(slot => {
+                slot.addEventListener("dragover", (e) => {
+                    e.preventDefault();
+                    slot.classList.add("drag-over");
+                });
+
+                slot.addEventListener("dragleave", () => {
+                    slot.classList.remove("drag-over");
+                });
+
+                slot.addEventListener("drop", (e) => {
+                    e.preventDefault();
+                    slot.classList.remove("drag-over");
+                    if (!draggedTile) return;
+
+                    // If slot already has a tile, return existing tile to pool
+                    const existingTile = slot.querySelector(".drag-tile");
+                    if (existingTile) {
+                        tilesPool.appendChild(existingTile);
+                    }
+
+                    // Hide the hint and place new tile
+                    const hint = slot.querySelector(".slot-hint");
+                    if (hint) hint.style.display = "none";
+
+                    slot.appendChild(draggedTile);
+                });
+            });
+
+            // Allow dragging tiles back into the pool
+            tilesPool.addEventListener("dragover", (e) => {
+                e.preventDefault();
+            });
+
+            tilesPool.addEventListener("drop", (e) => {
+                e.preventDefault();
+                if (draggedTile) {
+                    tilesPool.appendChild(draggedTile);
+                    refreshSlotHints();
+                }
+            });
+        }
+
+        function refreshSlotHints() {
+            slots.forEach(slot => {
+                const tile = slot.querySelector(".drag-tile");
+                const hint = slot.querySelector(".slot-hint");
+                if (hint) {
+                    hint.style.display = tile ? "none" : "block";
+                }
+            });
+        }
+
+        function resetToPool() {
+            const placedTiles = document.querySelectorAll(".slot-box .drag-tile");
+            placedTiles.forEach(t => tilesPool.appendChild(t));
+            refreshSlotHints();
+        }
+
+        function startTimer() {
+            const timerDisplay = document.getElementById("timerDisplay");
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const secs = String(timeLeft).padStart(2, '0');
+                timerDisplay.innerText = `00:${secs}`;
+
+                if (timeLeft <= 10) {
+                    timerDisplay.classList.add("warning");
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitAnswers(true);
+                }
+            }, 1000);
+        }
+
+        // Verification & Auto Redirect
+        function submitAnswers(timeExpired = false) {
+            if (submitted) return;
+
+            let correctCount = 0;
+            let unplacedCount = 0;
+
+            slots.forEach((slot, index) => {
+                const tile = slot.querySelector(".drag-tile");
+                const tileId = tile ? tile.dataset.id : null;
+
+                if (!tileId) {
+                    unplacedCount++;
+                    slot.style.borderColor = "#ffd166";
+                    slot.style.background = "#fffde7";
+                } else if (tileId === correctSequence[index]) {
+                    correctCount++;
+                    slot.style.borderColor = "#2e7d32";
+                    slot.style.background = "#e8f5e9";
+                } else {
+                    slot.style.borderColor = "#d32f2f";
+                    slot.style.background = "#ffebee";
+                }
+            });
+
+            // Require all 8 tiles placed unless time runs out
+            if (!timeExpired && unplacedCount > 0) {
+                alert(`⚠️ You still have ${unplacedCount} empty slot(s)! Place all 8 steps before submitting.`);
+                return;
+            }
+
+            submitted = true;
+            clearInterval(timerInterval);
+
+            // Mark the active dot as completed
+            const currentDot = document.getElementById("dot" + currentAttempt);
+            if (currentDot) {
+                currentDot.classList.remove("active");
+                currentDot.classList.add("completed-dot");
+                currentDot.innerHTML = "✓";
+            }
+
+            // Calculate Score (scale to 10 points)
+            const isAllCorrect = (correctCount === correctSequence.length);
+            const finalScore = isAllCorrect ? 10 : Math.round((correctCount / correctSequence.length) * 10);
+
+            document.getElementById("scoreDisplay").innerHTML = `${finalScore} <span>/ 10</span>`;
+            document.getElementById("modalScorePill").innerText = `${finalScore} / 10`;
+
+            const modalHeadline = document.getElementById("modalHeadline");
+            const modalFeedback = document.getElementById("modalFeedback");
+            const retryBtn = document.getElementById("retryBtn");
+            const redirectNotice = document.getElementById("redirectNotice");
+
+            const isLastAttempt = (currentAttempt >= MAX_ATTEMPTS);
+
+            if (isAllCorrect) {
+                modalHeadline.innerText = isLastAttempt ? "🎉 All 3 Attempts Completed!" : "🎉 Outstanding Work!";
+                modalHeadline.style.color = "#2e7d32";
+                modalFeedback.innerText = `You correctly arranged all 8 lifecycle stages in the right operational sequence!`;
+                confetti({
+                    particleCount: 120,
+                    spread: 85,
+                    origin: { y: 0.6 }
+                });
+            } else if (timeExpired) {
+                modalHeadline.innerText = isLastAttempt ? "⏰ All 3 Attempts Finished!" : "⏰ Time's Up!";
+                modalHeadline.style.color = "#d32f2f";
+                modalFeedback.innerText = `Time ran out! You matched ${correctCount} of 8 steps in the correct order.`;
+            } else {
+                modalHeadline.innerText = isLastAttempt ? "📋 All 3 Attempts Finished!" : "❌ Sequence Incomplete";
+                modalHeadline.style.color = "#d32f2f";
+                modalFeedback.innerText = `You correctly ordered ${correctCount} of 8 steps. Misplaced steps are marked in red.`;
+            }
+
+            if (isLastAttempt) {
+                // Max 3 attempts reached: auto-route to thank-you.html
+                retryBtn.style.display = "none";
+                redirectNotice.style.display = "block";
+
+                let secLeft = 4;
+                const counter = document.getElementById("countdownSec");
+                countdownInterval = setInterval(() => {
+                    secLeft--;
+                    if (counter) counter.innerText = secLeft;
+                    if (secLeft <= 0) clearInterval(countdownInterval);
+                }, 1000);
+
+                redirectTimeout = setTimeout(() => {
+                    window.location.href = "thank-you.html";
+                }, 4000);
+            } else {
+                // Allow user to advance to Question 2 or Question 3
+                retryBtn.style.display = "inline-flex";
+                retryBtn.innerText = `🔄 Try Question ${currentAttempt + 1} of ${MAX_ATTEMPTS}`;
+                redirectNotice.style.display = "none";
+            }
+
+            document.getElementById("resultsModal").style.display = "flex";
+        }
+
+        function handleRetry() {
+            clearTimeout(redirectTimeout);
+            clearInterval(countdownInterval);
+
+            // Increment attempt and refresh dots
+            currentAttempt++;
+            updateTrackerUI();
+
+            // Reset slot borders & backgrounds
+            slots.forEach(slot => {
+                slot.style.borderColor = "#b8d9f2";
+                slot.style.background = "#f7faff";
+            });
+
+            resetToPool();
+            shufflePoolTiles();
+
+            submitted = false;
+            timeLeft = 45;
+            const timerDisplay = document.getElementById("timerDisplay");
+            timerDisplay.classList.remove("warning");
+            timerDisplay.innerText = "00:45";
+            document.getElementById("scoreDisplay").innerHTML = `0 <span>/ 10</span>`;
+            document.getElementById("resultsModal").style.display = "none";
+
+            startTimer();
+        }
+
+        function cancelRedirectAndRetry() {
+            handleRetry();
+        }
+    </script>
+</body>
+
+</html>
