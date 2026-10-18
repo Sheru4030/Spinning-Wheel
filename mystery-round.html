@@ -4,387 +4,226 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Mystery Bonus Round - Tesco Trolley Dash</title>
-    <!-- Confetti Canvas Library -->
+    <title>Tesco Aisles: Sort & Stock!</title>
+    <!-- Confetti Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
             user-select: none;
         }
 
         body {
-            background: radial-gradient(circle at center, #023e8a 0%, #001233 100%);
+            background: #06152b;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #fff;
             padding: 16px;
-            overflow-x: hidden;
-            position: relative;
+            color: #ffffff;
         }
 
-        .board-container {
-            background: #0d1e38;
-            border: 3px solid #00b4d8;
-            border-radius: 26px;
-            padding: 24px 30px;
-            max-width: 1080px;
+        .game-wrapper {
             width: 100%;
-            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 180, 216, 0.3);
-            position: relative;
-            z-index: 10;
+            max-width: 1360px;
+            background: #091e3d;
+            border: 2px solid #00539f;
+            border-radius: 24px;
+            padding: 20px 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
 
-        .top-row {
+        /* Top Header */
+        .header-strip {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
         }
 
-        .brand-badge {
-            font-size: 0.8rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: #ffd166;
-            text-transform: uppercase;
-        }
-
-        .status-indicators {
+        .brand-section {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        /* 3-Minute Live Timer Pill */
-        .timer-pill {
-            background: #001b3d;
-            border: 2px solid #00b4d8;
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 1.15rem;
+        .tesco-badge {
+            color: #ee1c2e;
+            font-size: 2rem;
             font-weight: 900;
-            color: #ffd166;
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            font-size: 0.82rem;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            color: #4da3ff;
+            text-transform: uppercase;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 12px;
+        }
+
+        .stat-pill {
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 12px rgba(0, 180, 216, 0.25);
-        }
-
-        .timer-pill.warning {
-            border-color: #ef4444;
-            color: #ef4444;
-            animation: pulseFlash 0.6s infinite alternate;
-        }
-
-        @keyframes pulseFlash {
-            from {
-                transform: scale(0.96);
-            }
-
-            to {
-                transform: scale(1.04);
-            }
-        }
-
-        .target-box {
-            background: linear-gradient(135deg, #ee1c2e, #b91c1c);
-            padding: 7px 18px;
+            padding: 6px 14px;
             border-radius: 30px;
-            font-weight: 900;
-            font-size: 1.1rem;
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(238, 28, 46, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .header-text h1 {
-            font-size: 2.1rem;
-            font-weight: 900;
-            color: #90e0ef;
-            margin-bottom: 4px;
-        }
-
-        .header-text p {
-            font-size: 0.95rem;
-            color: #caf0f8;
-            margin-bottom: 14px;
-        }
-
-        /* 2-Column Split: Shelf on Left vs Trolley Receipt on Right */
-        .game-grid {
-            display: grid;
-            grid-template-columns: 1.55fr 1fr;
-            gap: 20px;
-            align-items: start;
-        }
-
-        /* SHELF ITEMS GRID */
-        .shelf-panel {
-            background: rgba(2, 62, 138, 0.35);
-            border: 2px solid rgba(72, 202, 228, 0.3);
-            border-radius: 20px;
-            padding: 14px;
-        }
-
-        .shelf-label {
-            font-size: 0.85rem;
             font-weight: 800;
-            letter-spacing: 1.5px;
-            color: #90e0ef;
-            text-transform: uppercase;
-            margin-bottom: 10px;
+            font-size: 0.88rem;
+        }
+
+        .timer-pill {
+            background: #0d2c59;
+            border: 1.5px solid #2563eb;
+            color: #fff;
+        }
+
+        .target-pill {
+            background: linear-gradient(135deg, #ee1c2e, #b91c1c);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(238, 28, 46, 0.35);
+        }
+
+        /* Title Area */
+        .game-title-area {
             display: flex;
             justify-content: space-between;
+            align-items: flex-end;
         }
 
-        .items-grid {
+        .game-title-area h1 {
+            font-size: 1.7rem;
+            font-weight: 900;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .game-title-area p {
+            color: #93c5fd;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .hint-badge {
+            font-size: 0.8rem;
+            color: #facc15;
+            background: rgba(250, 204, 21, 0.1);
+            border: 1px dashed rgba(250, 204, 21, 0.4);
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        /* TOP: 8 Categories in 4x2 Grid */
+        .categories-panel {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
 
-        .item-card {
-            background: #142a4a;
-            border: 1.5px solid #0077b6;
+        .category-bin {
+            background: #051429;
+            border: 2px dashed #1e3a8a;
             border-radius: 14px;
-            padding: 10px 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.18s ease;
-            position: relative;
-        }
-
-        .item-card:hover {
-            transform: translateY(-3px);
-            border-color: #00b4d8;
-            background: #1a3863;
-            box-shadow: 0 6px 16px rgba(0, 180, 216, 0.35);
-        }
-
-        .item-card:active {
-            transform: scale(0.96);
-        }
-
-        .item-icon {
-            font-size: 2.2rem;
-            margin-bottom: 4px;
-        }
-
-        .item-name {
-            font-size: 0.8rem;
-            font-weight: 800;
-            color: #ffffff;
-            line-height: 1.25;
-            margin-bottom: 4px;
-        }
-
-        .item-price {
-            font-size: 0.95rem;
-            font-weight: 900;
-            color: #ffd166;
-        }
-
-        /* TROLLEY RECEIPT PANEL */
-        .trolley-panel {
-            background: #ffffff;
-            color: #001233;
-            border-radius: 20px;
-            padding: 18px 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            padding: 8px 12px;
             display: flex;
             flex-direction: column;
-            border: 3px solid #ffd166;
-        }
-
-        .trolley-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px dashed #94a3b8;
-            padding-bottom: 8px;
-            margin-bottom: 8px;
-        }
-
-        .trolley-header h3 {
-            font-size: 1.15rem;
-            font-weight: 900;
-            color: #003066;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .trolley-list {
-            min-height: 160px;
-            max-height: 180px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            padding-right: 4px;
-        }
-
-        .cart-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            background: #f1f5f9;
-            padding: 6px 10px;
-            border-radius: 8px;
-        }
-
-        .cart-row-title {
-            color: #0f172a;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 150px;
-        }
-
-        .cart-row-price {
-            color: #00539f;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .remove-btn {
-            background: #ef4444;
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .empty-cart-hint {
-            color: #94a3b8;
-            font-size: 0.85rem;
-            text-align: center;
-            margin-top: 50px;
-            font-style: italic;
-        }
-
-        /* Running Tally Display */
-        .register-display {
-            background: #0f172a;
-            border-radius: 12px;
-            padding: 10px 14px;
-            color: #ffd166;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-        }
-
-        .reg-label {
-            font-size: 0.85rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: #94a3b8;
-        }
-
-        .reg-amount {
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-        }
-
-        .reg-amount.over {
-            color: #ef4444;
-        }
-
-        /* Action Buttons */
-        .checkout-btn {
-            width: 100%;
-            padding: 13px;
-            background: linear-gradient(135deg, #00b4d8, #0077b6);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.05rem;
-            font-weight: 900;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(0, 180, 216, 0.4);
             transition: all 0.2s ease;
+            min-height: 104px;
+            cursor: pointer;
         }
 
-        .checkout-btn:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, #48cae4, #0096c7);
+        .category-bin.drag-over {
+            background: #0f2e59;
+            border-color: #38bdf8;
+            border-style: solid;
+            transform: scale(1.02);
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
         }
 
-        .footer-row {
+        .category-bin.wrong-drag-over {
+            background: #3b0707;
+            border-color: #ef4444;
+            border-style: solid;
+        }
+
+        .bin-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-top: 14px;
-            padding-top: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: flex-start;
+            margin-bottom: 6px;
         }
 
-        .back-link {
-            color: #ffd166;
-            text-decoration: none;
-            font-size: 0.9rem;
+        .bin-title-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bin-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-weight: 800;
-            transition: color 0.2s;
+            font-size: 0.82rem;
+            color: #f8fafc;
         }
 
-        .back-link:hover {
-            color: #fff;
-            text-decoration: underline;
+        .bin-subtitle {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin-left: 20px;
+            font-weight: 600;
         }
 
-        /* RESULTS MODAL OVERLAY */
-        .results-modal-backdrop {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(3, 10, 20, 0.88);
-            backdrop-filter: blur(6px);
+        .bin-count {
+            background: #0b254a;
+            border: 1px solid #1e3a8a;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #93c5fd;
+            white-space: nowrap;
+        }
+
+        .bin-drop-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            min-height: 48px;
             align-items: center;
-            justify-content: center;
-            z-index: 100;
+            padding: 2px;
         }
 
-        .results-modal {
-            background: #ffffff;
-            width: 90%;
-            max-width: 480px;
-            border-radius: 24px;
-            padding: 32px 26px;
-            border: 4px solid #0077b6;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-            text-align: center;
-            color: #0b1f3a;
+        .dropped-chip {
+            background: #0f3460;
+            border: 1px solid #38bdf8;
+            padding: 3px 8px;
+            border-radius: 14px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             animation: popIn 0.3s cubic-bezier(0.17, 0.89, 0.32, 1.28);
         }
 
         @keyframes popIn {
             from {
-                transform: scale(0.7);
+                transform: scale(0.6);
                 opacity: 0;
             }
 
@@ -394,363 +233,538 @@
             }
         }
 
-        .results-modal h2 {
+        /* BOTTOM: Store Shelves */
+        .shelf-panel {
+            background: #051429;
+            border: 2px solid #1e3a8a;
+            border-radius: 18px;
+            padding: 14px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .panel-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #1e3a8a;
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+            min-height: 180px;
+            max-height: 220px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .items-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .items-grid::-webkit-scrollbar-thumb {
+            background: #1e3a8a;
+            border-radius: 6px;
+        }
+
+        /* Draggable / Clickable Card */
+        .item-card {
+            background: #0a2540;
+            border: 1.5px solid #1d4ed8;
+            border-radius: 12px;
+            padding: 8px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s, border-color 0.2s;
+            text-align: center;
+            min-height: 86px;
+        }
+
+        .item-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(37, 99, 235, 0.4);
+            border-color: #60a5fa;
+        }
+
+        .item-card:active {
+            cursor: grabbing;
+        }
+
+        .item-card.selected {
+            border-color: #facc15 !important;
+            box-shadow: 0 0 12px rgba(250, 204, 21, 0.7);
+            transform: translateY(-4px);
+            background: #14355a;
+        }
+
+        .item-card.dragging {
+            opacity: 0.35;
+            transform: scale(0.9);
+        }
+
+        .item-card.shake {
+            animation: shake 0.4s ease-in-out;
+            border-color: #ef4444 !important;
+            background: #450a0a !important;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-8px);
+            }
+
+            40% {
+                transform: translateX(8px);
+            }
+
+            60% {
+                transform: translateX(-6px);
+            }
+
+            80% {
+                transform: translateX(6px);
+            }
+        }
+
+        .item-icon {
+            font-size: 1.9rem;
+            margin-bottom: 4px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .item-name {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #f1f5f9;
+            line-height: 1.2;
+        }
+
+        /* Success Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(3, 11, 24, 0.85);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: #ffffff;
+            color: #002d62;
+            width: 90%;
+            max-width: 460px;
+            border-radius: 24px;
+            border: 4px solid #00539f;
+            padding: 32px 24px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            animation: popIn 0.35s ease;
+        }
+
+        .modal-content h2 {
             font-size: 1.8rem;
-            color: #003066;
+            font-weight: 900;
             margin-bottom: 6px;
         }
 
-        .modal-score-pill {
-            display: inline-block;
-            background: #e0f2fe;
-            border: 2px solid #0284c7;
-            color: #0369a1;
-            font-size: 1.4rem;
-            font-weight: 900;
-            padding: 6px 22px;
-            border-radius: 30px;
-            margin: 10px 0;
-        }
-
-        .modal-text {
+        .modal-content p {
+            color: #334155;
             font-size: 0.95rem;
-            color: #475569;
-            margin-bottom: 14px;
-            line-height: 1.45;
+            line-height: 1.5;
+            margin-bottom: 20px;
         }
 
-        .redirect-notice {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-bottom: 16px;
-        }
-
-        .modal-btn-row {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .btn-modal {
-            padding: 11px 22px;
-            border-radius: 10px;
-            font-size: 0.95rem;
-            font-weight: 800;
-            cursor: pointer;
-            border: none;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .btn-retry {
-            background: #0284c7;
-            color: #fff;
-        }
-
-        .btn-finish {
+        .modal-btn {
             background: linear-gradient(135deg, #ee1c2e, #b91c1c);
             color: #fff;
+            font-weight: 800;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="board-container">
-        <div class="top-row">
-            <span class="brand-badge">⚡ MYSTERY BONUS SPECIAL</span>
-
-            <div class="status-indicators">
-                <!-- 3-Minute Live Countdown Timer -->
-                <div class="timer-pill" id="timerPill">
-                    <span>⏱️</span>
-                    <span id="timerDisplay">03:00</span>
-                </div>
-
-                <div class="target-box">
-                    <span>🎯 Target:</span>
-                    <strong>£25.00</strong>
-                </div>
+    <div class="game-wrapper">
+        <!-- Top Navigation & Stats -->
+        <div class="header-strip">
+            <div class="brand-section">
+                <span class="tesco-badge">TESCO</span>
+                <span class="tagline">Aisles: Sort & Stock!</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat-pill timer-pill">⏱️ <span id="timerText">03:00</span></div>
+                <div class="stat-pill target-pill">📦 Sorted: <span id="sortedRatio">0/20</span></div>
             </div>
         </div>
 
-        <div class="header-text">
-            <h1>🛒 Tesco Trolley Dash!</h1>
-            <p>Collaborate with your team to fill the cart and reach <strong>exactly £25.00</strong> (or within ±50p)
-                before the 3-minute timer hits zero!</p>
+        <!-- Title Section -->
+        <div class="game-title-area">
+            <div>
+                <h1>Department Stacking Challenge 🛒</h1>
+                <p>Drag an item up into its category, or click an item then click the category!</p>
+            </div>
+            <div class="hint-badge">💡 Tip: Drag & Drop OR Tap to Place</div>
         </div>
 
-        <div class="game-grid">
-            <!-- Left: Supermarket Shelf -->
-            <div class="shelf-panel">
-                <div class="shelf-label">
-                    <span>Store Shelves (Tap to add)</span>
-                    <small>12 Items Available</small>
+        <!-- TOP: 8 Retail Categories (4 columns x 2 rows) -->
+        <div class="categories-panel">
+            <!-- 1. Beers, Wine & Spirits -->
+            <div class="category-bin" data-category="bws">
+                <div class="bin-header">
+                    <div class="bin-title-group">
+                        <div class="bin-title">🍾 Beer, Wine & Spirits</div>
+                        <div class="bin-subtitle">BWS Dept</div>
+                    </div>
+                    <div class="bin-count" id="count-bws">0 / 2</div>
                 </div>
-                <div class="items-grid" id="itemsShelf"></div>
+                <div class="bin-drop-list" id="bin-bws"></div>
             </div>
 
-            <!-- Right: Live Shopping Cart Receipt -->
-            <div class="trolley-panel">
-                <div class="trolley-header">
-                    <h3>🛒 Your Trolley</h3>
-                    <small id="cartCount" style="color: #64748b; font-weight: 700;">0 items</small>
+            <!-- 2. Grocery -->
+            <div class="category-bin" data-category="grocery">
+                <div class="bin-header">
+                    <div class="bin-title-group">
+                        <div class="bin-title">🥫 Grocery</div>
+                        <div class="bin-subtitle">Pantry & Ambient</div>
+                    </div>
+                    <div class="bin-count" id="count-grocery">0 / 3</div>
                 </div>
+                <div class="bin-drop-list" id="bin-grocery"></div>
+            </div>
 
-                <div class="trolley-list" id="cartList">
-                    <div class="empty-cart-hint">Tap items from the shelves to start loading your trolley!</div>
+            <!-- 3. Impulse -->
+            <div class="category-bin" data-category="impulse">
+                <div class="bin-header">
+                    <div class="bin-title-group">
+                        <div class="bin-title">🍫 Impulse</div>
+                        <div class="bin-subtitle">Confectionery & Snacks</div>
+                    </div>
+                    <div class="bin-count" id="count-impulse">0 / 3</div>
                 </div>
+                <div class="bin-drop-list" id="bin-impulse"></div>
+            </div>
 
-                <div class="register-display">
-                    <span class="reg-label">Trolley Total:</span>
-                    <span class="reg-amount" id="regTotal">£0.00</span>
+            <!-- 4. MFPE -->
+            <div class="category-bin" data-category="mfpe">
+                <div class="bin-header">
+                    <div class="bin-title-group">
+                        <div class="bin-title">🥩 MFPE</div>
+                        <div class="bin-subtitle">Meat, Fish, Poultry & Eggs</div>
+                    </div>
+                    <div class="bin-count" id="count-mfpe">0 / 3</div>
                 </div>
+                <div class="bin-drop-list" id="bin-mfpe"></div>
+            </div>
 
-                <button class="checkout-btn" onclick="checkoutTrolley(false)">
-                    🧾 Checkout &amp; Lock Total
-                </button>
+            <!-- 5. HBW -->
+            <div class="category-bin" data-category="hbw">
+                <div class="bin-header">
+                    <div class="bin-title-group">
+                        <div class="bin-title">🧴 HBW</div>
+                        <div class="bin-subtitle">Health, Beauty & Wellness</div>
+                    </div>
+                    <div class="bin-count" id="count-hbw">0 / 3</div>
+                </div>
+                <div class="bin-drop-list" id="bin-hbw"></div>
+            </div>
+
+            <!-- 6. Bakery & Dairy -->
+            <div class="category-bin" data-category="bakerydairy">
+                <div class="bin-header">
+                    <div class="bin-title-group">
+                        <div class="bin-title">🍞 Bakery & Dairy</div>
+                        <div class="bin-subtitle">Fresh Bread, Milk & Butter</div>
+                    </div>
+                    <div class="bin-count" id="count-bakerydairy">0 / 2</div>
+                </div>
+                <div class="bin-drop-list" id="bin-bakerydairy"></div>
+            </div>
+
+            <!-- 7. Pet -->
+            <div class="category-bin" data-category="pet">
+                <div class="bin-header">
+                    <div class="bin-title-group">
+                        <div class="bin-title">🐾 Pet</div>
+                        <div class="bin-subtitle">Dog & Cat Essentials</div>
+                    </div>
+                    <div class="bin-count" id="count-pet">0 / 2</div>
+                </div>
+                <div class="bin-drop-list" id="bin-pet"></div>
+            </div>
+
+            <!-- 8. Paper Shop -->
+            <div class="category-bin" data-category="papershop">
+                <div class="bin-header">
+                    <div class="bin-title-group">
+                        <div class="bin-title">📰 Paper Shop</div>
+                        <div class="bin-subtitle">Cards, News & Stationery</div>
+                    </div>
+                    <div class="bin-count" id="count-papershop">0 / 2</div>
+                </div>
+                <div class="bin-drop-list" id="bin-papershop"></div>
             </div>
         </div>
 
-        <div class="footer-row">
-            <a href="index.html" class="back-link">← Return to Spin Wheel</a>
-            <a href="index.html" class="back-link">🎡 Spin Wheel Next Turn →</a>
+        <!-- BOTTOM: Store Shelves -->
+        <div class="shelf-panel">
+            <div class="panel-heading">
+                <span>Store Shelves</span>
+                <span id="shelfRemainingText">20 Items Available</span>
+            </div>
+            <div class="items-grid" id="shelfGrid"></div>
         </div>
     </div>
 
-    <!-- RESULTS MODAL -->
-    <div class="results-modal-backdrop" id="resultsModal">
-        <div class="results-modal">
-            <h2 id="modalHeadline">Receipt Checked!</h2>
-            <div class="modal-score-pill" id="modalPill">£0.00 / £25.00</div>
-            <p class="modal-text" id="modalFeedback">Result feedback message goes here.</p>
-
-            <div class="redirect-notice">
-                Returning to Spin Wheel in <span id="countdownSec"
-                    style="font-weight: 800; color: #0077b6;">4</span>s...
-            </div>
-
-            <div class="modal-btn-row">
-                <button class="btn-modal btn-retry" onclick="resetGame()">🔄 Try Again</button>
-                <a href="index.html" class="btn-modal btn-finish">🎡 Spin Wheel</a>
-            </div>
+    <!-- Victory Modal -->
+    <div class="modal-overlay" id="victoryModal">
+        <div class="modal-content">
+            <h2>🎉 Perfectly Stocked!</h2>
+            <p>All 20 products have been accurately categorized into their proper store departments. Excellent work!</p>
+            <a href="thank-you.html" class="modal-btn">Continue →</a>
         </div>
     </div>
 
     <script>
-        const TARGET_SPEND = 25.00;
+        // 20 Products distributed across the 8 requested retail departments
+        const PRODUCTS = [
+            // 1. Beers, Wine & Spirits (2)
+            { id: "p1", name: "Sauvignon Blanc", icon: "🍾", category: "bws" },
+            { id: "p2", name: "Craft IPA Cans", icon: "🍺", category: "bws" },
 
-        // 12 Authentic Tesco Supermarket Items
-        const STORE_ITEMS = [
-            { id: 1, name: "Meal Deal", icon: "🥪🥤", price: 3.90 },
-            { id: 2, name: "Finest Sirloin Steak", icon: "🥩", price: 6.50 },
-            { id: 3, name: "British Whole Milk 2L", icon: "🥛", price: 1.55 },
-            { id: 4, name: "Cadbury Tub Celebrations", icon: "🍫", price: 5.00 },
-            { id: 5, name: "Tesco Toastie Bread", icon: "🍞", price: 1.25 },
-            { id: 6, name: "Pure Orange Juice 1L", icon: "🧃", price: 2.10 },
-            { id: 7, name: "Organic Bananas Pack", icon: "🍌", price: 1.40 },
-            { id: 8, name: "Finest Fresh Pizza", icon: "🍕", price: 4.75 },
-            { id: 9, name: "Fairy Platinum Pods", icon: "🫧", price: 7.20 },
-            { id: 10, name: "Yorkshire Tea 80pk", icon: "🫖", price: 3.30 },
-            { id: 11, name: "Salted Butter 250g", icon: "🧈", price: 2.00 },
-            { id: 12, name: "Crispy French Fries 1kg", icon: "🍟", price: 2.45 }
+            // 2. Grocery (3)
+            { id: "p3", name: "Chopped Tomatoes", icon: "🥫", category: "grocery" },
+            { id: "p4", name: "Basmati Rice 1kg", icon: "🍚", category: "grocery" },
+            { id: "p5", name: "Extra Virgin Olive Oil", icon: "🫒", category: "grocery" },
+
+            // 3. Impulse (3)
+            { id: "p6", name: "Dairy Milk Bar", icon: "🍫", category: "impulse" },
+            { id: "p7", name: "Sharing Crisps", icon: "🥔", category: "impulse" },
+            { id: "p8", name: "Fizzy Cola Gums", icon: "🍬", category: "impulse" },
+
+            // 4. MFPE (Meat, Fish, Poultry & Eggs) (3)
+            { id: "p9", name: "Free Range Eggs 6pk", icon: "🥚", category: "mfpe" },
+            { id: "p10", name: "Sirloin Beef Steak", icon: "🥩", category: "mfpe" },
+            { id: "p11", name: "Fresh Salmon Fillets", icon: "🐟", category: "mfpe" },
+
+            // 5. HBW (Health, Beauty, Wellness) (3)
+            { id: "p12", name: "Hydrating Shampoo", icon: "🧴", category: "hbw" },
+            { id: "p13", name: "Vitamin C 1000mg", icon: "💊", category: "hbw" },
+            { id: "p14", name: "Total Care Toothpaste", icon: "🪥", category: "hbw" },
+
+            // 6. Bakery & Dairy (2)
+            { id: "p15", name: "Wholemeal Toastie", icon: "🍞", category: "bakerydairy" },
+            { id: "p16", name: "British Whole Milk 2L", icon: "🥛", category: "bakerydairy" },
+
+            // 7. Pet (2)
+            { id: "p17", name: "Dry Dog Kibble 2kg", icon: "🐕", category: "pet" },
+            { id: "p18", name: "Gourmet Cat Pouches", icon: "🐈", category: "pet" },
+
+            // 8. Paper Shop (2)
+            { id: "p19", name: "Daily Newspaper", icon: "📰", category: "papershop" },
+            { id: "p20", name: "Birthday Card", icon: "💌", category: "papershop" }
         ];
 
-        let cart = [];
-        let redirectTimeout = null;
-        let countdownInterval = null;
+        const CATEGORY_TOTALS = {
+            bws: 2,
+            grocery: 3,
+            impulse: 3,
+            mfpe: 3,
+            hbw: 3,
+            bakerydairy: 2,
+            pet: 2,
+            papershop: 2
+        };
 
-        // 3-Minute Timer Logic (180 Seconds)
-        let timeLeft = 180;
-        let timerInterval = null;
-        let gameFinished = false;
+        let totalSorted = 0;
+        const totalItems = PRODUCTS.length;
+        let draggedItem = null;
+        let selectedItem = null; // Enables click/tap to place
 
-        window.addEventListener("DOMContentLoaded", () => {
-            const shelf = document.getElementById("itemsShelf");
-            STORE_ITEMS.forEach(item => {
-                const card = document.createElement("div");
-                card.className = "item-card";
-                card.onclick = () => addItem(item);
-                card.innerHTML = `
-                    <div class="item-icon">${item.icon}</div>
-                    <div class="item-name">${item.name}</div>
-                    <div class="item-price">£${item.price.toFixed(2)}</div>
-                `;
-                shelf.appendChild(card);
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Render Shelves
+        const shelfGrid = document.getElementById("shelfGrid");
+        shuffle([...PRODUCTS]).forEach(prod => {
+            const card = document.createElement("div");
+            card.className = "item-card";
+            card.draggable = true;
+            card.id = prod.id;
+            card.dataset.category = prod.category;
+            card.dataset.name = prod.name;
+            card.dataset.icon = prod.icon;
+
+            card.innerHTML = `
+                <div class="item-icon">${prod.icon}</div>
+                <div class="item-name">${prod.name}</div>
+            `;
+
+            // Drag Events
+            card.addEventListener("dragstart", (e) => {
+                draggedItem = prod;
+                card.classList.add("dragging");
+                e.dataTransfer.setData("text/plain", prod.id);
             });
 
-            startTimer();
+            card.addEventListener("dragend", () => {
+                card.classList.remove("dragging");
+            });
+
+            // Tap-to-Place Select
+            card.addEventListener("click", () => {
+                if (selectedItem && selectedItem.id === prod.id) {
+                    selectedItem = null;
+                    card.classList.remove("selected");
+                } else {
+                    document.querySelectorAll(".item-card").forEach(c => c.classList.remove("selected"));
+                    selectedItem = prod;
+                    card.classList.add("selected");
+                }
+            });
+
+            shelfGrid.appendChild(card);
         });
 
-        function startTimer() {
-            const timerDisplay = document.getElementById("timerDisplay");
-            const timerPill = document.getElementById("timerPill");
+        // Setup Drop Zones
+        const bins = document.querySelectorAll(".category-bin");
+        bins.forEach(bin => {
+            bin.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                const targetCat = bin.dataset.category;
+                if (draggedItem && draggedItem.category === targetCat) {
+                    bin.classList.add("drag-over");
+                    bin.classList.remove("wrong-drag-over");
+                } else {
+                    bin.classList.add("wrong-drag-over");
+                    bin.classList.remove("drag-over");
+                }
+            });
 
-            timerInterval = setInterval(() => {
-                if (gameFinished) return;
-                timeLeft--;
+            bin.addEventListener("dragleave", () => {
+                bin.classList.remove("drag-over");
+                bin.classList.remove("wrong-drag-over");
+            });
 
-                const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-                const secs = String(timeLeft % 60).padStart(2, '0');
-                timerDisplay.innerText = `${mins}:${secs}`;
+            bin.addEventListener("drop", (e) => {
+                e.preventDefault();
+                bin.classList.remove("drag-over");
+                bin.classList.remove("wrong-drag-over");
 
-                // Warning indicator when under 30 seconds
-                if (timeLeft <= 30) {
-                    timerPill.classList.add("warning");
+                if (!draggedItem) return;
+                handlePlacement(draggedItem, bin);
+                draggedItem = null;
+            });
+
+            // Click destination for tap-to-place
+            bin.addEventListener("click", () => {
+                if (!selectedItem) return;
+                handlePlacement(selectedItem, bin);
+            });
+        });
+
+        function handlePlacement(item, binElement) {
+            const targetCategory = binElement.dataset.category;
+            const sourceCard = document.getElementById(item.id);
+
+            // CORRECT CATEGORY
+            if (item.category === targetCategory) {
+                sourceCard.remove();
+
+                const chip = document.createElement("div");
+                chip.className = "dropped-chip";
+                chip.innerHTML = `<span>${item.icon}</span> <span>${item.name}</span>`;
+                binElement.querySelector(".bin-drop-list").appendChild(chip);
+
+                totalSorted++;
+                updateProgress();
+
+                if (selectedItem && selectedItem.id === item.id) {
+                    selectedItem = null;
                 }
 
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    checkoutTrolley(true); // Auto checkout on timeout
+                if (totalSorted === totalItems) {
+                    triggerVictory();
                 }
-            }, 1000);
-        }
-
-        function addItem(item) {
-            if (gameFinished) return;
-            cart.push(item);
-            updateCartUI();
-        }
-
-        function removeItem(index) {
-            if (gameFinished) return;
-            cart.splice(index, 1);
-            updateCartUI();
-        }
-
-        function calculateTotal() {
-            return cart.reduce((sum, item) => sum + item.price, 0);
-        }
-
-        function updateCartUI() {
-            const list = document.getElementById("cartList");
-            const regTotal = document.getElementById("regTotal");
-            const cartCount = document.getElementById("cartCount");
-
-            const total = calculateTotal();
-            cartCount.innerText = `${cart.length} item${cart.length === 1 ? '' : 's'}`;
-            regTotal.innerText = `£${total.toFixed(2)}`;
-
-            if (total > TARGET_SPEND) {
-                regTotal.classList.add("over");
-            } else {
-                regTotal.classList.remove("over");
             }
-
-            if (cart.length === 0) {
-                list.innerHTML = `<div class="empty-cart-hint">Tap items from the shelves to start loading your trolley!</div>`;
-                return;
+            // WRONG CATEGORY -> Shake and reset
+            else {
+                sourceCard.classList.add("shake");
+                setTimeout(() => {
+                    sourceCard.classList.remove("shake");
+                }, 450);
             }
+        }
 
-            list.innerHTML = "";
-            cart.forEach((item, index) => {
-                const row = document.createElement("div");
-                row.className = "cart-row";
-                row.innerHTML = `
-                    <span class="cart-row-title">${item.icon} ${item.name}</span>
-                    <div class="cart-row-price">
-                        <span>£${item.price.toFixed(2)}</span>
-                        <button class="remove-btn" onclick="removeItem(${index})" title="Remove">✕</button>
-                    </div>
-                `;
-                list.appendChild(row);
+        function updateProgress() {
+            document.getElementById("sortedRatio").innerText = `${totalSorted}/${totalItems}`;
+            document.getElementById("shelfRemainingText").innerText = `${totalItems - totalSorted} Items Available`;
+
+            Object.keys(CATEGORY_TOTALS).forEach(cat => {
+                const count = document.getElementById(`bin-${cat}`).children.length;
+                document.getElementById(`count-${cat}`).innerText = `${count} / ${CATEGORY_TOTALS[cat]}`;
             });
         }
 
-        function checkoutTrolley(timeExpired = false) {
-            if (gameFinished) return;
-            if (!timeExpired && cart.length === 0) {
-                alert("⚠️ Your trolley is empty! Tap some items from the shelves first.");
-                return;
+        // 3-Minute Countdown Timer
+        let seconds = 180;
+        const timerText = document.getElementById("timerText");
+        const timerInterval = setInterval(() => {
+            seconds--;
+            const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const secs = String(seconds % 60).padStart(2, '0');
+            timerText.innerText = `${mins}:${secs}`;
+
+            if (seconds <= 0) {
+                clearInterval(timerInterval);
             }
+        }, 1000);
 
-            gameFinished = true;
+        function triggerVictory() {
             clearInterval(timerInterval);
-
-            const total = calculateTotal();
-            const diff = Math.abs(total - TARGET_SPEND);
-
-            const modalHeadline = document.getElementById("modalHeadline");
-            const modalPill = document.getElementById("modalPill");
-            const modalFeedback = document.getElementById("modalFeedback");
-
-            modalPill.innerText = `£${total.toFixed(2)} / £${TARGET_SPEND.toFixed(2)}`;
-
-            if (diff === 0) {
-                // Exact match: Jackpot
-                modalHeadline.innerHTML = "🏆 BULLSEYE! EXACT £25.00!";
-                modalHeadline.style.color = "#2e7d32";
-                modalFeedback.innerText = "Flawless teamwork and mental math! Your team unlocked the maximum Mystery Bonus power-up!";
-                confetti({
-                    particleCount: 150,
-                    spread: 90,
-                    origin: { y: 0.6 },
-                    colors: ['#00b4d8', '#ffd166', '#ee1c2e', '#ffffff']
-                });
-            } else if (total <= TARGET_SPEND && diff <= 0.50) {
-                // Within 50p under
-                modalHeadline.innerHTML = "🎉 Mystery Bonus Unlocked!";
-                modalHeadline.style.color = "#0284c7";
-                modalFeedback.innerText = `Brilliant estimate! You were only £${diff.toFixed(2)} away from the £25.00 target without going over. Bonus granted!`;
-                confetti({
-                    particleCount: 100,
-                    spread: 75,
-                    origin: { y: 0.6 }
-                });
-            } else if (timeExpired) {
-                modalHeadline.innerHTML = "⏰ 3 Minutes Up!";
-                modalHeadline.style.color = "#d97706";
-                modalFeedback.innerText = `Time expired! Your cart locked in at £${total.toFixed(2)} (${diff === 0 ? 'perfect match' : total > TARGET_SPEND ? 'over budget' : 'under budget'}).`;
-            } else if (total > TARGET_SPEND) {
-                // Over budget
-                modalHeadline.innerHTML = "💥 Over Budget!";
-                modalHeadline.style.color = "#d32f2f";
-                modalFeedback.innerText = `You spent £${total.toFixed(2)} which exceeded the £25.00 limit by £${(total - TARGET_SPEND).toFixed(2)}. Returning to wheel...`;
-            } else {
-                // Under budget
-                modalHeadline.innerHTML = "🛍️ Cart Checked Out!";
-                modalHeadline.style.color = "#0284c7";
-                modalFeedback.innerText = `You closed out with £${total.toFixed(2)}, leaving £${diff.toFixed(2)} on the table. Excellent try!`;
-            }
-
-            document.getElementById("resultsModal").style.display = "flex";
-
-            // Automatic 4-second redirect countdown to index.html (Spin Wheel)
-            let secondsRemaining = 4;
-            const countdownSec = document.getElementById("countdownSec");
-            countdownInterval = setInterval(() => {
-                secondsRemaining--;
-                if (countdownSec) countdownSec.innerText = secondsRemaining;
-                if (secondsRemaining <= 0) clearInterval(countdownInterval);
-            }, 1000);
-
-            redirectTimeout = setTimeout(() => {
-                window.location.href = "index.html";
-            }, 4000);
-        }
-
-        function resetGame() {
-            clearTimeout(redirectTimeout);
-            clearInterval(countdownInterval);
-            clearInterval(timerInterval);
-
-            gameFinished = false;
-            cart = [];
-            timeLeft = 180;
-
-            const timerPill = document.getElementById("timerPill");
-            const timerDisplay = document.getElementById("timerDisplay");
-            timerPill.classList.remove("warning");
-            timerDisplay.innerText = "03:00";
-
-            updateCartUI();
-            document.getElementById("resultsModal").style.display = "none";
-            document.getElementById("countdownSec").innerText = "4";
-
-            startTimer();
+            confetti({
+                particleCount: 150,
+                spread: 90,
+                origin: { y: 0.6 }
+            });
+            setTimeout(() => {
+                document.getElementById("victoryModal").style.display = "flex";
+            }, 600);
         }
     </script>
 </body>

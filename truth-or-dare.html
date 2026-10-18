@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Truth or Dare - Tesco Activity</title>
+    <title>Truth or Dare - Tesco Roadshow Edition</title>
     <!-- Confetti Canvas Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -12,402 +12,441 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+            user-select: none;
         }
 
         body {
-            background: radial-gradient(circle at center, #2e1014 0%, #0d0405 100%);
+            background: radial-gradient(circle at 50% 30%, #3b0a10 0%, #1a0407 55%, #0a0102 100%);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            text-align: center;
+            color: #ffffff;
             padding: 20px;
-            overflow-x: hidden;
+            overflow: hidden;
             position: relative;
         }
 
+        /* Ambient spotlight glow */
         .ambient-glow {
             position: absolute;
-            width: 480px;
-            height: 480px;
+            width: 620px;
+            height: 620px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(230, 57, 70, 0.22) 0%, rgba(0, 0, 0, 0) 70%);
+            background: radial-gradient(circle, rgba(238, 28, 46, 0.22) 0%, rgba(0, 0, 0, 0) 70%);
             filter: blur(50px);
-            z-index: 1;
             pointer-events: none;
-            transition: all 0.4s ease;
+            z-index: 1;
         }
 
-        .card {
-            background: #1c1417;
-            border: 2px solid #e63946;
-            border-radius: 26px;
-            padding: 38px 30px;
-            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.85), 0 0 24px rgba(230, 57, 70, 0.25);
-            max-width: 540px;
+        .main-card {
+            background: rgba(26, 7, 11, 0.92);
+            border: 2px solid #ee1c2e;
+            border-radius: 28px;
+            padding: 34px 32px;
+            max-width: 620px;
             width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(238, 28, 46, 0.35);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+            backdrop-filter: blur(12px);
             position: relative;
             z-index: 10;
         }
 
+        /* Header Row */
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .brand-badge {
-            font-size: 0.8rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            color: #ffb703;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        h1 {
-            font-size: 2.3rem;
-            color: #ff4d6d;
-            margin-bottom: 6px;
+            font-size: 0.85rem;
             font-weight: 900;
-            letter-spacing: 0.5px;
-        }
-
-        .subtitle {
-            color: #f1a5b4;
-            font-size: 0.95rem;
-            margin-bottom: 22px;
-        }
-
-        .tag-pill {
-            display: inline-block;
-            font-size: 0.82rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            padding: 5px 16px;
-            border-radius: 14px;
-            margin-bottom: 14px;
-            background: rgba(255, 255, 255, 0.08);
+            letter-spacing: 2px;
             color: #ffd166;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 209, 102, 0.12);
+            border: 1px solid rgba(255, 209, 102, 0.35);
+            padding: 6px 16px;
+            border-radius: 20px;
+            text-transform: uppercase;
         }
 
-        /* -------------------------------------------------------------
-           DYNAMIC VISUAL PROMPT BOX
-        ------------------------------------------------------------- */
-        .prompt-box {
-            background: #2b1b20;
-            border: 2px dashed rgba(255, 209, 102, 0.4);
+        .count-badge {
+            background: #50080f;
+            border: 1.5px solid #ff4d5a;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: #ffccd0;
+        }
+
+        /* Title */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            background: linear-gradient(180deg, #ffffff 0%, #ffccd0 40%, #ee1c2e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 3px 12px rgba(238, 28, 46, 0.4));
+        }
+
+        p.subtitle {
+            color: #ffccd0;
+            font-size: 0.95rem;
+            margin-top: -6px;
+        }
+
+        /* Choice Select Buttons (Truth vs Dare) */
+        .mode-select-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .mode-btn {
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-size: 1.25rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #fff;
+        }
+
+        .btn-truth {
+            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
+            box-shadow: 0 6px 20px rgba(2, 136, 209, 0.4);
+            border: 2px solid #4fc3f7;
+        }
+
+        .btn-truth:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(2, 136, 209, 0.6);
+        }
+
+        .btn-dare {
+            background: linear-gradient(135deg, #ee1c2e 0%, #b30010 100%);
+            box-shadow: 0 6px 20px rgba(238, 28, 46, 0.45);
+            border: 2px solid #ff7b88;
+        }
+
+        .btn-dare:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(238, 28, 46, 0.65);
+        }
+
+        .mode-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Challenge Card Area */
+        .challenge-box {
+            background: rgba(45, 9, 14, 0.8);
+            border: 2px dashed #ff4d5a;
             border-radius: 20px;
             padding: 26px 22px;
-            min-height: 140px;
+            min-height: 150px;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #ffffff;
-            margin-bottom: 22px;
-            line-height: 1.45;
+            align-items: center;
             position: relative;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
         }
 
-        .prompt-icon {
-            font-size: 2.2rem;
-            margin-bottom: 8px;
-            display: inline-block;
-            transition: transform 0.3s;
-        }
-
-        /* Visual Style when TRUTH is active */
-        .prompt-box.is-truth {
-            background: radial-gradient(circle at center, #11284a 0%, #0d1a2d 100%);
-            border: 2px solid #3a86ff;
-            box-shadow: 0 0 25px rgba(58, 134, 255, 0.35), inset 0 0 15px rgba(58, 134, 255, 0.15);
-        }
-
-        /* Visual Style when DARE is active */
-        .prompt-box.is-dare {
-            background: radial-gradient(circle at center, #380d14 0%, #20080c 100%);
-            border: 2px solid #ff4d6d;
-            box-shadow: 0 0 25px rgba(255, 77, 109, 0.4), inset 0 0 15px rgba(255, 77, 109, 0.2);
-        }
-
-        .prompt-box.shake {
-            animation: popIn 0.35s ease;
-        }
-
-        @keyframes popIn {
-            0% {
-                transform: scale(0.92);
-                opacity: 0.6;
-            }
-
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 14px;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-
-        button {
-            padding: 13px 28px;
-            font-size: 1.05rem;
-            font-weight: 800;
-            border: none;
+        .challenge-tag {
+            font-size: 0.8rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 3px 12px;
             border-radius: 12px;
-            cursor: pointer;
-            color: #fff;
-            transition: transform 0.15s, box-shadow 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            margin-bottom: 10px;
         }
 
-        button:hover {
-            transform: translateY(-2px);
+        .tag-truth {
+            background: rgba(2, 136, 209, 0.2);
+            color: #4fc3f7;
+            border: 1px solid #4fc3f7;
         }
 
-        button:active {
-            transform: translateY(1px);
+        .tag-dare {
+            background: rgba(238, 28, 46, 0.25);
+            color: #ff8591;
+            border: 1px solid #ff8591;
         }
 
-        .truth-btn {
-            background: linear-gradient(135deg, #1d4ed8, #3a86ff);
-            box-shadow: 0 4px 15px rgba(58, 134, 255, 0.4);
-        }
-
-        .truth-btn:hover {
-            background: linear-gradient(135deg, #2563eb, #60a5fa);
-            box-shadow: 0 6px 20px rgba(58, 134, 255, 0.6);
-        }
-
-        .dare-btn {
-            background: linear-gradient(135deg, #b91c1c, #d90429);
-            box-shadow: 0 4px 15px rgba(217, 4, 41, 0.4);
-        }
-
-        .dare-btn:hover {
-            background: linear-gradient(135deg, #dc2626, #ef233c);
-            box-shadow: 0 6px 20px rgba(217, 4, 41, 0.6);
-        }
-
-        /* Finish Button (Revealed after a challenge is picked) */
-        .finish-btn {
-            display: none;
-            width: 100%;
-            background: linear-gradient(135deg, #ffd166 0%, #ffb703 100%);
-            color: #1a1002;
-            padding: 13px 20px;
-            border-radius: 12px;
-            font-size: 1.05rem;
+        .prompt-text {
+            font-size: 1.28rem;
             font-weight: 800;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 18px rgba(255, 183, 3, 0.45);
-            animation: fadeIn 0.3s ease-out;
+            line-height: 1.45;
+            color: #ffffff;
+            animation: textPop 0.3s ease;
         }
 
-        .finish-btn:hover {
-            background: linear-gradient(135deg, #ffe082 0%, #ffd166 100%);
-            box-shadow: 0 6px 22px rgba(255, 183, 3, 0.6);
-        }
-
-        .redirect-notice {
-            display: none;
-            font-size: 0.92rem;
-            color: #ffd166;
-            margin-bottom: 14px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
+        @keyframes textPop {
             from {
                 opacity: 0;
-                transform: translateY(4px);
+                transform: scale(0.9);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1);
             }
         }
 
-        .back-btn {
-            display: inline-block;
-            text-decoration: none;
-            color: #cbd5e1;
-            font-size: 0.88rem;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: 8px;
-            transition: background 0.2s, color 0.2s;
+        .empty-placeholder {
+            color: #ffccd0;
+            font-style: italic;
+            font-size: 1.05rem;
         }
 
-        .back-btn:hover {
+        /* Bottom Action Buttons */
+        .btn-action-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 13px 26px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-next {
+            background: #ffd166;
+            color: #1e0507;
+            box-shadow: 0 4px 14px rgba(255, 209, 102, 0.35);
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            background: #ffe082;
+        }
+
+        .btn-finish {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
             color: #fff;
-            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-finish:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+        }
+
+        .redirect-notice {
+            display: none;
+            font-size: 1rem;
+            color: #ffd166;
+            font-weight: 700;
+        }
+
+        .back-link {
+            font-size: 0.85rem;
+            color: #ff8591;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: -4px;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="ambient-glow" id="glowLight"></div>
+    <div class="ambient-glow"></div>
 
-    <div class="card">
-        <div class="brand-badge">TEAM BONDING ROUND</div>
-        <h1>🎭 Truth or Dare</h1>
-        <p class="subtitle">Pick your challenge for the round!</p>
-
-        <span class="tag-pill" id="typeBadge">Awaiting Choice</span>
-
-        <div class="prompt-box" id="displayBox">
-            <span class="prompt-icon" id="promptIcon">🎲</span>
-            <div id="promptText">Will you choose a Truth or face a Dare?</div>
+    <div class="main-card">
+        <!-- Top Status -->
+        <div class="top-row">
+            <span class="brand-badge">🎭 RPI TEAM ICEBREAKER</span>
+            <span class="count-badge" id="counterBadge">Pick an option below</span>
         </div>
 
-        <div class="btn-group">
-            <button class="truth-btn" onclick="getTruth()">🤔 Truth</button>
-            <button class="dare-btn" onclick="getDare()">🔥 Dare</button>
+        <div>
+            <h1>Truth or Dare 🎭</h1>
+            <p class="subtitle">Choose your challenge and answer candidly in front of the team!</p>
         </div>
 
-        <!-- Completion trigger -->
-        <button class="finish-btn" id="finishBtn" onclick="finishTurn()">
-            🎉 Challenge Completed &amp; Finish
-        </button>
+        <!-- Choice Selector Buttons -->
+        <div class="mode-select-row">
+            <button class="mode-btn btn-truth" onclick="pickChallenge('truth')">
+                <span>💬</span> TRUTH
+            </button>
+            <button class="mode-btn btn-dare" onclick="pickChallenge('dare')">
+                <span>⚡</span> DARE
+            </button>
+        </div>
+
+        <!-- Dynamic Challenge Display -->
+        <div class="challenge-box" id="challengeBox">
+            <div class="empty-placeholder" id="placeholderMsg">
+                👉 Click <strong>TRUTH</strong> or <strong>DARE</strong> to reveal your question!
+            </div>
+            <div id="contentWrapper" style="display: none;">
+                <div class="challenge-tag" id="challengeTag"></div>
+                <div class="prompt-text" id="promptText"></div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="btn-action-row">
+            <button class="action-btn btn-next" id="nextBtn" onclick="nextRandomChallenge()" style="display: none;">
+                🎲 Random Next
+            </button>
+            <button class="action-btn btn-finish" id="finishBtn" onclick="finishSession()">
+                🎬 Complete &amp; Go to Video
+            </button>
+        </div>
 
         <div class="redirect-notice" id="redirectNotice">
             Directing to wrap-up video in <span id="countdownSec" style="font-weight: 900; color: #fff;">3</span>s...
         </div>
 
-        <div>
-            <a href="index.html" class="back-btn">← Back to Wheel</a>
-        </div>
+        <a href="index.html" class="back-link">← Return to Activity Spin Wheel</a>
     </div>
 
     <script>
-        const truths = [
-            "What is the funniest mistake or misunderstanding you had during your first month at Tesco?",
-            "If you could switch roles with anyone in your department for a day, who would it be?",
-            "What is your ultimate go-to Tesco meal deal combination (main, snack, drink)?",
-            "What is one work tool (Excel, Teams, etc.) that you secretly struggle with or love the most?",
-            "What is the most unusual product you have ever seen on a Tesco shelf?",
-            "If you had to pitch one dream product to put on Tesco shelves tomorrow, what would it be?"
+        // Exact Truth Questions
+        const TRUTHS = [
+            "The best moment at Tesco?",
+            "Describe Tesco in 2 words.",
+            "What is the best thing you have come across in TBS?",
+            "Have you ever joined a meeting late because you forgot about it?",
+            "Have you ever pretended your internet was slow to buy yourself some time?"
         ];
 
-        const dares = [
-            "Deliver a 30-second retail radio announcer commercial for Tesco Organic Oats!",
-            "Do your best impression of a busy store manager during peak holiday shopping hours.",
-            "Hum or sing the chorus of any song until someone on the team correctly guesses it!",
-            "Speak in rhyme for the next 2 minutes of the game!",
-            "Do 10 rapid jumping jacks or give everyone on the call/table a creative high-five compliment!"
+        // Movement & Team-Engagement Dares
+        const DARES = [
+            "Stand on one leg for 15 seconds without losing your focus!",
+            "Step back and complete 5 energetic jumping jacks on the spot!",
+            "Walk over and give a firm, enthusiastic handshake to your best friend in the team!",
+            "Give high-fives to the person on your left and the person on your right with maximum enthusiasm!"
         ];
 
-        const displayBox = document.getElementById('displayBox');
-        const promptIcon = document.getElementById('promptIcon');
-        const promptText = document.getElementById('promptText');
-        const typeBadge = document.getElementById('typeBadge');
-        const finishBtn = document.getElementById('finishBtn');
-        const glowLight = document.getElementById('glowLight');
+        let truthsDeck = [...TRUTHS];
+        let daresDeck = [...DARES];
+        let currentType = null;
+        let completed = false;
 
-        let finished = false;
-
-        function getTruth() {
-            if (finished) return;
-            const item = truths[Math.floor(Math.random() * truths.length)];
-
-            displayBox.classList.remove('is-dare');
-            displayBox.classList.add('is-truth');
-
-            triggerPop();
-
-            promptIcon.innerText = "🤔💬";
-            promptText.innerText = item;
-
-            typeBadge.innerText = "TRUTH PROMPT";
-            typeBadge.style.color = "#60a5fa";
-            typeBadge.style.borderColor = "rgba(96, 165, 250, 0.4)";
-            typeBadge.style.background = "rgba(58, 134, 255, 0.15)";
-
-            glowLight.style.background = "radial-gradient(circle, rgba(58, 134, 255, 0.3) 0%, rgba(0, 0, 0, 0) 70%)";
-
-            finishBtn.style.display = "inline-flex";
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
         }
 
-        function getDare() {
-            if (finished) return;
-            const item = dares[Math.floor(Math.random() * dares.length)];
+        // Web Audio synthesized sound
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playChime(isTruth) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = isTruth ? "sine" : "triangle";
+            osc.frequency.setValueAtTime(isTruth ? 587.33 : 370, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(isTruth ? 880 : 740, audioCtx.currentTime + 0.15);
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.35);
+        }
 
-            displayBox.classList.remove('is-truth');
-            displayBox.classList.add('is-dare');
+        function pickChallenge(type) {
+            currentType = type;
+            playChime(type === 'truth');
 
-            triggerPop();
+            document.getElementById("placeholderMsg").style.display = "none";
+            document.getElementById("contentWrapper").style.display = "block";
+            document.getElementById("nextBtn").style.display = "inline-flex";
 
-            promptIcon.innerText = "🔥⚡";
-            promptText.innerText = item;
+            const tag = document.getElementById("challengeTag");
+            const text = document.getElementById("promptText");
+            const box = document.getElementById("challengeBox");
 
-            typeBadge.innerText = "DARE CHALLENGE";
-            typeBadge.style.color = "#f87171";
-            typeBadge.style.borderColor = "rgba(248, 113, 113, 0.4)";
-            typeBadge.style.background = "rgba(230, 57, 70, 0.15)";
+            if (type === 'truth') {
+                if (truthsDeck.length === 0) truthsDeck = shuffle([...TRUTHS]);
+                const q = truthsDeck.pop();
 
-            glowLight.style.background = "radial-gradient(circle, rgba(230, 57, 70, 0.35) 0%, rgba(0, 0, 0, 0) 70%)";
+                tag.className = "challenge-tag tag-truth";
+                tag.innerText = "💬 TRUTH QUESTION";
+                text.innerText = `"${q}"`;
+                box.style.borderColor = "#0288d1";
+                document.getElementById("counterBadge").innerText = "Truth Revealed!";
+            } else {
+                if (daresDeck.length === 0) daresDeck = shuffle([...DARES]);
+                const d = daresDeck.pop();
+
+                tag.className = "challenge-tag tag-dare";
+                tag.innerText = "⚡ DARE CHALLENGE";
+                text.innerText = `"${d}"`;
+                box.style.borderColor = "#ee1c2e";
+                document.getElementById("counterBadge").innerText = "Dare Accepted!";
+            }
+        }
+
+        function nextRandomChallenge() {
+            const types = ['truth', 'dare'];
+            const randomPick = types[Math.floor(Math.random() * types.length)];
+            pickChallenge(randomPick);
+        }
+
+        function finishSession() {
+            if (completed) return;
+            completed = true;
 
             confetti({
-                particleCount: 50,
-                spread: 60,
-                origin: { y: 0.7 }
-            });
-
-            finishBtn.style.display = "inline-flex";
-        }
-
-        function triggerPop() {
-            displayBox.classList.remove('shake');
-            void displayBox.offsetWidth; // Force CSS reflow
-            displayBox.classList.add('shake');
-        }
-
-        function finishTurn() {
-            if (finished) return;
-            finished = true;
-
-            // Grand celebration confetti
-            confetti({
-                particleCount: 110,
+                particleCount: 130,
                 spread: 85,
                 origin: { y: 0.6 },
-                colors: ['#ff4d6d', '#3a86ff', '#ffd166', '#ffffff']
+                colors: ['#ee1c2e', '#0288d1', '#ffd166', '#ffffff']
             });
 
-            finishBtn.style.opacity = "0.75";
+            const finishBtn = document.getElementById("finishBtn");
+            finishBtn.style.opacity = "0.7";
             finishBtn.style.cursor = "default";
-            finishBtn.innerText = "✨ Round Completed!";
+            finishBtn.innerText = "✨ Session Completed!";
 
-            const notice = document.getElementById("redirectNotice");
-            notice.style.display = "block";
+            document.getElementById("redirectNotice").style.display = "block";
 
             let seconds = 3;
             const counter = document.getElementById("countdownSec");
-
             const interval = setInterval(() => {
                 seconds--;
                 if (counter) counter.innerText = seconds;
-                if (seconds <= 0) {
-                    clearInterval(interval);
-                }
+                if (seconds <= 0) clearInterval(interval);
             }, 1000);
 
-            // Redirects to thank-you.html after 3 seconds
             setTimeout(() => {
                 window.location.href = "thank-you.html";
             }, 3000);

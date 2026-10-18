@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Word Quest Blitz - Tesco Challenge</title>
+    <!-- Confetti Canvas Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at 50% 30%, #2a1147 0%, #13082b 55%, #080314 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ambient background glow */
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, rgba(0, 0, 0, 0) 70%);
+            filter: blur(50px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* LIVE HOST PRESENTATION SCREEN */
+        .screen-view {
+            width: 100%;
+            max-width: 860px;
+            background: rgba(22, 11, 44, 0.9);
+            border: 2px solid #a855f7;
+            border-radius: 24px;
+            padding: 36px 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 35px rgba(168, 85, 247, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-badge {
+            font-size: 0.85rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            color: #facc15;
+            background: rgba(250, 204, 21, 0.12);
+            border: 1px solid rgba(250, 204, 21, 0.4);
+            padding: 6px 16px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .timer-badge {
+            background: #3b0764;
+            border: 2px solid #c084fc;
+            padding: 8px 18px;
+            border-radius: 24px;
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: #f5d0fe;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .timer-badge.running {
+            border-color: #4ade80;
+            box-shadow: 0 0 16px rgba(74, 222, 128, 0.4);
+        }
+
+        .timer-badge.warning {
+            color: #ff4d4d;
+            border-color: #ff4d4d;
+            animation: pulse 0.6s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.08);
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            background: linear-gradient(180deg, #ffffff 0%, #e9d5ff 40%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .instruction-box {
+            background: rgba(59, 7, 100, 0.55);
+            border: 1.5px dashed #a855f7;
+            border-radius: 18px;
+            padding: 18px 24px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .instruction-box h3 {
+            color: #facc15;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instruction-box ol {
+            padding-left: 20px;
+            font-size: 0.95rem;
+            color: #f3e8ff;
+            line-height: 1.6;
+        }
+
+        /* Action Buttons */
+        .btn-row {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .action-btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+        }
+
+        .btn-finish {
+            background: linear-gradient(135deg, #a855f7, #7e22ce);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-finish:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #c084fc, #9333ea);
+        }
+
+        .redirect-notice {
+            display: none;
+            font-size: 1rem;
+            color: #f5d0fe;
+            font-weight: 600;
+        }
+
+        .back-link {
+            font-size: 0.85rem;
+            color: #c084fc;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .back-link:hover {
+            color: #f0abfc;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ambient-glow"></div>
+
+    <div class="screen-view">
+        <div class="top-row">
+            <span class="brand-badge">⚡ RPI ROADSHOW ACTIVITY</span>
+            <div class="timer-badge" id="timerBadge">
+                <span>⏱️</span>
+                <span id="timerDisplay">04:00</span>
+            </div>
+        </div>
+
+        <div>
+            <h1>Word Quest Blitz 🔤</h1>
+        </div>
+
+        <div class="instruction-box">
+            <h3>📋 Host Instructions</h3>
+            <ol>
+                <li>Distribute the printed activity sheets to each Team</li>
+                <li>When all teams are prepared, click <strong>"▶️ Start Quest Timer"</strong> below.</li>
+                <li>When the 4 minutes run out or when teams complete the activity, click <strong>"🎬 Finish &amp; Go to
+                        Video"</strong> to transition directly into the wrap-up video!</li>
+            </ol>
+        </div>
+
+        <div class="btn-row">
+            <button class="action-btn btn-start" id="startBtn" onclick="toggleTimer()">
+                ▶️ Start Quest Timer
+            </button>
+            <button class="action-btn btn-finish" id="finishBtn" onclick="finishBlitz()">
+                🎬 Finish &amp; Go to Video
+            </button>
+        </div>
+
+        <div class="redirect-notice" id="redirectNotice">
+            Directing to wrap-up video in <span id="countdownSec" style="font-weight: 900; color: #facc15;">3</span>s...
+        </div>
+
+        <a href="index.html" class="back-link">← Return to Activity Spin Wheel</a>
+    </div>
+
+    <script>
+        // Exact 4-Minute Timer (240 seconds)
+        let totalSeconds = 240;
+        let isRunning = false;
+        let timerInterval = null;
+        let isCompleted = false;
+
+        const timerDisplay = document.getElementById("timerDisplay");
+        const timerBadge = document.getElementById("timerBadge");
+        const startBtn = document.getElementById("startBtn");
+
+        function toggleTimer() {
+            if (isCompleted) return;
+
+            if (!isRunning) {
+                // START TIMER
+                isRunning = true;
+                timerBadge.classList.add("running");
+                startBtn.innerText = "⏸️ Pause Timer";
+                startBtn.style.background = "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)";
+
+                timerInterval = setInterval(() => {
+                    totalSeconds--;
+                    const mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+                    const secs = String(totalSeconds % 60).padStart(2, '0');
+                    timerDisplay.innerText = `${mins}:${secs}`;
+
+                    // Warning flash during the final 30 seconds
+                    if (totalSeconds <= 30) {
+                        timerBadge.classList.add("warning");
+                    }
+
+                    if (totalSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        finishBlitz();
+                    }
+                }, 1000);
+            } else {
+                // PAUSE TIMER
+                isRunning = false;
+                clearInterval(timerInterval);
+                timerBadge.classList.remove("running");
+                startBtn.innerText = "▶️ Resume Quest Timer";
+                startBtn.style.background = "linear-gradient(135deg, #10b981 0%, #047857 100%)";
+            }
+        }
+
+        function finishBlitz() {
+            if (isCompleted) return;
+            isCompleted = true;
+            clearInterval(timerInterval);
+
+            // Confetti animation
+            confetti({
+                particleCount: 140,
+                spread: 90,
+                origin: { y: 0.6 },
+                colors: ['#a855f7', '#facc15', '#38bdf8', '#ffffff']
+            });
+
+            const finishBtn = document.getElementById("finishBtn");
+            finishBtn.style.opacity = "0.7";
+            finishBtn.style.cursor = "default";
+            finishBtn.innerText = "✨ Blitz Complete!";
+
+            startBtn.style.display = "none";
+
+            const notice = document.getElementById("redirectNotice");
+            notice.style.display = "block";
+
+            let seconds = 3;
+            const counter = document.getElementById("countdownSec");
+            const countdownInterval = setInterval(() => {
+                seconds--;
+                if (counter) counter.innerText = seconds;
+                if (seconds <= 0) clearInterval(countdownInterval);
+            }, 1000);
+
+            // Redirects to thank-you.html
+            setTimeout(() => {
+                window.location.href = "thank-you.html";
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

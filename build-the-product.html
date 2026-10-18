@@ -245,7 +245,7 @@
             background: linear-gradient(180deg, #f7faff 0%, #e8f4fc 100%);
             border: 2px dashed #90caf9;
             border-radius: 14px;
-            padding: 14px;
+            padding: 16px;
             min-height: 380px;
             display: flex;
             flex-direction: column;
@@ -275,16 +275,16 @@
         }
 
         .pack-title-text {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 900;
             color: #003066;
-            margin-top: 2px;
-            line-height: 1.2;
+            margin-top: 3px;
+            line-height: 1.25;
         }
 
         .pack-hero-icon {
-            font-size: 4rem;
-            margin: 14px 0;
+            font-size: 4.5rem;
+            margin: 18px 0;
             text-align: center;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
         }
@@ -293,8 +293,8 @@
             background: #ffffff;
             border: 1px solid #c9e4fb;
             border-radius: 10px;
-            padding: 8px 10px;
-            font-size: 0.8rem;
+            padding: 9px 12px;
+            font-size: 0.85rem;
             font-weight: 700;
             color: #173b61;
             display: flex;
@@ -306,36 +306,37 @@
             background: #ffffff;
             border: 1px solid #c9e4fb;
             border-radius: 10px;
-            padding: 10px;
-            font-size: 0.78rem;
+            padding: 12px;
+            font-size: 0.85rem;
             color: #1a365d;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
 
         .barcode-graphic-box {
             background: #ffffff;
             border: 1.5px solid #002d62;
             border-radius: 8px;
-            padding: 6px 12px;
+            padding: 10px 12px;
             text-align: center;
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         .barcode-bars {
             letter-spacing: 3px;
             font-family: monospace;
             font-weight: 900;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             color: #000;
         }
 
         .barcode-digits {
-            font-size: 0.82rem;
+            font-size: 0.88rem;
             font-weight: 800;
             letter-spacing: 2px;
             color: #002d62;
+            margin-top: 2px;
         }
 
         /* Record Input Table */
@@ -352,7 +353,7 @@
         .form-header {
             background: #00539f;
             color: #ffffff;
-            padding: 8px 12px;
+            padding: 10px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -360,7 +361,7 @@
 
         .form-header span {
             font-weight: 800;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
         }
 
         .record-table {
@@ -371,16 +372,16 @@
         .record-table th {
             background: #f1f8fe;
             color: #003066;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
             font-weight: 800;
-            padding: 6px 10px;
+            padding: 8px 10px;
             text-align: left;
             border-bottom: 1px solid #d4e8f7;
             text-transform: uppercase;
         }
 
         .record-table td {
-            padding: 5px 8px;
+            padding: 7px 10px;
             border-bottom: 1px solid #eef4f9;
             vertical-align: middle;
         }
@@ -393,7 +394,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             font-weight: 800;
             color: #173b61;
             white-space: nowrap;
@@ -401,10 +402,10 @@
 
         .record-input {
             width: 100%;
-            padding: 6px 8px;
+            padding: 7px 9px;
             border: 1.5px solid #c9dfef;
             border-radius: 8px;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             font-weight: 600;
             color: #0b2546;
             outline: none;
@@ -431,7 +432,7 @@
             color: #ffffff;
             border: none;
             border-radius: 12px;
-            padding: 10px 14px;
+            padding: 11px 14px;
             font-size: 1rem;
             font-weight: 900;
             cursor: pointer;
@@ -440,7 +441,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin: 8px;
+            margin: 10px;
             transition: transform 0.15s, background 0.2s;
         }
 
@@ -513,7 +514,7 @@
             background: #f1f8fe;
             border: 2px solid #bce1fb;
             border-radius: 18px;
-            padding: 12px;
+            padding: 14px 12px;
             text-align: center;
         }
 
@@ -538,6 +539,7 @@
             color: #7b9bb6;
         }
 
+        /* Tracker Box for Question 1 Highlight */
         .tracker-box {
             background: #002d62;
             border-radius: 14px;
@@ -547,50 +549,40 @@
         }
 
         .tracker-box .t-label {
-            font-size: 0.85rem;
-            font-weight: 800;
+            font-size: 0.88rem;
+            font-weight: 900;
             color: #ffd166;
             margin-bottom: 8px;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
         .t-dots {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            align-items: center;
         }
 
         .t-dot {
-            width: 32px;
-            height: 32px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
+            background: #ffffff;
+            color: #002d62;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             font-weight: 900;
-            transition: all 0.2s ease;
-        }
-
-        .t-dot.active {
-            background: #ffffff;
-            color: #002d62;
-            transform: scale(1.15);
-            box-shadow: 0 0 10px rgba(255, 209, 102, 0.7);
-        }
-
-        .t-dot.completed-dot {
-            background: #2e7d32;
-            color: #ffffff;
+            transform: scale(1.1);
+            box-shadow: 0 0 16px rgba(255, 209, 102, 0.85), inset 0 0 4px rgba(0, 0, 0, 0.15);
+            border: 2px solid #ffd166;
         }
 
         .shelf-stamp {
             background: #ee1c2e;
             color: #fff;
-            padding: 12px;
+            padding: 14px;
             border-radius: 18px;
             font-family: 'Brush Script MT', 'Caveat', cursive, sans-serif;
             font-size: 1.4rem;
@@ -707,7 +699,7 @@
         }
 
         .btn-action {
-            padding: 10px 22px;
+            padding: 10px 24px;
             border-radius: 10px;
             font-size: 0.95rem;
             font-weight: 800;
@@ -718,11 +710,6 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-        }
-
-        .btn-retry {
-            background: #00539f;
-            color: #fff;
         }
 
         .btn-finish {
@@ -765,7 +752,7 @@
                         </div>
                         <div class="step-item">
                             <span class="step-num">2</span>
-                            <span>Find barcode, size, supplier, and dimensions on the artwork.</span>
+                            <span>Find barcode, size, brand name, and dimensions on the artwork.</span>
                         </div>
                         <div class="step-item">
                             <span class="step-num">3</span>
@@ -805,7 +792,7 @@
                     <div class="art-face-card" id="artFaceFront">
                         <span class="art-badge-tag" id="artCategoryTag">CATEGORY</span>
                         <div>
-                            <div class="pack-brand-header">TESCO</div>
+                            <div class="pack-brand-header" id="frontBrandHeader">TESCO</div>
                             <div class="pack-title-text" id="frontProductName">Product Title</div>
                             <div style="font-size: 0.8rem; color: #2e7d32; font-weight: 800;" id="frontProductSub">
                                 Feature Spec</div>
@@ -815,7 +802,6 @@
 
                         <div class="pack-front-footer">
                             <span id="frontNetWeight">Net Weight: 1 Kg</span>
-                            <span id="frontAssetId" style="font-size: 0.72rem; color: #64748b;">Asset_V1.jpg</span>
                         </div>
                     </div>
 
@@ -823,23 +809,17 @@
                     <div class="art-face-card" id="artFaceBack" style="display: none;">
                         <span class="art-badge-tag">SPECIFICATION</span>
                         <div class="pack-back-details">
-                            <div style="font-weight: 800; color: #003066; font-size: 0.82rem;">PRODUCT SPEC SHEET</div>
-                            <div>• <strong>Manufactured for:</strong> Tesco Stores Ltd.</div>
-                            <div>• <strong>Supplier:</strong> <span id="backSupplierName"
-                                    style="color: #00539f; font-weight: 700;">Supplier Name</span></div>
-                            <div>• <strong>Pack Dimensions:</strong> <span id="backDimensions"
+                            <div style="font-weight: 800; color: #003066; font-size: 0.85rem;">PRODUCT SPEC SHEET</div>
+                            <div><strong>Manufactured for:</strong> Tesco Stores Ltd.</div>
+                            <div><strong>Brand Name:</strong> <span id="backBrandName"
+                                    style="color: #00539f; font-weight: 700;">Brand Name</span></div>
+                            <div><strong>Pack Dimensions:</strong> <span id="backDimensions"
                                     style="color: #00539f; font-weight: 700;">18 x 12 x 7 cm</span></div>
-                            <div>• <strong>Mandatory Compliance:</strong> <span id="backOtherInfo"
-                                    style="color: #00539f; font-weight: 700;">Compliance Info</span></div>
                         </div>
 
                         <div class="barcode-graphic-box">
                             <div class="barcode-bars">||| | |||| || ||| | |||</div>
                             <div class="barcode-digits" id="backBarcodeDigits">5012345678901</div>
-                        </div>
-
-                        <div style="font-size: 0.72rem; color: #64748b; text-align: center;">
-                            Artwork Asset Ref: <strong id="backAssetRef">Asset.jpg</strong>
                         </div>
                     </div>
                 </div>
@@ -854,8 +834,8 @@
                     <table class="record-table">
                         <thead>
                             <tr>
-                                <th style="width: 40%;">Field</th>
-                                <th style="width: 60%;">Your Answer</th>
+                                <th style="width: 42%;">Field</th>
+                                <th style="width: 58%;">Your Answer</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -868,14 +848,14 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <div class="field-label">🏭 Supplier</div>
+                                    <div class="field-label">🏷️ Brand Name</div>
                                 </td>
-                                <td><input type="text" class="record-input" id="input_supplier"
+                                <td><input type="text" class="record-input" id="input_brand"
                                         placeholder="From back artwork..." autocomplete="off"></td>
                             </tr>
                             <tr>
                                 <td>
-                                    <div class="field-label">🏷️ Category</div>
+                                    <div class="field-label">📂 Category</div>
                                 </td>
                                 <td><input type="text" class="record-input" id="input_category"
                                         placeholder="Product category..." autocomplete="off"></td>
@@ -901,20 +881,6 @@
                                 <td><input type="text" class="record-input" id="input_barcode"
                                         placeholder="13 digits from back..." autocomplete="off"></td>
                             </tr>
-                            <tr>
-                                <td>
-                                    <div class="field-label">🖼️ Artwork</div>
-                                </td>
-                                <td><input type="text" class="record-input" id="input_artwork"
-                                        placeholder="Artwork asset filename..." autocomplete="off"></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="field-label">📋 Other Required Info</div>
-                                </td>
-                                <td><input type="text" class="record-input" id="input_other"
-                                        placeholder="Compliance notes..." autocomplete="off"></td>
-                            </tr>
                         </tbody>
                     </table>
 
@@ -931,7 +897,6 @@
                     <div class="timer-icon">⏱️</div>
                     <div class="timer-info">
                         <div class="label">Time Left</div>
-                        <!-- 2-Minute Timer Display -->
                         <div class="time-digits" id="timerDisplay">02:00</div>
                     </div>
                 </div>
@@ -941,13 +906,11 @@
                     <div class="score-value" id="scoreDisplay">0 <span>/ 10</span></div>
                 </div>
 
-                <!-- 3-Question Max Tracker -->
+                <!-- Highlighted Question 1 Box -->
                 <div class="tracker-box">
-                    <div class="t-label" id="questionTrackerHeader">Question 1 of 3</div>
+                    <div class="t-label">Question 1</div>
                     <div class="t-dots">
-                        <div class="t-dot active" id="dot1">1</div>
-                        <div class="t-dot" id="dot2">2</div>
-                        <div class="t-dot" id="dot3">3</div>
+                        <div class="t-dot" id="dot1">1</div>
                     </div>
                 </div>
 
@@ -977,7 +940,7 @@
         <div class="results-modal">
             <h2 id="modalHeadline">Record Setup Complete!</h2>
             <div class="results-score-pill" id="modalScorePill">0 / 10</div>
-            <p class="feedback-text" id="modalFeedback">Great effort building the Tesco product record!</p>
+            <p class="feedback-text" id="modalFeedback">Great effort building the product record!</p>
 
             <div class="redirect-note" id="redirectNotice" style="display: none;">
                 Directing to wrap-up video in <span id="countdownSec"
@@ -985,212 +948,184 @@
             </div>
 
             <div class="modal-btn-row">
-                <button class="btn-action btn-retry" id="retryQuestionBtn" onclick="handleRetry()">🔄 Next
-                    Question</button>
                 <a href="thank-you.html" class="btn-action btn-finish" id="modalFinishBtn">🎬 Go to Video</a>
             </div>
         </div>
     </div>
 
     <script>
-        // CATALOG WITH DETAILED FRONT AND BACK ARTWORK SPECIFICATIONS
         const PRODUCT_CATALOG = [
             {
+                // Product 1: Keeps 'Tesco'
                 front: {
                     badge: "Produce",
+                    brandHeader: "TESCO",
                     title: "Tesco Finest Cherry Tomatoes",
                     sub: "Class 1 · Sweet & Succulent",
                     icon: "🍅🌿",
-                    weight: "250 g Punnet",
-                    asset: "Artwork_Tomatoes_V2.jpg"
+                    weight: "250 g Punnet"
                 },
                 back: {
-                    supplier: "Fresh Fields Ltd",
+                    brand: "Tesco Finest",
                     dimensions: "14 x 10 x 6 cm",
-                    barcode: "5012345600035",
-                    other: "British Red Tractor certified, Keep chilled",
-                    asset: "Artwork_Tomatoes_V2.jpg"
+                    barcode: "5012345600035"
                 },
                 expected: {
                     name: "Tesco Finest Cherry Tomatoes",
-                    supplier: "Fresh Fields Ltd",
+                    brand: "Tesco Finest",
                     category: "Produce",
                     weight: "250 g",
                     dimensions: "14 x 10 x 6 cm",
-                    barcode: "5012345600035",
-                    artwork: "Artwork_Tomatoes_V2.jpg",
-                    other: "British Red Tractor certified, Keep chilled"
+                    barcode: "5012345600035"
                 }
             },
             {
+                // Product 2
                 front: {
                     badge: "Entertainer",
-                    title: "Tesco Kids Jigsaw Puzzle",
+                    brandHeader: "PLAYTIME",
+                    title: "Kids Jigsaw Puzzle",
                     sub: "100 Pieces · Animals of the World",
                     icon: "🧩🎨",
-                    weight: "100 pieces",
-                    asset: "Artwork_Jigsaw_V3.jpg"
+                    weight: "100 pieces"
                 },
                 back: {
-                    supplier: "PlayTime Toys Ltd",
+                    brand: "PlayTime",
                     dimensions: "30 x 22 x 5 cm",
-                    barcode: "5012345600028",
-                    other: "Age 5+, CE Safety Approved, Recycled board",
-                    asset: "Artwork_Jigsaw_V3.jpg"
+                    barcode: "5012345600028"
                 },
                 expected: {
-                    name: "Tesco Kids Jigsaw Puzzle",
-                    supplier: "PlayTime Toys Ltd",
+                    name: "Kids Jigsaw Puzzle",
+                    brand: "PlayTime",
                     category: "Entertainer",
                     weight: "100 pieces",
                     dimensions: "30 x 22 x 5 cm",
-                    barcode: "5012345600028",
-                    artwork: "Artwork_Jigsaw_V3.jpg",
-                    other: "Age 5+, CE Safety Approved, Recycled board"
+                    barcode: "5012345600028"
                 }
             },
             {
+                // Product 3
                 front: {
                     badge: "Cards",
-                    title: "Tesco Birthday Card - Age 40",
+                    brandHeader: "CELEBRATIONS",
+                    title: "Birthday Card - Age 40",
                     sub: "Celebration Gold Foil Edition",
                     icon: "🎂🎈",
-                    weight: "1 card (A5)",
-                    asset: "Artwork_Card40_V1.jpg"
+                    weight: "1 card (A5)"
                 },
                 back: {
-                    supplier: "Card Studio Ltd",
+                    brand: "Celebrations",
                     dimensions: "21 x 14.8 x 0.5 cm",
-                    barcode: "5012345600059",
-                    other: "FSC Certified Board, Includes Envelope",
-                    asset: "Artwork_Card40_V1.jpg"
+                    barcode: "5012345600059"
                 },
                 expected: {
-                    name: "Tesco Birthday Card - Age 40",
-                    supplier: "Card Studio Ltd",
+                    name: "Birthday Card - Age 40",
+                    brand: "Celebrations",
                     category: "Cards",
                     weight: "1 card (A5)",
                     dimensions: "21 x 14.8 x 0.5 cm",
-                    barcode: "5012345600059",
-                    artwork: "Artwork_Card40_V1.jpg",
-                    other: "FSC Certified Board, Includes Envelope"
+                    barcode: "5012345600059"
                 }
             },
             {
+                // Product 4
                 front: {
                     badge: "Household",
-                    title: "Tesco Antibacterial Kitchen Cleaner",
+                    brandHeader: "CLEANCO",
+                    title: "Antibacterial Kitchen Cleaner",
                     sub: "Tough on Grease · Kills 99.9% Bacteria",
                     icon: "🧽🧴",
-                    weight: "750 ml",
-                    asset: "Artwork_Cleaner_V1.jpg"
+                    weight: "750 ml"
                 },
                 back: {
-                    supplier: "CleanCo Ltd",
+                    brand: "CleanCo",
                     dimensions: "24 x 8 x 6 cm",
-                    barcode: "5012345600011",
-                    other: "Bleach free, Recyclable bottle trigger",
-                    asset: "Artwork_Cleaner_V1.jpg"
+                    barcode: "5012345600011"
                 },
                 expected: {
-                    name: "Tesco Antibacterial Kitchen Cleaner",
-                    supplier: "CleanCo Ltd",
+                    name: "Antibacterial Kitchen Cleaner",
+                    brand: "CleanCo",
                     category: "Household",
                     weight: "750 ml",
                     dimensions: "24 x 8 x 6 cm",
-                    barcode: "5012345600011",
-                    artwork: "Artwork_Cleaner_V1.jpg",
-                    other: "Bleach free, Recyclable bottle trigger"
+                    barcode: "5012345600011"
                 }
             },
             {
+                // Product 5
                 front: {
                     badge: "Pet Care",
-                    title: "Tesco Dry Dog Food - Chicken & Rice",
+                    brandHeader: "PAWFECT",
+                    title: "Dry Dog Food - Chicken & Rice",
                     sub: "Complete Nutrition · Added Omega 3",
                     icon: "🐕🦴",
-                    weight: "2 kg",
-                    asset: "Artwork_DogFood_V2.jpg"
+                    weight: "2 kg"
                 },
                 back: {
-                    supplier: "Pawfect Foods Ltd",
+                    brand: "Pawfect",
                     dimensions: "40 x 25 x 10 cm",
-                    barcode: "5012345600066",
-                    other: "No artificial flavours, Store in cool dry place",
-                    asset: "Artwork_DogFood_V2.jpg"
+                    barcode: "5012345600066"
                 },
                 expected: {
-                    name: "Tesco Dry Dog Food - Chicken & Rice",
-                    supplier: "Pawfect Foods Ltd",
+                    name: "Dry Dog Food - Chicken & Rice",
+                    brand: "Pawfect",
                     category: "Pet Care",
                     weight: "2 kg",
                     dimensions: "40 x 25 x 10 cm",
-                    barcode: "5012345600066",
-                    artwork: "Artwork_DogFood_V2.jpg",
-                    other: "No artificial flavours, Store in cool dry place"
+                    barcode: "5012345600066"
                 }
             },
             {
+                // Product 6
                 front: {
                     badge: "Home Lifestyle",
-                    title: "Tesco Christmas Scented Candle",
+                    brandHeader: "GLOW HOME",
+                    title: "Christmas Scented Candle",
                     sub: "Cinnamon & Orange · Hand Poured",
                     icon: "🕯️🎄",
-                    weight: "220 g",
-                    asset: "Artwork_Xmas_Candle_V1.jpg"
+                    weight: "220 g"
                 },
                 back: {
-                    supplier: "Glow Home Ltd",
+                    brand: "Glow Home",
                     dimensions: "9 x 9 x 10 cm",
-                    barcode: "5012345600042",
-                    other: "40 hour burn time, Never leave candle unattended",
-                    asset: "Artwork_Xmas_Candle_V1.jpg"
+                    barcode: "5012345600042"
                 },
                 expected: {
-                    name: "Tesco Christmas Scented Candle",
-                    supplier: "Glow Home Ltd",
+                    name: "Christmas Scented Candle",
+                    brand: "Glow Home",
                     category: "Home Lifestyle",
                     weight: "220 g",
                     dimensions: "9 x 9 x 10 cm",
-                    barcode: "5012345600042",
-                    artwork: "Artwork_Xmas_Candle_V1.jpg",
-                    other: "40 hour burn time, Never leave candle unattended"
+                    barcode: "5012345600042"
                 }
             },
             {
+                // Product 7
                 front: {
                     badge: "Practical Home",
-                    title: "Tesco Non-Stick Frying Pan 28cm",
+                    brandHeader: "COOKCRAFT",
+                    title: "Non-Stick Frying Pan 28cm",
                     sub: "Durable Ceramic Coating · Soft Touch Grip",
                     icon: "🍳🍳",
-                    weight: "850 g",
-                    asset: "Artwork_Pan_V1.jpg"
+                    weight: "850 g"
                 },
                 back: {
-                    supplier: "CookCraft Essentials Ltd",
+                    brand: "CookCraft",
                     dimensions: "46 x 28 x 6 cm",
-                    barcode: "5012345600880",
-                    other: "Induction safe, Dishwasher friendly, PFOA free",
-                    asset: "Artwork_Pan_V1.jpg"
+                    barcode: "5012345600880"
                 },
                 expected: {
-                    name: "Tesco Non-Stick Frying Pan 28cm",
-                    supplier: "CookCraft Essentials Ltd",
+                    name: "Non-Stick Frying Pan 28cm",
+                    brand: "CookCraft",
                     category: "Practical Home",
                     weight: "850 g",
                     dimensions: "46 x 28 x 6 cm",
-                    barcode: "5012345600880",
-                    artwork: "Artwork_Pan_V1.jpg",
-                    other: "Induction safe, Dishwasher friendly, PFOA free"
+                    barcode: "5012345600880"
                 }
             }
         ];
 
-        // 3-QUESTION MAX PROGRESSION
-        const MAX_ROUNDS = 3;
-        let currentRound = 1;
         let activeProduct = null;
-        let usedIndices = [];
 
         // 2-MINUTE TIMER (120 SECONDS)
         let timeLeft = 120;
@@ -1200,11 +1135,10 @@
         let countdownInterval = null;
 
         window.addEventListener("DOMContentLoaded", () => {
-            loadQuestionRound();
+            loadSingleQuestion();
             startTimer();
         });
 
-        // Switch between Front & Back Artwork Views
         function switchArtTab(face) {
             const tabFrontBtn = document.getElementById("tabFrontBtn");
             const tabBackBtn = document.getElementById("tabBackBtn");
@@ -1224,61 +1158,33 @@
             }
         }
 
-        function getRandomProduct() {
-            if (usedIndices.length >= PRODUCT_CATALOG.length) {
-                usedIndices = [];
-            }
-            let idx;
-            do {
-                idx = Math.floor(Math.random() * PRODUCT_CATALOG.length);
-            } while (usedIndices.includes(idx));
-
-            usedIndices.push(idx);
-            return PRODUCT_CATALOG[idx];
-        }
-
-        function loadQuestionRound() {
-            activeProduct = getRandomProduct();
-            updateTrackerUI();
+        function loadSingleQuestion() {
+            // Select a random product from the catalog
+            const randomIndex = Math.floor(Math.random() * PRODUCT_CATALOG.length);
+            activeProduct = PRODUCT_CATALOG[randomIndex];
             switchArtTab('front');
 
-            // Render Front Face
+            // Front
             document.getElementById("artCategoryTag").innerText = activeProduct.front.badge;
+            document.getElementById("frontBrandHeader").innerText = activeProduct.front.brandHeader;
             document.getElementById("frontProductName").innerText = activeProduct.front.title;
             document.getElementById("frontProductSub").innerText = activeProduct.front.sub;
             document.getElementById("frontHeroIcon").innerText = activeProduct.front.icon;
             document.getElementById("frontNetWeight").innerText = "Net: " + activeProduct.front.weight;
-            document.getElementById("frontAssetId").innerText = activeProduct.front.asset;
 
-            // Render Back Face
-            document.getElementById("backSupplierName").innerText = activeProduct.back.supplier;
+            // Back
+            document.getElementById("backBrandName").innerText = activeProduct.back.brand;
             document.getElementById("backDimensions").innerText = activeProduct.back.dimensions;
-            document.getElementById("backOtherInfo").innerText = activeProduct.back.other;
             document.getElementById("backBarcodeDigits").innerText = activeProduct.back.barcode;
-            document.getElementById("backAssetRef").innerText = activeProduct.back.asset;
 
             // Clear inputs
-            ['name', 'supplier', 'category', 'weight', 'dimensions', 'barcode', 'artwork', 'other'].forEach(key => {
+            ['name', 'brand', 'category', 'weight', 'dimensions', 'barcode'].forEach(key => {
                 const el = document.getElementById("input_" + key);
                 if (el) {
                     el.value = "";
                     el.className = "record-input";
                 }
             });
-        }
-
-        function updateTrackerUI() {
-            document.getElementById("questionTrackerHeader").innerText = `Question ${currentRound} of ${MAX_ROUNDS}`;
-
-            for (let i = 1; i <= MAX_ROUNDS; i++) {
-                const dot = document.getElementById("dot" + i);
-                dot.className = "t-dot";
-                if (i < currentRound) {
-                    dot.classList.add("completed-dot");
-                } else if (i === currentRound) {
-                    dot.classList.add("active");
-                }
-            }
         }
 
         function startTimer() {
@@ -1316,7 +1222,6 @@
                 const userVal = cleanString(input.value);
                 const expectedVal = cleanString(expected[key]);
 
-                // Tolerant matching for spaces, hyphens, and unit casing
                 if (userVal.length > 0 && (userVal === expectedVal || expectedVal.includes(userVal))) {
                     correctCount++;
                     input.classList.remove("incorrect");
@@ -1338,15 +1243,12 @@
 
             const modalHeadline = document.getElementById("modalHeadline");
             const modalFeedback = document.getElementById("modalFeedback");
-            const retryBtn = document.getElementById("retryQuestionBtn");
             const redirectNotice = document.getElementById("redirectNotice");
 
-            const isLastAttempt = (currentRound >= MAX_ROUNDS);
-
             if (isAllCorrect) {
-                modalHeadline.innerHTML = isLastAttempt ? "🎉 3 Rounds Completed!" : "🎉 All Fields Accurate!";
+                modalHeadline.innerHTML = "🎉 Product Record Complete!";
                 modalHeadline.style.color = "#2e7d32";
-                modalFeedback.innerText = "Flawless inspection! Every attribute extracted from the Front and Back artwork matches approved Tesco specs.";
+                modalFeedback.innerText = "Flawless inspection! Every attribute extracted matches approved specs.";
 
                 confetti({
                     particleCount: 140,
@@ -1354,57 +1256,31 @@
                     origin: { y: 0.6 }
                 });
             } else if (timeExpired) {
-                modalHeadline.innerHTML = isLastAttempt ? "⏰ 3 Rounds Finished!" : "⏰ 2 Minutes Expired!";
+                modalHeadline.innerHTML = "⏰ 2 Minutes Expired!";
                 modalHeadline.style.color = "#d32f2f";
                 modalFeedback.innerText = `Time expired! You successfully logged ${correctCount} of ${fieldKeys.length} attributes.`;
             } else {
-                modalHeadline.innerHTML = isLastAttempt ? "📋 3 Rounds Finished!" : "❌ Verification Needed";
+                modalHeadline.innerHTML = "📋 Verification Completed";
                 modalHeadline.style.color = "#d32f2f";
                 modalFeedback.innerText = `You completed ${correctCount} of ${fieldKeys.length} fields correctly. Discrepancies are outlined in red.`;
             }
 
-            if (isLastAttempt) {
-                // Max 3 attempts reached: Disable retry and auto-route to thank-you.html
-                retryBtn.style.display = "none";
-                redirectNotice.style.display = "block";
+            // Immediately show redirect countdown
+            redirectNotice.style.display = "block";
 
-                let secondsRemaining = 4;
-                const countdownSec = document.getElementById("countdownSec");
-                countdownInterval = setInterval(() => {
-                    secondsRemaining--;
-                    if (countdownSec) countdownSec.innerText = secondsRemaining;
-                    if (secondsRemaining <= 0) clearInterval(countdownInterval);
-                }, 1000);
+            let secondsRemaining = 4;
+            const countdownSec = document.getElementById("countdownSec");
+            countdownInterval = setInterval(() => {
+                secondsRemaining--;
+                if (countdownSec) countdownSec.innerText = secondsRemaining;
+                if (secondsRemaining <= 0) clearInterval(countdownInterval);
+            }, 1000);
 
-                redirectTimeout = setTimeout(() => {
-                    window.location.href = "thank-you.html";
-                }, 4000);
-            } else {
-                // Attempts remaining: Allow advancing to Question 2 or Question 3
-                retryBtn.style.display = "inline-flex";
-                retryBtn.innerText = `🔄 Next Question (${currentRound + 1}/${MAX_ROUNDS})`;
-                redirectNotice.style.display = "none";
-            }
+            redirectTimeout = setTimeout(() => {
+                window.location.href = "thank-you.html";
+            }, 4000);
 
             document.getElementById("resultsModal").style.display = "flex";
-        }
-
-        function handleRetry() {
-            clearTimeout(redirectTimeout);
-            clearInterval(countdownInterval);
-
-            currentRound++;
-            submitted = false;
-            timeLeft = 120; // Reset to full 2 minutes
-
-            const timerDisplay = document.getElementById("timerDisplay");
-            timerDisplay.classList.remove("warning");
-            timerDisplay.innerText = "02:00";
-            document.getElementById("scoreDisplay").innerHTML = `0 <span>/ 10</span>`;
-            document.getElementById("resultsModal").style.display = "none";
-
-            loadQuestionRound();
-            startTimer();
         }
     </script>
 </body>

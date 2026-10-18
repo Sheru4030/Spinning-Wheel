@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Depot Allocation</title>
+    <title>Word Quest Blitz - Tesco Challenge</title>
     <!-- Confetti Canvas Library -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -12,198 +12,602 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Montserrat', 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Montserrat', 'Segoe UI', system-ui, sans-serif;
+            user-select: none;
         }
 
         body {
-            background: radial-gradient(circle at center, #072a40 0%, #03121c 100%);
+            background: radial-gradient(circle at 50% 30%, #2a1147 0%, #13082b 55%, #080314 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-            overflow: hidden;
-        }
-
-        .card {
-            background: #0d2131;
-            border: 2px solid #0288d1;
-            border-radius: 24px;
-            padding: 40px 32px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(2, 136, 209, 0.25);
+            color: #ffffff;
+            padding: 16px;
+            overflow-x: hidden;
             position: relative;
         }
 
-        .brand-badge {
+        /* Ambient floating arcade glow */
+        .ambient-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.18) 0%, rgba(0, 0, 0, 0) 70%);
+            filter: blur(50px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .quest-card {
+            background: rgba(22, 11, 44, 0.88);
+            border: 2px solid #a855f7;
+            border-radius: 28px;
+            padding: 30px 32px;
+            max-width: 580px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(168, 85, 247, 0.25);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+        }
+
+        /* Header Info & Timer */
+        .top-status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-brand {
             font-size: 0.8rem;
-            font-weight: 800;
+            font-weight: 900;
             letter-spacing: 2px;
-            color: #4fc3f7;
+            color: #facc15;
+            background: rgba(250, 204, 21, 0.12);
+            border: 1px solid rgba(250, 204, 21, 0.35);
+            padding: 4px 14px;
+            border-radius: 20px;
             text-transform: uppercase;
-            margin-bottom: 8px;
         }
 
-        .truck {
-            font-size: 3.2rem;
-            margin-bottom: 10px;
-            animation: drive 2s infinite ease-in-out alternate;
+        .timer-badge {
+            background: #3b0764;
+            border: 1.5px solid #c084fc;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #f5d0fe;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        @keyframes drive {
+        .timer-badge.warning {
+            color: #ff4d4d;
+            border-color: #ff4d4d;
+            animation: pulseWarning 0.6s infinite alternate;
+        }
+
+        @keyframes pulseWarning {
             from {
-                transform: translateX(-6px);
+                transform: scale(1);
             }
 
             to {
+                transform: scale(1.06);
+            }
+        }
+
+        /* Title */
+        .title-group h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            background: linear-gradient(180deg, #ffffff 0%, #e9d5ff 40%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 3px 12px rgba(192, 132, 252, 0.35));
+        }
+
+        .title-group p {
+            font-size: 0.92rem;
+            color: #d8b4fe;
+            margin-top: 3px;
+        }
+
+        /* Clue Box & Streak Bar */
+        .clue-box {
+            background: rgba(59, 7, 100, 0.65);
+            border: 1.5px dashed #a855f7;
+            border-radius: 18px;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .clue-tag {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #facc15;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .clue-text {
+            font-size: 0.98rem;
+            color: #f3e8ff;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .streak-pill {
+            align-self: center;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 900;
+            padding: 3px 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Built Word Display Slots */
+        .answer-display-slots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            min-height: 56px;
+            align-items: center;
+            margin: 4px 0;
+        }
+
+        .slot-tile {
+            width: 48px;
+            height: 52px;
+            background: rgba(147, 51, 234, 0.2);
+            border: 2px solid #a855f7;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #ffffff;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .slot-tile.filled {
+            background: #9333ea;
+            border-color: #f0abfc;
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.5);
+            animation: tilePop 0.2s cubic-bezier(0.17, 0.89, 0.32, 1.28);
+        }
+
+        @keyframes tilePop {
+            0% {
+                transform: scale(0.7);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .slot-tile.wrong {
+            border-color: #ef4444 !important;
+            background: #7f1d1d !important;
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-6px);
+            }
+
+            75% {
                 transform: translateX(6px);
             }
         }
 
-        h1 {
-            font-size: 2.1rem;
-            font-weight: 900;
-            color: #4fc3f7;
-            margin-bottom: 12px;
-        }
-
-        p {
-            font-size: 1.05rem;
-            color: #cfd8dc;
-            margin-bottom: 26px;
-            line-height: 1.5;
-        }
-
-        .btn-group {
+        /* Scrambled Letter Bank */
+        .scramble-bank {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            padding: 6px;
         }
 
-        .complete-btn {
-            width: 100%;
-            padding: 14px 28px;
-            background: linear-gradient(135deg, #0288d1 0%, #01579b 100%);
-            border: none;
+        .letter-tile {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #4c1d95, #2e1065);
+            border: 2px solid #c084fc;
             border-radius: 12px;
-            color: #fff;
-            font-size: 1.05rem;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(2, 136, 209, 0.4);
-            transition: all 0.2s ease;
-            display: inline-flex;
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #f5d0fe;
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+            transition: all 0.15s ease;
         }
 
-        .complete-btn:hover {
+        .letter-tile:hover {
+            transform: translateY(-3px);
+            border-color: #f0abfc;
+            box-shadow: 0 6px 18px rgba(192, 132, 252, 0.5);
+        }
+
+        .letter-tile:active {
+            transform: scale(0.92);
+        }
+
+        .letter-tile.used {
+            opacity: 0.25;
+            pointer-events: none;
+            transform: scale(0.9);
+            box-shadow: none;
+            border-color: #4c1d95;
+        }
+
+        /* Action Buttons Row */
+        .btn-controls-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .control-btn {
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 0.88rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-clear {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e9d5ff;
+        }
+
+        .btn-clear:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-submit-word {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-submit-word:hover {
             transform: translateY(-2px);
-            background: linear-gradient(135deg, #039be5 0%, #0288d1 100%);
-            box-shadow: 0 10px 25px rgba(2, 136, 209, 0.55);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.55);
+        }
+
+        /* Complete & Finish button */
+        .btn-complete-early {
+            background: linear-gradient(135deg, #9333ea, #7e22ce);
+            border: 1.5px solid #c084fc;
+            color: #fff;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(147, 51, 234, 0.4);
+            transition: all 0.2s;
+        }
+
+        .btn-complete-early:hover {
+            background: linear-gradient(135deg, #a855f7, #9333ea);
+            transform: translateY(-2px);
         }
 
         .back-link {
-            font-size: 0.85rem;
-            color: #0288d1;
+            font-size: 0.82rem;
+            color: #c084fc;
             text-decoration: none;
             font-weight: 700;
-            margin-top: 8px;
-            transition: color 0.2s;
+            margin-top: 4px;
         }
 
         .back-link:hover {
-            color: #4fc3f7;
             text-decoration: underline;
+            color: #f0abfc;
         }
 
-        /* Redirect Countdown Notice */
+        /* Redirect overlay */
         .redirect-notice {
             display: none;
-            font-size: 0.92rem;
-            color: #81d4fa;
-            margin-top: 14px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            font-size: 0.9rem;
+            color: #f5d0fe;
+            margin-top: 6px;
         }
     </style>
 </head>
 
 <body>
-    <div class="card">
-        <div class="brand-badge">LOGISTICS CHALLENGE</div>
-        <div class="truck">🚚</div>
-        <h1>Depot Allocation</h1>
-        <p>A high-demand seasonal stock has arrived at the distribution centre! Solve the logistics puzzle to allocate
-            stock across 3 target stores.</p>
 
-        <div class="btn-group">
-            <button class="complete-btn" id="finishBtn" onclick="completeAllocation()">
-                📦 Stock Allocated &amp; Finish
-            </button>
-            <div class="redirect-notice" id="redirectNotice">
-                Directing to wrap-up video in <span id="countdownSec"
-                    style="font-weight: 900; color: #fff;">3</span>s...
+    <div class="ambient-glow"></div>
+
+    <div class="quest-card">
+        <!-- Top Row Status -->
+        <div class="top-status-row">
+            <span class="badge-brand">✨ WORD QUEST BLITZ</span>
+            <div class="timer-badge" id="timerBadge">
+                <span>⏱️</span>
+                <span id="timerDisplay">04:00</span>
             </div>
-            <a href="index.html" class="back-link">← Return to Spin Wheel</a>
         </div>
+
+        <!-- Title -->
+        <div class="title-group">
+            <h1>Word Quest Blitz 🔤</h1>
+            <p>Unscramble the retail mystery words before the 4-minute blitz expires!</p>
+        </div>
+
+        <!-- Clue Card & Score Streak -->
+        <div class="clue-box">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="clue-tag" id="levelIndicator">Round 1 of 5</span>
+                <span class="streak-pill" id="scoreDisplay">Score: 0 pts</span>
+            </div>
+            <div class="clue-text" id="clueText">Loading clue...</div>
+        </div>
+
+        <!-- Target Word Slots -->
+        <div class="answer-display-slots" id="answerSlots"></div>
+
+        <!-- Letter Choice Bank -->
+        <div class="scramble-bank" id="letterBank"></div>
+
+        <!-- Controls -->
+        <div class="btn-controls-row">
+            <button class="control-btn btn-clear" onclick="clearCurrentWord()">⌫ Backspace</button>
+            <button class="control-btn btn-clear" onclick="shuffleCurrentLetters()">🔀 Shuffle</button>
+            <button class="control-btn btn-submit-word" onclick="checkWord()">Check Word ✨</button>
+        </div>
+
+        <button class="btn-complete-early" id="finishBtn" onclick="finishGame(false)">
+            🏁 Finish Blitz &amp; Lock Score
+        </button>
+
+        <div class="redirect-notice" id="redirectNotice">
+            Directing to wrap-up video in <span id="countdownSec" style="font-weight: 900; color: #facc15;">3</span>s...
+        </div>
+
+        <a href="index.html" class="back-link">← Return to Activity Spin Wheel</a>
     </div>
 
     <script>
+        // Retail / Supply Chain mystery word challenge pool
+        const WORDS_POOL = [
+            { word: "BARCODE", clue: "Unique numeric pattern printed on packaging for stock scanning." },
+            { word: "SUPPLIER", clue: "The partner that manufactures or harvests products for our stores." },
+            { word: "INDUCTION", clue: "The step where product data is verified and approved into the Tesco system." },
+            { word: "PRODUCE", clue: "Fresh department featuring farm-grown fruits and vegetables." },
+            { word: "ACCURACY", clue: "Critical data precision that ensures items reach the right shelf on time." }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let selectedLetters = []; // Letters user placed into slots
         let completed = false;
 
-        function completeAllocation() {
-            if (completed) return;
-            completed = true;
+        // 4-Minute Timer (240 seconds)
+        let totalSeconds = 240;
+        const timerDisplay = document.getElementById("timerDisplay");
+        const timerBadge = document.getElementById("timerBadge");
 
-            // Confetti shower
-            confetti({
-                particleCount: 110,
-                spread: 85,
-                origin: { y: 0.6 },
-                colors: ['#4fc3f7', '#0288d1', '#ffd166', '#00e676', '#ffffff']
+        const timerInterval = setInterval(() => {
+            totalSeconds--;
+            const mins = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            const secs = String(totalSeconds % 60).padStart(2, '0');
+            timerDisplay.innerText = `${mins}:${secs}`;
+
+            if (totalSeconds <= 30) {
+                timerBadge.classList.add("warning");
+            }
+
+            if (totalSeconds <= 0) {
+                clearInterval(timerInterval);
+                finishGame(true);
+            }
+        }, 1000);
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function loadQuestion() {
+            selectedLetters = [];
+            const currentItem = WORDS_POOL[currentIndex];
+
+            document.getElementById("levelIndicator").innerText = `Round ${currentIndex + 1} of ${WORDS_POOL.length}`;
+            document.getElementById("clueText").innerText = `💡 Clue: "${currentItem.clue}"`;
+
+            // Build Answer Slots
+            const answerSlots = document.getElementById("answerSlots");
+            answerSlots.innerHTML = "";
+            for (let i = 0; i < currentItem.word.length; i++) {
+                const slot = document.createElement("div");
+                slot.className = "slot-tile";
+                slot.dataset.index = i;
+                slot.addEventListener("click", () => handleSlotClick(i));
+                answerSlots.appendChild(slot);
+            }
+
+            // Build Letter Bank (Scrambled)
+            const letters = currentItem.word.split("");
+            const scrambled = shuffleArray([...letters]);
+
+            const letterBank = document.getElementById("letterBank");
+            letterBank.innerHTML = "";
+            scrambled.forEach((char, idx) => {
+                const tile = document.createElement("div");
+                tile.className = "letter-tile";
+                tile.innerText = char;
+                tile.dataset.char = char;
+                tile.dataset.tileId = "tile-" + idx;
+                tile.addEventListener("click", () => handleLetterPick(tile));
+                letterBank.appendChild(tile);
+            });
+        }
+
+        function handleLetterPick(tileElement) {
+            const currentItem = WORDS_POOL[currentIndex];
+            if (selectedLetters.length >= currentItem.word.length) return;
+
+            tileElement.classList.add("used");
+            selectedLetters.push({
+                char: tileElement.dataset.char,
+                tileId: tileElement.dataset.tileId
             });
 
-            // Update button status
-            const btn = document.getElementById("finishBtn");
-            btn.style.opacity = "0.7";
-            btn.style.cursor = "default";
-            btn.innerText = "✨ Allocation Complete!";
+            renderAnswerSlots();
+        }
 
-            // Show countdown
+        function handleSlotClick(slotIndex) {
+            if (slotIndex >= selectedLetters.length) return;
+            const removed = selectedLetters.splice(slotIndex, 1)[0];
+            const originalTile = document.querySelector(`[data-tile-id="${removed.tileId}"]`);
+            if (originalTile) originalTile.classList.remove("used");
+
+            renderAnswerSlots();
+        }
+
+        function clearCurrentWord() {
+            if (selectedLetters.length === 0) return;
+            const popped = selectedLetters.pop();
+            const originalTile = document.querySelector(`[data-tile-id="${popped.tileId}"]`);
+            if (originalTile) originalTile.classList.remove("used");
+
+            renderAnswerSlots();
+        }
+
+        function shuffleCurrentLetters() {
+            const letterBank = document.getElementById("letterBank");
+            const tiles = Array.from(letterBank.children);
+            shuffleArray(tiles).forEach(t => letterBank.appendChild(t));
+        }
+
+        function renderAnswerSlots() {
+            const slots = document.querySelectorAll(".slot-tile");
+            slots.forEach((slot, idx) => {
+                slot.classList.remove("wrong");
+                if (idx < selectedLetters.length) {
+                    slot.innerText = selectedLetters[idx].char;
+                    slot.classList.add("filled");
+                } else {
+                    slot.innerText = "";
+                    slot.classList.remove("filled");
+                }
+            });
+        }
+
+        function checkWord() {
+            const currentItem = WORDS_POOL[currentIndex];
+            const attemptedWord = selectedLetters.map(l => l.char).join("");
+
+            if (attemptedWord.length < currentItem.word.length) {
+                return;
+            }
+
+            if (attemptedWord === currentItem.word) {
+                // Correct word
+                score += 20;
+                document.getElementById("scoreDisplay").innerText = `Score: ${score} pts`;
+
+                confetti({
+                    particleCount: 80,
+                    spread: 65,
+                    origin: { y: 0.6 },
+                    colors: ['#a855f7', '#c084fc', '#facc15', '#ffffff']
+                });
+
+                if (currentIndex < WORDS_POOL.length - 1) {
+                    currentIndex++;
+                    setTimeout(loadQuestion, 500);
+                } else {
+                    setTimeout(() => finishGame(false), 600);
+                }
+            } else {
+                // Wrong word animation
+                const slots = document.querySelectorAll(".slot-tile");
+                slots.forEach(s => s.classList.add("wrong"));
+                setTimeout(() => {
+                    slots.forEach(s => s.classList.remove("wrong"));
+                }, 450);
+            }
+        }
+
+        function finishGame(isTimeout) {
+            if (completed) return;
+            completed = true;
+            clearInterval(timerInterval);
+
+            confetti({
+                particleCount: 140,
+                spread: 90,
+                origin: { y: 0.55 },
+                colors: ['#a855f7', '#38bdf8', '#facc15', '#10b981', '#ffffff']
+            });
+
+            const finishBtn = document.getElementById("finishBtn");
+            finishBtn.style.opacity = "0.7";
+            finishBtn.style.cursor = "default";
+            finishBtn.innerText = `🎉 Quest Finished (${score} pts)!`;
+
             const notice = document.getElementById("redirectNotice");
             notice.style.display = "block";
 
             let seconds = 3;
             const counter = document.getElementById("countdownSec");
-
-            const interval = setInterval(() => {
+            const countdownInterval = setInterval(() => {
                 seconds--;
                 if (counter) counter.innerText = seconds;
-                if (seconds <= 0) {
-                    clearInterval(interval);
-                }
+                if (seconds <= 0) clearInterval(countdownInterval);
             }, 1000);
 
-            // Redirect to thank you video page
             setTimeout(() => {
                 window.location.href = "thank-you.html";
             }, 3000);
         }
+
+        // Initialize First Word
+        window.addEventListener("DOMContentLoaded", loadQuestion);
     </script>
 </body>
 

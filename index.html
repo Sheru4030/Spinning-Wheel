@@ -218,7 +218,7 @@
 
     <div class="header-box">
         <h1>Activity Spin Wheel</h1>
-        <div class="sub-badge">RPI Team Presents</div>
+        <div class="sub-badge" id="spinCounterBadge">RPI Team Presents</div>
     </div>
 
     <div class="wheel-stage" id="wheelContainer">
@@ -242,18 +242,18 @@
     <div class="instruction-pill" id="statusToast">✨ Tap anywhere on the wheel to spin!</div>
 
     <script>
-        // 10 Segments mapped to your specific pages[cite: 1]
+        // 10 Segments mapped on wheel
         const segments = [
-            { text: "SPOT THE\nERROR", color: "#0d5ca8", icon: "🔍", url: "spot-the-error.html" },
-            { text: "TRUTH OR\nDARE", color: "#d9232a", icon: "🎭", url: "truth-or-dare.html" },
-            { text: "PRODUCT\nJOURNEY", color: "#083769", icon: "🛒", url: "product-journey.html" },
-            { text: "SING A\nSONG", color: "#e89923", icon: "🎤", url: "sing-a-song.html" },
-            { text: "BUYING OPS\nBLITZ", color: "#0277bd", icon: "⚡", url: "buying-ops-blitz.html" },
-            { text: "BEST MOMENT\nAT TESCO", color: "#6a2d8a", icon: "⭐", url: "best-moment.html" },
-            { text: "BUILD THE\nPRODUCT", color: "#004b91", icon: "📦", url: "build-the-product.html" },
-            { text: "TRUTH OR\nDARE", color: "#d9232a", icon: "🎭", url: "truth-or-dare.html" },
-            { text: "DEPOT\nALLOCATION", color: "#0a2e5c", icon: "🚚", url: "depot-allocation.html" },
-            { text: "MYSTERY\nBONUS ROUND", color: "#0288d1", icon: "🎁", url: "mystery-round.html" }
+            { id: "spot-error", text: "SPOT THE\nERROR", color: "#0d5ca8", icon: "🔍", url: "spot-the-error.html" },
+            { id: "truth-dare", text: "TRUTH OR\nDARE", color: "#d9232a", icon: "🎭", url: "truth-or-dare.html" },
+            { id: "product-journey", text: "PRODUCT\nJOURNEY", color: "#083769", icon: "🛒", url: "product-journey.html" },
+            { id: "depot-alloc", text: "DEPOT\nALLOCATION", color: "#e89923", icon: "🚚", url: "depot-allocation.html" },
+            { id: "buying-ops", text: "BUYING OPS\nBLITZ", color: "#0277bd", icon: "⚡", url: "buying-ops-blitz.html" },
+            { id: "word-quest", text: "WORD QUEST\nBLITZ", color: "#6a2d8a", icon: "🔤", url: "word-quest-blitz.html" },
+            { id: "build-product", text: "BUILD THE\nPRODUCT", color: "#004b91", icon: "📦", url: "build-the-product.html" },
+            { id: "truth-dare", text: "TRUTH OR\nDARE", color: "#d9232a", icon: "🎭", url: "truth-or-dare.html" },
+            { id: "depot-alloc", text: "DEPOT\nALLOCATION", color: "#0a2e5c", icon: "🚚", url: "depot-allocation.html" },
+            { id: "mystery-round", text: "MYSTERY\nBONUS ROUND", color: "#0288d1", icon: "🎁", url: "mystery-round.html" }
         ];
 
         const canvas = document.getElementById("wheelCanvas");
@@ -262,6 +262,7 @@
         const statusToast = document.getElementById("statusToast");
         const needle = document.getElementById("needle");
         const rim = document.getElementById("rimOverlay");
+        const spinCounterBadge = document.getElementById("spinCounterBadge");
 
         const totalSegments = segments.length;
         const arc = (2 * Math.PI) / totalSegments;
@@ -272,7 +273,85 @@
         let isSpinning = false;
 
         // -------------------------------------------------------------
-        // Synthesized Audio System (Zero external files needed)
+        // Spin History & Selection Tracking (with sessionStorage)
+        // -------------------------------------------------------------
+        let spinCount = parseInt(sessionStorage.getItem("spin_count") || "0", 10);
+        let lastPlayedGameId = sessionStorage.getItem("last_game_id") || "";
+        let remainingDeck = JSON.parse(sessionStorage.getItem("remaining_deck") || "[]");
+
+        function updateCounterDisplay() {
+            if (spinCount > 0) {
+                spinCounterBadge.innerText = `Spin #${spinCount + 1} | RPI Team`;
+            }
+        }
+        updateCounterDisplay();
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Returns which segment index to target
+        function determineNextSegmentIndex() {
+            const nextSpin = spinCount + 1;
+
+            // RULE 1: EVERY 3RD SPIN IS ALWAYS TRUTH OR DARE
+            if (nextSpin % 3 === 0) {
+                // Indices with truth-dare: index 1 and index 7
+                const tdIndices = [1, 7];
+                // Avoid using the same wedge index if previously played on it
+                const chosenIdx = tdIndices[Math.floor(Math.random() * tdIndices.length)];
+                lastPlayedGameId = "truth-dare";
+                return chosenIdx;
+            }
+
+            // RULE 2: ALL OTHER GAMES MUST NOT REPEAT BACK-TO-BACK & CYCLE THROUGH ALL GAMES
+            // Unique games excluding truth or dare
+            const regularGameIds = [
+                "spot-error",
+                "product-journey",
+                "depot-alloc",
+                "buying-ops",
+                "word-quest",
+                "build-product",
+                "mystery-round"
+            ];
+
+            // Replenish deck if empty
+            if (remainingDeck.length === 0) {
+                // Ensure the first item of new deck is not identical to lastPlayedGameId
+                let pool = shuffle([...regularGameIds]);
+                if (pool[0] === lastPlayedGameId && pool.length > 1) {
+                    const swapped = pool.pop();
+                    pool.unshift(swapped);
+                }
+                remainingDeck = pool;
+            }
+
+            // Pick next unique game
+            let targetGameId = remainingDeck.shift();
+            // In case of back-to-back match, pick another
+            if (targetGameId === lastPlayedGameId && remainingDeck.length > 0) {
+                remainingDeck.push(targetGameId);
+                targetGameId = remainingDeck.shift();
+            }
+
+            lastPlayedGameId = targetGameId;
+
+            // Find segment indices on the wheel matching this game
+            const matchingIndices = [];
+            segments.forEach((seg, idx) => {
+                if (seg.id === targetGameId) matchingIndices.push(idx);
+            });
+
+            return matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
+        }
+
+        // -------------------------------------------------------------
+        // Synthesized Audio System
         // -------------------------------------------------------------
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -290,14 +369,13 @@
             osc.start();
             osc.stop(audioCtx.currentTime + 0.05);
 
-            // Flap needle animation
             needle.style.transform = "rotate(-14deg)";
             setTimeout(() => { needle.style.transform = "rotate(0deg)"; }, 60);
         }
 
         function playVictoryChime() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            const notes = [523.25, 659.25, 783.99, 1046.50]; // C Major arpeggio
+            const notes = [523.25, 659.25, 783.99, 1046.50];
             notes.forEach((freq, idx) => {
                 setTimeout(() => {
                     const osc = audioCtx.createOscillator();
@@ -315,7 +393,7 @@
         }
 
         // -------------------------------------------------------------
-        // High-Resolution Wheel Rendering with Gradients & Polish
+        // Wheel Rendering
         // -------------------------------------------------------------
         function drawWheel() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -323,7 +401,6 @@
             for (let i = 0; i < totalSegments; i++) {
                 const angle = i * arc;
 
-                // Slice Wedge with Radial Shading for 3D depth
                 ctx.beginPath();
                 ctx.moveTo(center, center);
                 ctx.arc(center, center, radius, angle, angle + arc);
@@ -335,12 +412,10 @@
                 ctx.fillStyle = grad;
                 ctx.fill();
 
-                // White border dividers
                 ctx.lineWidth = 4;
                 ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
                 ctx.stroke();
 
-                // Draw Upright Segment Text
                 ctx.save();
                 ctx.translate(center, center);
                 ctx.rotate(angle + arc / 2);
@@ -351,19 +426,18 @@
                 ctx.shadowColor = "rgba(0,0,0,0.6)";
                 ctx.shadowBlur = 6;
                 ctx.shadowOffsetY = 2;
-                ctx.font = "900 28px 'Montserrat', sans-serif";
+                ctx.font = "900 27px 'Montserrat', sans-serif";
 
                 const lines = segments[i].text.split("\n");
                 const outerOffset = radius * 0.73;
 
                 if (lines.length > 1) {
-                    ctx.fillText(lines[0], outerOffset, -16);
-                    ctx.fillText(lines[1], outerOffset, 16);
+                    ctx.fillText(lines[0], outerOffset, -15);
+                    ctx.fillText(lines[1], outerOffset, 17);
                 } else {
                     ctx.fillText(lines[0], outerOffset, 0);
                 }
 
-                // Inner Icons
                 ctx.shadowBlur = 0;
                 ctx.font = "44px sans-serif";
                 ctx.fillText(segments[i].icon, radius * 0.38, 0);
@@ -379,7 +453,6 @@
             ctx.stroke();
         }
 
-        // Helper for darker wedge edges
         function shadeColor(color, percent) {
             let num = parseInt(color.replace("#", ""), 16),
                 amt = Math.round(2.55 * percent),
@@ -392,7 +465,7 @@
         drawWheel();
 
         // -------------------------------------------------------------
-        // Build 12 Vegas Rim Light Bulbs
+        // Rim Light Bulbs
         // -------------------------------------------------------------
         const bulbs = [];
         const numBulbs = 12;
@@ -409,7 +482,6 @@
             bulbs.push(b);
         }
 
-        // Pulsing / Chasing Bulbs while idle
         let bulbStep = 0;
         setInterval(() => {
             bulbs.forEach((bulb, idx) => {
@@ -423,10 +495,9 @@
         }, 450);
 
         // -------------------------------------------------------------
-        // Fullscreen Multi-Cannon Confetti Fiesta
+        // Confetti Celebration
         // -------------------------------------------------------------
         function triggerMassiveConfetti() {
-            // 1. Center burst
             confetti({
                 particleCount: 150,
                 spread: 100,
@@ -434,7 +505,6 @@
                 colors: ['#ffd166', '#ef476f', '#06d6a0', '#118ab2', '#073b4c']
             });
 
-            // 2. Continuous side cannons
             const duration = 1500;
             const end = Date.now() + duration;
 
@@ -459,7 +529,6 @@
                 }
             })();
 
-            // 3. Falling gold star shower
             setTimeout(() => {
                 confetti({
                     particleCount: 50,
@@ -476,7 +545,7 @@
         }
 
         // -------------------------------------------------------------
-        // Spin Mechanics with Dynamic Audio Tick Tracking
+        // Exact-Target Spin Execution
         // -------------------------------------------------------------
         function startSpin() {
             if (isSpinning) return;
@@ -485,27 +554,42 @@
             statusToast.classList.add("spinning");
             statusToast.innerText = "⚡ Spinning in progress...";
 
-            // Random 6-9 complete spins + target angle
-            const extraAngle = Math.floor(Math.random() * 360);
-            const spinDelta = 360 * 7 + extraAngle;
+            // 1. Pick target segment adhering to all constraints
+            const chosenIndex = determineNextSegmentIndex();
+            const chosen = segments[chosenIndex];
+
+            // 2. Calculate exact angle needed so the pointer (at 270° / top) points at center of chosenIndex
+            // Segment center in canvas space = (chosenIndex + 0.5) * (360 / totalSegments)
+            // Needle points at top (270°). To align segment center with 270°:
+            // (currentRotation + spinDelta + segmentCenter) % 360 === 270
+            const degPerSegment = 360 / totalSegments;
+            const segmentCenter = (chosenIndex + 0.5) * degPerSegment;
+            const targetMod = (270 - segmentCenter + 360) % 360;
+
+            const currentMod = currentRotation % 360;
+            let forwardDelta = (targetMod - currentMod + 360) % 360;
+
+            // Add 6 to 8 full spins so it twirls fast and dramatically
+            const fullSpins = (6 + Math.floor(Math.random() * 3)) * 360;
+            const spinDelta = fullSpins + forwardDelta;
+
             const startRot = currentRotation;
             const targetRot = currentRotation + spinDelta;
             currentRotation = targetRot;
 
             canvas.style.transform = `rotate(${currentRotation}deg)`;
 
-            // Audio Ticker Simulation based on decelerating bezier curve
+            // 3. Audio tick tracking
             let lastSliceIndex = -1;
             const startTime = performance.now();
             const duration = 5000;
 
             function checkTicks(now) {
                 const progress = Math.min((now - startTime) / duration, 1);
-                // Approximate cubic-bezier deceleration
                 const easeOut = 1 - Math.pow(1 - progress, 3.5);
                 const currentDeg = startRot + spinDelta * easeOut;
 
-                const currentSlice = Math.floor(currentDeg / (360 / totalSegments));
+                const currentSlice = Math.floor(currentDeg / degPerSegment);
                 if (currentSlice !== lastSliceIndex) {
                     playTickSound();
                     lastSliceIndex = currentSlice;
@@ -517,23 +601,23 @@
             }
             requestAnimationFrame(checkTicks);
 
-            // On Spin Finish
+            // 4. On finish landing
             setTimeout(() => {
                 isSpinning = false;
                 statusToast.classList.remove("spinning");
 
-                const normalizedDeg = (currentRotation % 360);
-                const topDeg = (360 - normalizedDeg + 270) % 360;
-                const selectedIndex = Math.floor(topDeg / (360 / totalSegments)) % totalSegments;
-                const chosen = segments[selectedIndex];
+                // Save state to sessionStorage
+                spinCount++;
+                sessionStorage.setItem("spin_count", spinCount.toString());
+                sessionStorage.setItem("last_game_id", lastPlayedGameId);
+                sessionStorage.setItem("remaining_deck", JSON.stringify(remainingDeck));
+                updateCounterDisplay();
 
-                // Play Victory Chime & Multi-Cannon Confetti
                 playVictoryChime();
                 triggerMassiveConfetti();
 
                 statusToast.innerText = `🎉 Selected: ${chosen.text.replace("\n", " ")}! Launching...`;
 
-                // 2.4s pause so the confetti celebration is visible before redirecting
                 setTimeout(() => {
                     window.location.href = chosen.url;
                 }, 2400);

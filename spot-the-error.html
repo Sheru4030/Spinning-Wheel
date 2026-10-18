@@ -179,10 +179,10 @@
         }
 
         .pack-details-strip {
-            font-size: 0.78rem;
+            font-size: 0.82rem;
             font-weight: 700;
             color: #1565c0;
-            line-height: 1.35;
+            line-height: 1.45;
         }
 
         .how-to-play {
@@ -255,7 +255,7 @@
             display: grid;
             grid-template-columns: 180px 1fr 36px;
             align-items: center;
-            padding: 12px 20px;
+            padding: 13px 20px;
             border-bottom: 1px solid #eef4f9;
             cursor: pointer;
             user-select: none;
@@ -432,7 +432,7 @@
             color: #7b9bb6;
         }
 
-        /* Question & Progression Tracker */
+        /* 3-Question Tracker */
         .question-nav {
             background: #002d62;
             border-radius: 16px;
@@ -475,19 +475,19 @@
         .q-dots {
             display: flex;
             justify-content: center;
-            gap: 8px;
+            gap: 12px;
         }
 
         .q-dot {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.2);
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.82rem;
+            font-size: 0.9rem;
             font-weight: 800;
             transition: all 0.25s ease;
             border: 2px solid transparent;
@@ -719,7 +719,7 @@
                     <div class="pack-category" id="packCategory"></div>
                     <div class="product-art-preview">
                         <div class="milk-pack-visual">
-                            <div class="pack-badge-brand">TESCO</div>
+                            <div class="pack-badge-brand" id="packBrandBadge">Tesco</div>
                             <div class="pack-badge-title" id="packTitle"></div>
                             <div class="pack-illustration" id="packIcon"></div>
                             <div class="pack-details-strip" id="packDetails"></div>
@@ -731,7 +731,7 @@
                     <h3>💡 How to play</h3>
                     <ol>
                         <li>Compare the <strong>artwork image</strong> above with the record on the right.</li>
-                        <li>Spot the incorrect field (name, format, or values).</li>
+                        <li>Spot the incorrect field (name, barcode, or values).</li>
                         <li><strong>Click the field row</strong> to submit before 00:30!</li>
                     </ol>
                 </div>
@@ -764,21 +764,19 @@
                     </div>
                 </div>
 
-                <!-- Cumulative Score Display -->
+                <!-- Cumulative Score Display (Out of 3) -->
                 <div class="score-card">
                     <div class="score-label">Score</div>
-                    <div class="score-value" id="scoreDisplay">0 <span>/ 10</span></div>
+                    <div class="score-value" id="scoreDisplay">0 <span>/ 3</span></div>
                 </div>
 
-                <!-- Highlighted Question & Dot Progression Tracker -->
+                <!-- 3 Questions Dot Progression Tracker -->
                 <div class="question-nav">
-                    <div class="q-label" id="questionTrackerText">Question 1 of 5</div>
+                    <div class="q-label" id="questionTrackerText">Question 1 of 3</div>
                     <div class="q-dots">
                         <div class="q-dot active" id="dot1">1</div>
                         <div class="q-dot" id="dot2">2</div>
                         <div class="q-dot" id="dot3">3</div>
-                        <div class="q-dot" id="dot4">4</div>
-                        <div class="q-dot" id="dot5">5</div>
                     </div>
                 </div>
 
@@ -791,9 +789,9 @@
         <div class="bottom-info-strip">
             <div class="info-card">
                 <h4>🎯 Remember</h4>
-                <div>• Check spelling, digits, and format (e.g. units, sizes).</div>
-                <div>• Ensure record strictly matches approved artwork specifications.</div>
-                <div>• Accurate data ensures products get onto store shelves on time!</div>
+                <div>Check spelling, barcode digits, and measurement units closely.</div>
+                <div>Ensure the record strictly matches approved packaging specifications.</div>
+                <div>Accurate data ensures products get onto store shelves on time!</div>
             </div>
 
             <div class="info-card">
@@ -820,7 +818,7 @@
     <div class="results-modal-backdrop" id="resultsModal">
         <div class="results-modal">
             <h2 id="modalHeadline">Challenge Complete!</h2>
-            <div class="results-score-pill" id="finalScorePill">0 / 10</div>
+            <div class="results-score-pill" id="finalScorePill">0 / 3</div>
             <div class="results-explanation" id="modalExplanation"></div>
 
             <div class="redirect-note" id="redirectNotice" style="display: none;">
@@ -829,155 +827,164 @@
             </div>
 
             <div class="modal-btn-row">
-                <button class="btn-action btn-retry" id="playAgainBtn" onclick="handlePlayAgain()">🔄 Play
-                    Again</button>
+                <button class="btn-action btn-retry" id="playAgainBtn" onclick="handlePlayAgain()">🔄 Next
+                    Question</button>
                 <a href="thank-you.html" class="btn-action btn-finish" id="modalFinishBtn">🎬 Go to Video</a>
             </div>
         </div>
     </div>
 
     <script>
+        // Fields with Brand included and Artwork completely removed
         const FIELDS = [
             { key: "barcode", icon: "🏷️", label: "Barcode" },
             { key: "product_name", icon: "📦", label: "Product Name" },
             { key: "department", icon: "🏬", label: "Department" },
             { key: "weight", icon: "⚖️", label: "Weight / Size" },
             { key: "dimensions", icon: "📐", label: "Dimensions" },
-            { key: "supplier", icon: "👥", label: "Supplier" },
-            { key: "artwork", icon: "🖼️", label: "Artwork" }
+            { key: "brand", icon: "🏷️", label: "Brand" }
         ];
 
-        // 20 PRODUCTS POOL
+        // 20 PRODUCTS POOL WITH BARCODE LAST 2 DIGITS INVERSIONS/CHANGES
         const RECORDS = [
             {
+                category: "Condiments & Sauces", short: "CND",
+                pack: { brand: "Tesco Finest", title: "Extra Virgin Olive Oil", icon: "🫒🍶", dept: "Oils & Vinegars", lines: ["500 ml glass bottle", "Bottle: 26 x 6 x 6 cm"], barcode: "5012345600196" },
+                values: { barcode: "5012345600169", product_name: "Tesco Finest Extra Virgin Olive Oil", department: "Oils & Vinegars", weight: "500 ml", dimensions: "26 x 6 x 6 cm", brand: "Tesco Finest" },
+                errorKey: "barcode", reason: "Barcode mismatch! The packaging shows barcode ending in <strong>...96</strong>, but the record has transposed digits ending in <strong>...69</strong>."
+            },
+            {
                 category: "Dairy & Chilled", short: "DAIRY",
-                pack: { title: "British Whole Milk", icon: "🥛🐄", dept: "Dairy & Chilled", lines: ["1 Litre (1 Ltr)", "Supplier: Dairy Farmers Ltd", "Pack: 23 x 12 x 10 cm"], barcode: "5012345678901", asset: "Artwork_V2.jpg" },
-                values: { barcode: "5012345678901", product_name: "Tesco Organic Milk", department: "Dairy & Chilled", weight: "1 Ltr", dimensions: "23 x 12 x 10 cm", supplier: "Dairy Farmers Ltd", artwork: "Artwork_V2.jpg" },
+                pack: { brand: "Tesco", title: "British Whole Milk", icon: "🥛🐄", dept: "Dairy & Chilled", lines: ["1 Litre (1 Ltr)", "Pack: 23 x 12 x 10 cm"], barcode: "5012345678901" },
+                values: { barcode: "5012345678901", product_name: "Tesco Organic Milk", department: "Dairy & Chilled", weight: "1 Ltr", dimensions: "23 x 12 x 10 cm", brand: "Tesco" },
                 errorKey: "product_name", reason: "The artwork specifies <strong>'British Whole Milk'</strong>, but the record incorrectly entered <strong>'Tesco Organic Milk'</strong>."
             },
             {
                 category: "Household", short: "HH",
-                pack: { title: "Antibacterial Kitchen Cleaner", icon: "🧽🧴", dept: "Household Cleaning", lines: ["750 ml spray", "Supplier: CleanCo Ltd", "Pack size: 24 x 8 x 6 cm"], barcode: "5012345600011", asset: "Artwork_Cleaner_V1.jpg" },
-                values: { barcode: "5012345600011", product_name: "Tesco Antibacterial Kitchen Cleaner", department: "Household Cleaning", weight: "750 ml", dimensions: "42 x 8 x 6 cm", supplier: "CleanCo Ltd", artwork: "Artwork_Cleaner_V1.jpg" },
-                errorKey: "dimensions", reason: "The artwork shows pack size <strong>24 x 8 x 6 cm</strong>, but the record has digits swapped as <strong>42 x 8 x 6 cm</strong>."
+                pack: { brand: "CleanPro", title: "Antibacterial Kitchen Cleaner", icon: "🧽🧴", dept: "Household Cleaning", lines: ["750 ml spray", "Pack size: 24 x 8 x 6 cm"], barcode: "5012345600011" },
+                values: { barcode: "5012345600011", product_name: "CleanPro Antibacterial Kitchen Cleaner", department: "Household Cleaning", weight: "750 ml", dimensions: "42 x 8 x 6 cm", brand: "CleanPro" },
+                errorKey: "dimensions", reason: "The artwork shows pack size <strong>24 x 8 x 6 cm</strong>, but the record has dimensions swapped as <strong>42 x 8 x 6 cm</strong>."
             },
             {
-                category: "Toys & Entertainment", short: "ENT",
-                pack: { title: "Kids Jigsaw Puzzle", icon: "🧩🎨", dept: "Toys & Games", lines: ["100 pieces · Age 5+", "Supplier: PlayTime Toys Ltd", "Box: 30 x 22 x 5 cm"], barcode: "5012345600028", asset: "Artwork_Jigsaw_V3.jpg" },
-                values: { barcode: "5012345600028", product_name: "Tesco Kids Jigsaw Puzzle", department: "Toys & Games", weight: "200 pieces", dimensions: "30 x 22 x 5 cm", supplier: "PlayTime Toys Ltd", artwork: "Artwork_Jigsaw_V3.jpg" },
+                category: "Snacks", short: "SNK",
+                pack: { brand: "Tesco", title: "Lightly Salted Tortilla Chips", icon: "🌽🌮", dept: "Crisps & Snacks", lines: ["200 g sharing bag", "Bag: 28 x 18 x 6 cm"], barcode: "5012345600172" },
+                values: { barcode: "5012345600127", product_name: "Tesco Lightly Salted Tortilla Chips", department: "Crisps & Snacks", weight: "200 g", dimensions: "28 x 18 x 6 cm", brand: "Tesco" },
+                errorKey: "barcode", reason: "Barcode mismatch! The packaging ends with <strong>...72</strong>, but the record incorrectly swapped the last two digits to <strong>...27</strong>."
+            },
+            {
+                category: "Toys & Games", short: "ENT",
+                pack: { brand: "PlayTime", title: "Kids Jigsaw Puzzle", icon: "🧩🎨", dept: "Toys & Games", lines: ["100 pieces · Age 5+", "Box: 30 x 22 x 5 cm"], barcode: "5012345600028" },
+                values: { barcode: "5012345600028", product_name: "PlayTime Kids Jigsaw Puzzle", department: "Toys & Games", weight: "200 pieces", dimensions: "30 x 22 x 5 cm", brand: "PlayTime" },
                 errorKey: "weight", reason: "The artwork specifies <strong>100 pieces</strong>, but the record incorrectly states <strong>200 pieces</strong>."
             },
             {
                 category: "Fresh Produce", short: "PRD",
-                pack: { title: "Finest Cherry Tomatoes", icon: "🍅🌿", dept: "Fresh Produce", lines: ["250 g punnet", "Supplier: Fresh Fields Ltd", "Punnet: 14 x 10 x 6 cm"], barcode: "5012345600035", asset: "Artwork_Tomatoes_V2.jpg" },
-                values: { barcode: "5012345600035", product_name: "Tesco Finest Cherry Tomatoes", department: "Fresh Produce", weight: "250 g", dimensions: "14 x 10 x 6 cm", supplier: "Fresh Fiels Ltd", artwork: "Artwork_Tomatoes_V2.jpg" },
-                errorKey: "supplier", reason: "Typo in supplier name! The artwork says <strong>Fresh Fields Ltd</strong>, but the record logged <strong>Fresh Fiels Ltd</strong>."
+                pack: { brand: "Tesco Finest", title: "Cherry Tomatoes", icon: "🍅🌿", dept: "Fresh Produce", lines: ["250 g punnet", "Punnet: 14 x 10 x 6 cm"], barcode: "5012345600035" },
+                values: { barcode: "5012345600035", product_name: "Tesco Finest Cherry Tomatoes", department: "Fresh Produce", weight: "250 g", dimensions: "14 x 10 x 6 cm", brand: "Tesco Everyday" },
+                errorKey: "brand", reason: "Brand mismatch! The packaging shows <strong>Tesco Finest</strong>, but the record logged <strong>Tesco Everyday</strong>."
             },
             {
-                category: "Seasonal Home", short: "SH",
-                pack: { title: "Christmas Scented Candle", icon: "🕯️🎄", dept: "Seasonal & Gifts", lines: ["Cinnamon & Orange · 220 g", "Supplier: Glow Home Ltd", "Jar: 9 x 9 x 10 cm"], barcode: "5012345600042", asset: "Artwork_Xmas_Candle_V1.jpg" },
-                values: { barcode: "5012345600042", product_name: "Tesco Christmas Scented Candle", department: "Seasonal & Gifts", weight: "220 g", dimensions: "9 x 9 x 10 cm", supplier: "Glow Home Ltd", artwork: "Artwork_Easter_Candle_V1.jpg" },
-                errorKey: "artwork", reason: "Wrong asset link! The artwork states <strong>Artwork_Xmas_Candle_V1.jpg</strong>, but the record links to <strong>Artwork_Easter_Candle_V1.jpg</strong>."
-            },
-            {
-                category: "Greetings & Stationery", short: "CARDS",
-                pack: { title: "Birthday Card - Age 40", icon: "🎂🎈", dept: "Stationery & Cards", lines: ["1 card (A5)", "Supplier: Card Studio Ltd", "Size: 21 x 14.8 x 0.5 cm"], barcode: "5012345600059", asset: "Artwork_Card40_V1.jpg" },
-                values: { barcode: "5012345600059", product_name: "Tesco Birthday Card - Age 30", department: "Stationery & Cards", weight: "1 card (A5)", dimensions: "21 x 14.8 x 0.5 cm", supplier: "Card Studio Ltd", artwork: "Artwork_Card40_V1.jpg" },
+                category: "Greetings", short: "CARDS",
+                pack: { brand: "CardStudio", title: "Birthday Card - Age 40", icon: "🎂🎈", dept: "Stationery & Cards", lines: ["1 card (A5)", "Size: 21 x 14.8 x 0.5 cm"], barcode: "5012345600059" },
+                values: { barcode: "5012345600059", product_name: "CardStudio Birthday Card - Age 30", department: "Stationery & Cards", weight: "1 card (A5)", dimensions: "21 x 14.8 x 0.5 cm", brand: "CardStudio" },
                 errorKey: "product_name", reason: "The card artwork explicitly says <strong>Age 40</strong>, while the record has logged <strong>Age 30</strong>."
             },
             {
                 category: "Pet Care", short: "PET",
-                pack: { title: "Dry Dog Food - Chicken & Rice", icon: "🐕🦴", dept: "Pet Food & Care", lines: ["2 kg bag", "Supplier: Pawfect Foods Ltd", "Bag: 40 x 25 x 10 cm"], barcode: "5012345600066", asset: "Artwork_DogFood_V2.jpg" },
-                values: { barcode: "501234560006", product_name: "Tesco Dry Dog Food - Chicken & Rice", department: "Pet Food & Care", weight: "2 kg", dimensions: "40 x 25 x 10 cm", supplier: "Pawfect Foods Ltd", artwork: "Artwork_DogFood_V2.jpg" },
-                errorKey: "barcode", reason: "Truncated barcode! The artwork barcode has 13 digits (<strong>5012345600066</strong>), while the record has only 12."
+                pack: { brand: "Pawfect", title: "Dry Dog Food - Chicken", icon: "🐕🦴", dept: "Pet Care", lines: ["2 kg bag", "Bag: 40 x 25 x 10 cm"], barcode: "5012345600066" },
+                values: { barcode: "5012345600088", product_name: "Pawfect Dry Dog Food - Chicken", department: "Pet Care", weight: "2 kg", dimensions: "40 x 25 x 10 cm", brand: "Pawfect" },
+                errorKey: "barcode", reason: "Barcode mismatch! The packaging barcode ends in <strong>...66</strong>, but the record has <strong>...88</strong>."
             },
             {
                 category: "Health & Beauty", short: "HBW",
-                pack: { title: "Vitamin C 1000 mg Tablets", icon: "💊🍊", dept: "Health & Wellness", lines: ["60 tablets", "Supplier: VitaCare Ltd", "Tub: 6 x 6 x 11 cm"], barcode: "5012345600073", asset: "Artwork_VitC_V1.jpg" },
-                values: { barcode: "5012345600073", product_name: "Tesco Vitamin C 1000 mg Tablets", department: "Health & Wellness", weight: "30 tablets", dimensions: "6 x 6 x 11 cm", supplier: "VitaCare Ltd", artwork: "Artwork_VitC_V1.jpg" },
+                pack: { brand: "VitaCare", title: "Vitamin C 1000 mg", icon: "💊🍊", dept: "Health & Wellness", lines: ["60 tablets", "Tub: 6 x 6 x 11 cm"], barcode: "5012345600073" },
+                values: { barcode: "5012345600073", product_name: "VitaCare Vitamin C 1000 mg", department: "Health & Wellness", weight: "30 tablets", dimensions: "6 x 6 x 11 cm", brand: "VitaCare" },
                 errorKey: "weight", reason: "Pack count mismatch! Artwork shows <strong>60 tablets</strong>, but record was entered as <strong>30 tablets</strong>."
             },
             {
                 category: "Bakery", short: "BKR",
-                pack: { title: "Wholemeal Toastie Bread", icon: "🍞🌾", dept: "Bakery", lines: ["800 g sliced loaf", "Supplier: Kingsmill Mills Ltd", "Pack: 28 x 12 x 12 cm"], barcode: "5012345600080", asset: "Artwork_Bread_V1.jpg" },
-                values: { barcode: "5012345600080", product_name: "Tesco Wholemeal Toastie Bread", department: "Frozen Foods", weight: "800 g", dimensions: "28 x 12 x 12 cm", supplier: "Kingsmill Mills Ltd", artwork: "Artwork_Bread_V1.jpg" },
+                pack: { brand: "Kingsmill", title: "Wholemeal Toastie Bread", icon: "🍞🌾", dept: "Bakery", lines: ["800 g sliced loaf", "Pack: 28 x 12 x 12 cm"], barcode: "5012345600080" },
+                values: { barcode: "5012345600080", product_name: "Kingsmill Wholemeal Toastie Bread", department: "Frozen Foods", weight: "800 g", dimensions: "28 x 12 x 12 cm", brand: "Kingsmill" },
                 errorKey: "department", reason: "Wrong Department! Wholemeal bread belongs in <strong>Bakery</strong>, not <strong>Frozen Foods</strong>."
             },
             {
                 category: "Beverages", short: "BEV",
-                pack: { title: "Pure Orange Juice Smooth", icon: "🧃🍊", dept: "Chilled Juices", lines: ["1 Litre (1 Ltr)", "Supplier: Citrus Grove Ltd", "Carton: 20 x 7 x 7 cm"], barcode: "5012345600097", asset: "Artwork_Orange_V4.jpg" },
-                values: { barcode: "5012345600097", product_name: "Tesco Pure Orange Juice Smooth", department: "Chilled Juices", weight: "1 Ltr", dimensions: "20 x 7 x 7 cm", supplier: "Sunny Citrus Co", artwork: "Artwork_Orange_V4.jpg" },
-                errorKey: "supplier", reason: "The supplier on the pack is <strong>Citrus Grove Ltd</strong>, but the record incorrectly entered <strong>Sunny Citrus Co</strong>."
+                pack: { brand: "Citrus Grove", title: "Pure Orange Juice Smooth", icon: "🧃🍊", dept: "Chilled Juices", lines: ["1 Litre (1 Ltr)", "Carton: 20 x 7 x 7 cm"], barcode: "5012345600097" },
+                values: { barcode: "5012345600079", product_name: "Citrus Grove Pure Orange Juice Smooth", department: "Chilled Juices", weight: "1 Ltr", dimensions: "20 x 7 x 7 cm", brand: "Citrus Grove" },
+                errorKey: "barcode", reason: "Barcode digits transposed! Artwork barcode ends in <strong>...97</strong>, while the record shows <strong>...79</strong>."
             },
             {
                 category: "Frozen Foods", short: "FRZ",
-                pack: { title: "Finest Battered Cod Fillets", icon: "🐟❄️", dept: "Frozen Foods", lines: ["400 g (2 fillets)", "Supplier: Ocean Fresh Seafood Ltd", "Box: 22 x 16 x 4 cm"], barcode: "5012345600103", asset: "Artwork_Cod_V2.jpg" },
-                values: { barcode: "5012345600103", product_name: "Tesco Finest Battered Haddock Fillets", department: "Frozen Foods", weight: "400 g", dimensions: "22 x 16 x 4 cm", supplier: "Ocean Fresh Seafood Ltd", artwork: "Artwork_Cod_V2.jpg" },
-                errorKey: "product_name", reason: "Fish species mismatch! Artwork is <strong>Battered Cod Fillets</strong>, but record was saved as <strong>Battered Haddock</strong>."
+                pack: { brand: "Tesco Finest", title: "Battered Cod Fillets", icon: "🐟❄️", dept: "Frozen Foods", lines: ["400 g (2 fillets)", "Box: 22 x 16 x 4 cm"], barcode: "5012345600103" },
+                values: { barcode: "5012345600103", product_name: "Tesco Finest Battered Haddock Fillets", department: "Frozen Foods", weight: "400 g", dimensions: "22 x 16 x 4 cm", brand: "Tesco Finest" },
+                errorKey: "product_name", reason: "Fish species mismatch! Artwork is <strong>Battered Cod Fillets</strong>, but record was entered as <strong>Battered Haddock</strong>."
             },
             {
                 category: "Grocery & Pantry", short: "PNT",
-                pack: { title: "Italian Chopped Tomatoes in Juice", icon: "🥫🍅", dept: "Canned Goods", lines: ["400 g can", "Supplier: Mediterranean Foods Ltd", "Can: 11 x 7.5 x 7.5 cm"], barcode: "5012345600110", asset: "Artwork_CanTom_V1.jpg" },
-                values: { barcode: "5012345600110", product_name: "Tesco Italian Chopped Tomatoes in Juice", department: "Canned Goods", weight: "500 g", dimensions: "11 x 7.5 x 7.5 cm", supplier: "Mediterranean Foods Ltd", artwork: "Artwork_CanTom_V1.jpg" },
-                errorKey: "weight", reason: "Standard can size on artwork is <strong>400 g</strong>, but recorded as <strong>500 g</strong>."
+                pack: { brand: "Napolina", title: "Chopped Italian Tomatoes", icon: "🥫🍅", dept: "Canned Goods", lines: ["400 g can", "Can: 11 x 7.5 x 7.5 cm"], barcode: "5012345600110" },
+                values: { barcode: "5012345600110", product_name: "Napolina Chopped Italian Tomatoes", department: "Canned Goods", weight: "500 g", dimensions: "11 x 7.5 x 7.5 cm", brand: "Napolina" },
+                errorKey: "weight", reason: "Standard can size on artwork is <strong>400 g</strong>, but entered as <strong>500 g</strong>."
             },
             {
                 category: "Confectionery", short: "CNF",
-                pack: { title: "Swiss Dark Chocolate 70%", icon: "🍫🇨🇭", dept: "Confectionery", lines: ["100 g bar", "Supplier: Alps Confectionery AG", "Bar: 18 x 9 x 1 cm"], barcode: "5012345600127", asset: "Artwork_DarkChoc_V2.jpg" },
-                values: { barcode: "5012345600127", product_name: "Tesco Swiss Milk Chocolate 70%", department: "Confectionery", weight: "100 g", dimensions: "18 x 9 x 1 cm", supplier: "Alps Confectionery AG", artwork: "Artwork_DarkChoc_V2.jpg" },
-                errorKey: "product_name", reason: "Artwork specifies <strong>Swiss Dark Chocolate 70%</strong>, but the record was mistyped as <strong>Milk Chocolate</strong>."
+                pack: { brand: "Lindt", title: "Swiss Dark Chocolate 70%", icon: "🍫🇨🇭", dept: "Confectionery", lines: ["100 g bar", "Bar: 18 x 9 x 1 cm"], barcode: "5012345600127" },
+                values: { barcode: "5012345600127", product_name: "Lindt Swiss Milk Chocolate 70%", department: "Confectionery", weight: "100 g", dimensions: "18 x 9 x 1 cm", brand: "Lindt" },
+                errorKey: "product_name", reason: "Artwork specifies <strong>Dark Chocolate 70%</strong>, but the record was mistyped as <strong>Milk Chocolate</strong>."
             },
             {
                 category: "Hot Beverages", short: "BEV",
-                pack: { title: "Gold Roast Instant Coffee", icon: "☕✨", dept: "Hot Beverages", lines: ["200 g jar", "Supplier: Roast Masters Ltd", "Jar: 18 x 9 x 9 cm"], barcode: "5012345600134", asset: "Artwork_GoldCoffee_V1.jpg" },
-                values: { barcode: "5012345600134", product_name: "Tesco Gold Roast Instant Coffee", department: "Hot Beverages", weight: "200 g", dimensions: "28 x 9 x 9 cm", supplier: "Roast Masters Ltd", artwork: "Artwork_GoldCoffee_V1.jpg" },
+                pack: { brand: "Nescafe", title: "Gold Roast Instant Coffee", icon: "☕✨", dept: "Hot Beverages", lines: ["200 g jar", "Jar: 18 x 9 x 9 cm"], barcode: "5012345600134" },
+                values: { barcode: "5012345600134", product_name: "Nescafe Gold Roast Instant Coffee", department: "Hot Beverages", weight: "200 g", dimensions: "28 x 9 x 9 cm", brand: "Nescafe" },
                 errorKey: "dimensions", reason: "Height error! Artwork specifies <strong>18 x 9 x 9 cm</strong>, but record has an inflated height of <strong>28 x 9 x 9 cm</strong>."
             },
             {
                 category: "Bakery & Biscuits", short: "BSC",
-                pack: { title: "All Butter Shortbread Fingers", icon: "🍪🧈", dept: "Biscuits", lines: ["210 g pack", "Supplier: Highland Bakery Ltd", "Box: 20 x 8 x 4 cm"], barcode: "5012345600141", asset: "Artwork_Shortbread_V1.jpg" },
-                values: { barcode: "5012345600141", product_name: "Tesco All Butter Shortbread Fingers", department: "Fresh Produce", weight: "210 g", dimensions: "20 x 8 x 4 cm", supplier: "Highland Bakery Ltd", artwork: "Artwork_Shortbread_V1.jpg" },
+                pack: { brand: "Walkers", title: "Pure Butter Shortbread", icon: "🍪🧈", dept: "Biscuits", lines: ["210 g pack", "Box: 20 x 8 x 4 cm"], barcode: "5012345600141" },
+                values: { barcode: "5012345600141", product_name: "Walkers Pure Butter Shortbread", department: "Fresh Produce", weight: "210 g", dimensions: "20 x 8 x 4 cm", brand: "Walkers" },
                 errorKey: "department", reason: "Wrong Department! Shortbread biscuits belong under <strong>Biscuits</strong>, not <strong>Fresh Produce</strong>."
             },
             {
                 category: "Baby Care", short: "BBY",
-                pack: { title: "Fragrance Free Baby Wipes", icon: "👶🍼", dept: "Baby Care", lines: ["64 wipes pack", "Supplier: Gentle Care Ltd", "Pack: 16 x 10 x 5 cm"], barcode: "5012345600158", asset: "Artwork_BabyWipes_V3.jpg" },
-                values: { barcode: "5012345600158", product_name: "Tesco Fragrance Free Baby Wipes", department: "Baby Care", weight: "64 wipes", dimensions: "16 x 10 x 5 cm", supplier: "Gentle Care Ltd", artwork: "Artwork_BabyWipes_V1.jpg" },
-                errorKey: "artwork", reason: "Obsolete artwork asset! The current pack uses <strong>Artwork_BabyWipes_V3.jpg</strong>, but the record links to <strong>V1</strong>."
+                pack: { brand: "Pampers", title: "Fragrance Free Wipes", icon: "👶🍼", dept: "Baby Care", lines: ["64 wipes pack", "Pack: 16 x 10 x 5 cm"], barcode: "5012345600158" },
+                values: { barcode: "5012345600185", product_name: "Pampers Fragrance Free Wipes", department: "Baby Care", weight: "64 wipes", dimensions: "16 x 10 x 5 cm", brand: "Pampers" },
+                errorKey: "barcode", reason: "Barcode mismatch! The packaging shows <strong>...58</strong>, but the record shows swapped digits <strong>...85</strong>."
             },
             {
                 category: "Laundry", short: "LND",
-                pack: { title: "Bio Laundry Liquid Detergent", icon: "🧺🫧", dept: "Laundry Care", lines: ["1.5 Litres (42 Washes)", "Supplier: CleanCo Ltd", "Bottle: 30 x 14 x 9 cm"], barcode: "5012345600165", asset: "Artwork_BioLaundry_V2.jpg" },
-                values: { barcode: "5012345600165", product_name: "Tesco Non-Bio Laundry Liquid Detergent", department: "Laundry Care", weight: "1.5 Litres", dimensions: "30 x 14 x 9 cm", supplier: "CleanCo Ltd", artwork: "Artwork_BioLaundry_V2.jpg" },
+                pack: { brand: "Persil", title: "Bio Laundry Detergent", icon: "🧺🫧", dept: "Laundry Care", lines: ["1.5 Litres (42 Washes)", "Bottle: 30 x 14 x 9 cm"], barcode: "5012345600165" },
+                values: { barcode: "5012345600165", product_name: "Persil Non-Bio Laundry Detergent", department: "Laundry Care", weight: "1.5 Litres", dimensions: "30 x 14 x 9 cm", brand: "Persil" },
                 errorKey: "product_name", reason: "Critical allergy mismatch! Artwork is <strong>Bio</strong>, but record was entered as <strong>Non-Bio</strong>."
             },
             {
-                category: "Snacks", short: "SNK",
-                pack: { title: "Lightly Salted Tortilla Chips", icon: "🌽🌮", dept: "Crisps & Snacks", lines: ["200 g sharing bag", "Supplier: SnackWorks UK Ltd", "Bag: 28 x 18 x 6 cm"], barcode: "5012345600172", asset: "Artwork_Tortilla_V1.jpg" },
-                values: { barcode: "5012345600999", product_name: "Tesco Lightly Salted Tortilla Chips", department: "Crisps & Snacks", weight: "200 g", dimensions: "28 x 18 x 6 cm", supplier: "SnackWorks UK Ltd", artwork: "Artwork_Tortilla_V1.jpg" },
-                errorKey: "barcode", reason: "Barcode mismatch! Artwork barcode is <strong>5012345600172</strong>, but record shows <strong>5012345600999</strong>."
-            },
-            {
                 category: "Fresh Meat", short: "MET",
-                pack: { title: "British Lean Beef Steak Mince 5% Fat", icon: "🥩🥩", dept: "Fresh Meat & Poultry", lines: ["500 g tray", "Supplier: Stoddart British Meats", "Tray: 19 x 14 x 5 cm"], barcode: "5012345600189", asset: "Artwork_BeefMince_V2.jpg" },
-                values: { barcode: "5012345600189", product_name: "Tesco British Lean Beef Steak Mince 5% Fat", department: "Fresh Meat & Poultry", weight: "500 g", dimensions: "19 x 14 x 5 cm", supplier: "Stoddart Scottish Meats", artwork: "Artwork_BeefMince_V2.jpg" },
-                errorKey: "supplier", reason: "The artwork supplier is <strong>Stoddart British Meats</strong>, but record reads <strong>Stoddart Scottish Meats</strong>."
+                pack: { brand: "Tesco", title: "Lean Beef Steak Mince 5%", icon: "🥩🥩", dept: "Fresh Meat", lines: ["500 g tray", "Tray: 19 x 14 x 5 cm"], barcode: "5012345600189" },
+                values: { barcode: "5012345600198", product_name: "Tesco Lean Beef Steak Mince 5%", department: "Fresh Meat", weight: "500 g", dimensions: "19 x 14 x 5 cm", brand: "Tesco" },
+                errorKey: "barcode", reason: "Barcode typo! The pack barcode ends in <strong>...89</strong>, but the record was entered as <strong>...98</strong>."
             },
             {
-                category: "Condiments & Sauces", short: "CND",
-                pack: { title: "Extra Virgin Olive Oil", icon: "🫒🍶", dept: "Oils & Vinegars", lines: ["500 ml glass bottle", "Supplier: Iberian Oils S.L.", "Bottle: 26 x 6 x 6 cm"], barcode: "5012345600196", asset: "Artwork_OliveOil_V1.jpg" },
-                values: { barcode: "5012345600196", product_name: "Tesco Extra Virgin Olive Oil", department: "Oils & Vinegars", weight: "750 ml", dimensions: "26 x 6 x 6 cm", supplier: "Iberian Oils S.L.", artwork: "Artwork_OliveOil_V1.jpg" },
-                errorKey: "weight", reason: "Bottle volume mismatch! Artwork states <strong>500 ml</strong>, but the record was entered as <strong>750 ml</strong>."
+                category: "Breakfast Cereals", short: "CRL",
+                pack: { brand: "Kellogg's", title: "Corn Flakes Original", icon: "🥣🌽", dept: "Cereals", lines: ["450 g box", "Box: 32 x 20 x 8 cm"], barcode: "5012345600202" },
+                values: { barcode: "5012345600202", product_name: "Kellogg's Corn Flakes Original", department: "Cereals", weight: "450 g", dimensions: "32 x 20 x 8 cm", brand: "Nestlé" },
+                errorKey: "brand", reason: "Brand mismatch! The packaging brand is <strong>Kellogg's</strong>, but recorded as <strong>Nestlé</strong>."
             }
         ];
 
-        // 5-ATTEMPT TRACKER STATE
-        const MAX_ROUNDS = 5;
+        // 3-QUESTION GAME STATE
+        const MAX_ROUNDS = 3;
         let currentRound = 1;
         let cumulativeScore = 0;
 
-        let deck = [];
-        let lastIndex = -1;
+        // Separate pools to guarantee Q1 is ALWAYS a barcode error
+        const BARCODE_INDICES = RECORDS
+            .map((rec, idx) => rec.errorKey === "barcode" ? idx : -1)
+            .filter(idx => idx !== -1);
+
+        const OTHER_INDICES = RECORDS
+            .map((rec, idx) => rec.errorKey !== "barcode" ? idx : -1)
+            .filter(idx => idx !== -1);
+
+        let barcodeDeck = [];
+        let otherDeck = [];
         let currentRecord = null;
 
         function shuffle(arr) {
@@ -989,16 +996,15 @@
         }
 
         function pickRecordIndex() {
-            if (deck.length === 0) {
-                deck = shuffle(RECORDS.map((_, i) => i));
+            // QUESTION 1: Always a barcode error with last 2 digits changed
+            if (currentRound === 1) {
+                if (barcodeDeck.length === 0) barcodeDeck = shuffle([...BARCODE_INDICES]);
+                return barcodeDeck.pop();
             }
-            let idx = deck.pop();
-            if (idx === lastIndex && deck.length > 0) {
-                deck.unshift(idx);
-                idx = deck.pop();
-            }
-            lastIndex = idx;
-            return idx;
+
+            // QUESTIONS 2 & 3: Other errors from the rest of the pool
+            if (otherDeck.length === 0) otherDeck = shuffle([...OTHER_INDICES]);
+            return otherDeck.pop();
         }
 
         function labelFor(key) {
@@ -1009,12 +1015,11 @@
             const trackerText = document.getElementById("questionTrackerText");
             trackerText.innerText = `Question ${currentRound} of ${MAX_ROUNDS}`;
 
-            // Pulse animation trigger on header text
             trackerText.classList.remove("highlight-pulse");
             void trackerText.offsetWidth; // Force reflow
             trackerText.classList.add("highlight-pulse");
 
-            // Update Dot highlights
+            // Update 3 Dots
             for (let i = 1; i <= MAX_ROUNDS; i++) {
                 const dot = document.getElementById("dot" + i);
                 dot.className = "q-dot";
@@ -1032,6 +1037,7 @@
             const pack = currentRecord.pack;
 
             document.getElementById("packCategory").textContent = "Category: " + currentRecord.short;
+            document.getElementById("packBrandBadge").textContent = pack.brand;
             document.getElementById("packTitle").textContent = pack.title;
             document.getElementById("packIcon").textContent = pack.icon;
 
@@ -1049,15 +1055,10 @@
             });
 
             const barcodeLine = document.createElement("div");
+            barcodeLine.style.fontWeight = "800";
+            barcodeLine.style.marginTop = "3px";
             barcodeLine.textContent = "Barcode: " + pack.barcode;
             details.appendChild(barcodeLine);
-
-            const assetLine = document.createElement("div");
-            assetLine.style.fontSize = "0.7rem";
-            assetLine.style.color = "#1e3a5f";
-            assetLine.style.marginTop = "4px";
-            assetLine.textContent = "Asset: " + pack.asset;
-            details.appendChild(assetLine);
 
             const list = document.getElementById("recordList");
             list.innerHTML = "";
@@ -1079,7 +1080,7 @@
             return document.querySelector(`.record-row[data-key="${currentRecord.errorKey}"]`);
         }
 
-        // TIMER & ROUND PROGRESSION
+        // TIMER & PROGRESSION
         let timeLeft = 30;
         let timerInterval = null;
         let answered = false;
@@ -1123,9 +1124,9 @@
             document.querySelectorAll(".record-row").forEach(r => r.classList.add("locked"));
 
             if (fieldKey === currentRecord.errorKey) {
-                // Award +2 points per correct question (accumulates up to 10/10)
-                cumulativeScore += 2;
-                scoreDisplay.innerHTML = `${cumulativeScore} <span>/ 10</span>`;
+                // Award 1 point per correct answer (Score out of 3)
+                cumulativeScore += 1;
+                scoreDisplay.innerHTML = `${cumulativeScore} <span>/ 3</span>`;
 
                 rowElement.classList.add("error-selected");
                 rowElement.querySelector(".field-status").innerHTML = `<div class="error-tag">!</div>`;
@@ -1152,26 +1153,26 @@
 
         function finishRound(isCorrect, isTimeout) {
             const errorLabel = labelFor(currentRecord.errorKey);
-            finalScorePill.innerText = `${cumulativeScore} / 10`;
+            finalScorePill.innerText = `${cumulativeScore} / 3`;
 
             const isMaxReached = (currentRound >= MAX_ROUNDS);
 
             if (isCorrect) {
-                modalHeadline.innerText = isMaxReached ? "🎉 5 Attempts Completed!" : "🎉 Correctly Identified!";
+                modalHeadline.innerText = isMaxReached ? "🎉 All 3 Questions Complete!" : "🎉 Correctly Identified!";
                 modalHeadline.style.color = "#2e7d32";
                 modalExplanation.innerHTML = `
                     <strong>Spot On!</strong> You caught the inconsistency in <strong>${errorLabel}</strong>.<br><br>
                     ${currentRecord.reason}
                 `;
             } else if (isTimeout) {
-                modalHeadline.innerText = isMaxReached ? "⏰ 5 Attempts Completed!" : "⏰ Time's Up!";
+                modalHeadline.innerText = isMaxReached ? "⏰ All 3 Questions Complete!" : "⏰ Time's Up!";
                 modalHeadline.style.color = "#d32f2f";
                 modalExplanation.innerHTML = `
                     The 30-second timer expired!<br><br>
                     The error was in <strong>${errorLabel}</strong>: ${currentRecord.reason}
                 `;
             } else {
-                modalHeadline.innerText = isMaxReached ? "❌ 5 Attempts Completed!" : "❌ Incorrect Field";
+                modalHeadline.innerText = isMaxReached ? "❌ All 3 Questions Complete!" : "❌ Incorrect Field";
                 modalHeadline.style.color = "#d32f2f";
                 modalExplanation.innerHTML = `
                     That field was accurate. The inconsistency was in <strong>${errorLabel}</strong>.<br><br>
@@ -1180,7 +1181,7 @@
             }
 
             if (isMaxReached) {
-                // MAX 5 ATTEMPTS REACHED: Disable Play Again and auto-redirect to thank-you.html
+                // MAX 3 QUESTIONS REACHED: Disable Next Question and auto-redirect to thank-you.html
                 playAgainBtn.style.display = "none";
                 modalFinishBtn.innerText = "🎬 Go to Video";
                 redirectNotice.style.display = "block";
@@ -1197,9 +1198,9 @@
                     window.location.href = "thank-you.html";
                 }, 4000);
             } else {
-                // ATTEMPTS STILL REMAIN: Allow user to click Play Again
+                // QUESTIONS STILL REMAIN (Question 1 or 2): Allow user to continue
                 playAgainBtn.style.display = "inline-block";
-                playAgainBtn.innerText = `🔄 Play Again (${currentRound}/${MAX_ROUNDS})`;
+                playAgainBtn.innerText = `🔄 Next Question (${currentRound + 1}/${MAX_ROUNDS})`;
                 redirectNotice.style.display = "none";
             }
 
@@ -1210,7 +1211,6 @@
             clearTimeout(redirectTimeout);
             clearInterval(countdownInterval);
 
-            // Increment attempt and load next question
             currentRound++;
             answered = false;
             timeLeft = 30;
@@ -1220,12 +1220,11 @@
             identifiedStamp.style.display = "none";
             resultsModal.style.display = "none";
 
-            // Loads fresh product, highlights next dot, updates question header
             loadRound();
             startTimer();
         }
 
-        // Direct Launch on Load (No QR Screen)
+        // Direct Launch on Load
         window.addEventListener("DOMContentLoaded", () => {
             loadRound();
             startTimer();

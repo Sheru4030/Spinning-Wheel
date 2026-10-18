@@ -235,13 +235,13 @@
             font-weight: 800;
         }
 
-        /* 8 Step Tiles Grid */
+        /* 6 Step Tiles Grid */
         .tiles-grid {
             padding: 12px;
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            min-height: 170px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            min-height: 180px;
             background: #fbfdff;
         }
 
@@ -249,7 +249,7 @@
             background: #ffffff;
             border: 2px solid #d4e5f5;
             border-radius: 14px;
-            padding: 10px 8px;
+            padding: 12px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -276,13 +276,13 @@
         }
 
         .tile-icon {
-            font-size: 1.8rem;
-            margin-bottom: 4px;
+            font-size: 2.2rem;
+            margin-bottom: 6px;
             line-height: 1;
         }
 
         .tile-name {
-            font-size: 0.8rem;
+            font-size: 0.88rem;
             font-weight: 800;
             color: #0c2d52;
             line-height: 1.25;
@@ -329,10 +329,10 @@
             background: #d9edf9;
         }
 
-        /* 8 Slots Layout */
+        /* 6 Target Slots */
         .slots-container {
             display: grid;
-            grid-template-columns: repeat(8, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 8px;
             align-items: stretch;
         }
@@ -341,7 +341,7 @@
             background: #f7faff;
             border: 2px dashed #b8d9f2;
             border-radius: 12px;
-            min-height: 110px;
+            min-height: 120px;
             padding: 4px;
             display: flex;
             flex-direction: column;
@@ -360,10 +360,10 @@
         .slot-badge {
             background: #eaf3fa;
             color: #00539f;
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             font-weight: 900;
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -381,18 +381,18 @@
         }
 
         .slot-box .drag-tile .tile-icon {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
         }
 
         .slot-box .drag-tile .tile-name {
-            font-size: 0.72rem;
+            font-size: 0.74rem;
         }
 
         .slot-hint {
             font-size: 0.7rem;
             color: #8da4be;
             font-weight: 700;
-            margin-top: 20px;
+            margin-top: 25px;
             pointer-events: none;
         }
 
@@ -508,7 +508,7 @@
             color: #7b9bb6;
         }
 
-        /* 3-Question Tracker Box with Completed Highlights */
+        /* 3-Attempt Tracker Box */
         .tracker-box {
             background: #002d62;
             border-radius: 14px;
@@ -548,7 +548,6 @@
             border: 2px solid transparent;
         }
 
-        /* Highlight for current active attempt */
         .t-dot.active {
             background: #ffffff !important;
             color: #002d62 !important;
@@ -557,7 +556,6 @@
             box-shadow: 0 0 10px rgba(255, 209, 102, 0.85);
         }
 
-        /* Highlight for past attempts that are officially over */
         .t-dot.completed-dot {
             background: #2e7d32 !important;
             color: #ffffff !important;
@@ -738,27 +736,27 @@
                     <div class="step-list">
                         <div class="step-item">
                             <span class="step-num">1</span>
-                            <span><strong>Drag</strong> the tiles and drop them into the correct slot below.</span>
+                            <span><strong>Drag</strong> each tile into its slot below in proper order.</span>
                         </div>
                         <div class="step-item">
                             <span class="step-num">2</span>
-                            <span>Think about the <strong>product's journey</strong> from supplier to the
-                                customer.</span>
+                            <span>Follow the lifecycle: <strong>Supplier ➔ Buyer ➔ Induction ➔ Barcodes ➔ Store ➔
+                                    Customers</strong>.</span>
                         </div>
                         <div class="step-item">
                             <span class="step-num">3</span>
-                            <span>Arrange all <strong>8 steps</strong> in proper sequence.</span>
+                            <span>Arrange all <strong>6 steps</strong> in exact sequence.</span>
                         </div>
                         <div class="step-item">
                             <span class="step-num">4</span>
-                            <span>Click <strong>Submit</strong> when you're ready!</span>
+                            <span>Click <strong>Submit</strong> to evaluate!</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="points-badge">
                     <span style="font-size: 1.3rem;">🏆</span>
-                    <span><strong>+10 points</strong> for a correct answer</span>
+                    <span><strong>+10 points</strong> for the exact sequence</span>
                 </div>
 
                 <div class="basket-art">
@@ -769,58 +767,54 @@
 
             <!-- CENTER COLUMN: Tile Pool + Drop Answers -->
             <div class="col-center">
-                <!-- Available Tiles Pool -->
+                <!-- Available Tiles Pool (6 Steps) -->
                 <div class="pool-panel">
                     <div class="pool-header">
                         <span>Process Steps (Drag &amp; Drop)</span>
-                        <small>👆 Drag each step to arrange the correct order</small>
+                        <small>👆 Drag each step into the sequence below</small>
                     </div>
                     <div class="tiles-grid" id="tilesPool">
-                        <!-- 8 Process Tiles -->
+                        <!-- 1. Supplier -->
                         <div class="drag-tile" draggable="true" data-id="step-supplier">
                             <div class="tile-icon">🏭</div>
                             <div class="tile-name">Supplier</div>
                         </div>
-                        <div class="drag-tile" draggable="true" data-id="step-buying">
+                        <!-- 2. Buyer -->
+                        <div class="drag-tile" draggable="true" data-id="step-buyer">
                             <div class="tile-icon">🛒</div>
-                            <div class="tile-name">Buying Associate</div>
+                            <div class="tile-name">Buyer</div>
                         </div>
-                        <div class="drag-tile" draggable="true" data-id="step-induction">
-                            <div class="tile-icon">📋</div>
-                            <div class="tile-name">Product Induction</div>
-                        </div>
+                        <!-- 3. Retail Product Induction -->
                         <div class="drag-tile" draggable="true" data-id="step-rpi">
-                            <div class="tile-icon">📦</div>
-                            <div class="tile-name">RPI / Buying Operations</div>
+                            <div class="tile-icon">📋</div>
+                            <div class="tile-name">Retail Product Induction</div>
                         </div>
-                        <div class="drag-tile" draggable="true" data-id="step-roi">
-                            <div class="tile-icon">📈</div>
-                            <div class="tile-name">ROI</div>
-                        </div>
-                        <div class="drag-tile" draggable="true" data-id="step-barcode">
+                        <!-- 4. Barcodes -->
+                        <div class="drag-tile" draggable="true" data-id="step-barcodes">
                             <div class="tile-icon">|||||</div>
-                            <div class="tile-name">Barcode Verification</div>
+                            <div class="tile-name">Barcodes</div>
                         </div>
+                        <!-- 5. Store Ready -->
                         <div class="drag-tile" draggable="true" data-id="step-store">
-                            <div class="tile-icon">🏪</div>
+                            <div class="tile-icon">🏬</div>
                             <div class="tile-name">Store Ready</div>
                         </div>
-                        <div class="drag-tile" draggable="true" data-id="step-customer">
+                        <!-- 6. Customers -->
+                        <div class="drag-tile" draggable="true" data-id="step-customers">
                             <div class="tile-icon">👥</div>
-                            <div class="tile-name">Customer</div>
+                            <div class="tile-name">Customers</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Answer Drop Slots -->
+                <!-- Answer Drop Slots (6 Slots) -->
                 <div class="drop-panel">
                     <div class="drop-title-row">
-                        <span>🏁 Your Answers (Drop here in correct order)</span>
+                        <span>🏁 Your Sequence (Must match exact process order)</span>
                         <button class="btn-reset-pool" onclick="resetToPool()">Reset Tiles</button>
                     </div>
 
                     <div class="slots-container" id="slotsContainer">
-                        <!-- 8 Drop Target Slots -->
                         <div class="slot-box" data-slot="1">
                             <div class="slot-badge">1</div><span class="slot-hint">Drop here</span>
                         </div>
@@ -838,12 +832,6 @@
                         </div>
                         <div class="slot-box" data-slot="6">
                             <div class="slot-badge">6</div><span class="slot-hint">Drop here</span>
-                        </div>
-                        <div class="slot-box" data-slot="7">
-                            <div class="slot-badge">7</div><span class="slot-hint">Drop here</span>
-                        </div>
-                        <div class="slot-box" data-slot="8">
-                            <div class="slot-badge">8</div><span class="slot-hint">Drop here</span>
                         </div>
                     </div>
                 </div>
@@ -919,16 +907,14 @@
     </div>
 
     <script>
-        // Official Journey Sequence
+        // STRICT REQUIRED SEQUENCE: Any other sequence is treated as INCORRECT
         const correctSequence = [
-            "step-supplier",    // 1. Supplier
-            "step-buying",      // 2. Buying Associate
-            "step-induction",   // 3. Product Induction
-            "step-rpi",         // 4. RPI / Buying Operations
-            "step-roi",         // 5. ROI
-            "step-barcode",     // 6. Barcode Verification
-            "step-store",       // 7. Store Ready
-            "step-customer"     // 8. Customer
+            "step-supplier",   // 1. Supplier
+            "step-buyer",      // 2. Buyer
+            "step-rpi",        // 3. Retail Product Induction
+            "step-barcodes",   // 4. Barcodes
+            "step-store",      // 5. Store Ready
+            "step-customers"   // 6. Customers
         ];
 
         // 3-ATTEMPT TRACKER STATE
@@ -954,7 +940,6 @@
             startTimer();
         });
 
-        // Highlights completed attempts in green (with checkmark) and active attempt in bold white
         function updateTrackerUI() {
             document.getElementById("questionTrackerHeader").innerText = `Question ${currentAttempt} of ${MAX_ATTEMPTS}`;
 
@@ -963,15 +948,12 @@
                 dot.className = "t-dot";
 
                 if (i < currentAttempt) {
-                    // Attempt is finished and over: turn green and display checkmark
                     dot.classList.add("completed-dot");
                     dot.innerHTML = "✓";
                 } else if (i === currentAttempt) {
-                    // Current active attempt
                     dot.classList.add("active");
                     dot.innerText = i;
                 } else {
-                    // Future attempt
                     dot.innerText = i;
                 }
             }
@@ -1017,13 +999,12 @@
                     slot.classList.remove("drag-over");
                     if (!draggedTile) return;
 
-                    // If slot already has a tile, return existing tile to pool
+                    // Swap existing tile back to pool
                     const existingTile = slot.querySelector(".drag-tile");
                     if (existingTile) {
                         tilesPool.appendChild(existingTile);
                     }
 
-                    // Hide the hint and place new tile
                     const hint = slot.querySelector(".slot-hint");
                     if (hint) hint.style.display = "none";
 
@@ -1079,7 +1060,7 @@
             }, 1000);
         }
 
-        // Verification & Auto Redirect
+        // STRICT SEQUENCE SUBMISSION VALIDATION
         function submitAnswers(timeExpired = false) {
             if (submitted) return;
 
@@ -1095,25 +1076,26 @@
                     slot.style.borderColor = "#ffd166";
                     slot.style.background = "#fffde7";
                 } else if (tileId === correctSequence[index]) {
+                    // Correct step in this exact slot position
                     correctCount++;
                     slot.style.borderColor = "#2e7d32";
                     slot.style.background = "#e8f5e9";
                 } else {
+                    // Misplaced step
                     slot.style.borderColor = "#d32f2f";
                     slot.style.background = "#ffebee";
                 }
             });
 
-            // Require all 8 tiles placed unless time runs out
             if (!timeExpired && unplacedCount > 0) {
-                alert(`⚠️ You still have ${unplacedCount} empty slot(s)! Place all 8 steps before submitting.`);
+                alert(`⚠️ You still have ${unplacedCount} empty slot(s)! Place all 6 steps before submitting.`);
                 return;
             }
 
             submitted = true;
             clearInterval(timerInterval);
 
-            // Mark the active dot as completed
+            // Mark active dot as completed
             const currentDot = document.getElementById("dot" + currentAttempt);
             if (currentDot) {
                 currentDot.classList.remove("active");
@@ -1121,9 +1103,9 @@
                 currentDot.innerHTML = "✓";
             }
 
-            // Calculate Score (scale to 10 points)
+            // ONLY full 6/6 exact match is treated as correct (+10 points)
             const isAllCorrect = (correctCount === correctSequence.length);
-            const finalScore = isAllCorrect ? 10 : Math.round((correctCount / correctSequence.length) * 10);
+            const finalScore = isAllCorrect ? 10 : 0;
 
             document.getElementById("scoreDisplay").innerHTML = `${finalScore} <span>/ 10</span>`;
             document.getElementById("modalScorePill").innerText = `${finalScore} / 10`;
@@ -1136,26 +1118,25 @@
             const isLastAttempt = (currentAttempt >= MAX_ATTEMPTS);
 
             if (isAllCorrect) {
-                modalHeadline.innerText = isLastAttempt ? "🎉 All 3 Attempts Completed!" : "🎉 Outstanding Work!";
+                modalHeadline.innerText = isLastAttempt ? "🎉 All 3 Attempts Completed!" : "🎉 100% Correct Sequence!";
                 modalHeadline.style.color = "#2e7d32";
-                modalFeedback.innerText = `You correctly arranged all 8 lifecycle stages in the right operational sequence!`;
+                modalFeedback.innerText = `Spot on! You arranged all 6 steps in the exact operational sequence: Supplier ➔ Buyer ➔ Retail Product Induction ➔ Barcodes ➔ Store Ready ➔ Customers.`;
                 confetti({
-                    particleCount: 120,
+                    particleCount: 130,
                     spread: 85,
                     origin: { y: 0.6 }
                 });
             } else if (timeExpired) {
                 modalHeadline.innerText = isLastAttempt ? "⏰ All 3 Attempts Finished!" : "⏰ Time's Up!";
                 modalHeadline.style.color = "#d32f2f";
-                modalFeedback.innerText = `Time ran out! You matched ${correctCount} of 8 steps in the correct order.`;
+                modalFeedback.innerText = `Time expired! The sequence was not completed correctly. Only ${correctCount} of 6 steps were in their right place.`;
             } else {
-                modalHeadline.innerText = isLastAttempt ? "📋 All 3 Attempts Finished!" : "❌ Sequence Incomplete";
+                modalHeadline.innerText = isLastAttempt ? "❌ All 3 Attempts Finished!" : "❌ Incorrect Order";
                 modalHeadline.style.color = "#d32f2f";
-                modalFeedback.innerText = `You correctly ordered ${correctCount} of 8 steps. Misplaced steps are marked in red.`;
+                modalFeedback.innerText = `The sequence is incorrect! Steps marked in red are not in the right position. The sequence must strictly follow the official 1 to 6 lifecycle.`;
             }
 
             if (isLastAttempt) {
-                // Max 3 attempts reached: auto-route to thank-you.html
                 retryBtn.style.display = "none";
                 redirectNotice.style.display = "block";
 
@@ -1171,7 +1152,6 @@
                     window.location.href = "thank-you.html";
                 }, 4000);
             } else {
-                // Allow user to advance to Question 2 or Question 3
                 retryBtn.style.display = "inline-flex";
                 retryBtn.innerText = `🔄 Try Question ${currentAttempt + 1} of ${MAX_ATTEMPTS}`;
                 redirectNotice.style.display = "none";
@@ -1184,11 +1164,9 @@
             clearTimeout(redirectTimeout);
             clearInterval(countdownInterval);
 
-            // Increment attempt and refresh dots
             currentAttempt++;
             updateTrackerUI();
 
-            // Reset slot borders & backgrounds
             slots.forEach(slot => {
                 slot.style.borderColor = "#b8d9f2";
                 slot.style.background = "#f7faff";
@@ -1206,10 +1184,6 @@
             document.getElementById("resultsModal").style.display = "none";
 
             startTimer();
-        }
-
-        function cancelRedirectAndRetry() {
-            handleRetry();
         }
     </script>
 </body>
