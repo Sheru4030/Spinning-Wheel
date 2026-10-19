@@ -265,6 +265,7 @@
         const spinCounterBadge = document.getElementById("spinCounterBadge");
 
         const totalSegments = segments.length;
+        const degPerSegment = 360 / totalSegments;
         const arc = (2 * Math.PI) / totalSegments;
         const center = canvas.width / 2;
         const radius = center - 30;
@@ -272,9 +273,6 @@
         let currentRotation = 0;
         let isSpinning = false;
 
-        // -------------------------------------------------------------
-        // Spin History & Selection Tracking (with sessionStorage)
-        // -------------------------------------------------------------
         let spinCount = parseInt(sessionStorage.getItem("spin_count") || "0", 10);
         let lastPlayedGameId = sessionStorage.getItem("last_game_id") || "";
         let remainingDeck = JSON.parse(sessionStorage.getItem("remaining_deck") || "[]");
@@ -294,22 +292,16 @@
             return arr;
         }
 
-        // Returns which segment index to target
         function determineNextSegmentIndex() {
             const nextSpin = spinCount + 1;
 
-            // RULE 1: EVERY 3RD SPIN IS ALWAYS TRUTH OR DARE
             if (nextSpin % 3 === 0) {
-                // Indices with truth-dare: index 1 and index 7
                 const tdIndices = [1, 7];
-                // Avoid using the same wedge index if previously played on it
                 const chosenIdx = tdIndices[Math.floor(Math.random() * tdIndices.length)];
                 lastPlayedGameId = "truth-dare";
                 return chosenIdx;
             }
 
-            // RULE 2: ALL OTHER GAMES MUST NOT REPEAT BACK-TO-BACK & CYCLE THROUGH ALL GAMES
-            // Unique games excluding truth or dare
             const regularGameIds = [
                 "spot-error",
                 "product-journey",
@@ -320,9 +312,7 @@
                 "mystery-round"
             ];
 
-            // Replenish deck if empty
             if (remainingDeck.length === 0) {
-                // Ensure the first item of new deck is not identical to lastPlayedGameId
                 let pool = shuffle([...regularGameIds]);
                 if (pool[0] === lastPlayedGameId && pool.length > 1) {
                     const swapped = pool.pop();
@@ -331,9 +321,7 @@
                 remainingDeck = pool;
             }
 
-            // Pick next unique game
             let targetGameId = remainingDeck.shift();
-            // In case of back-to-back match, pick another
             if (targetGameId === lastPlayedGameId && remainingDeck.length > 0) {
                 remainingDeck.push(targetGameId);
                 targetGameId = remainingDeck.shift();
@@ -341,7 +329,6 @@
 
             lastPlayedGameId = targetGameId;
 
-            // Find segment indices on the wheel matching this game
             const matchingIndices = [];
             segments.forEach((seg, idx) => {
                 if (seg.id === targetGameId) matchingIndices.push(idx);
@@ -350,9 +337,6 @@
             return matchingIndices[Math.floor(Math.random() * matchingIndices.length)];
         }
 
-        // -------------------------------------------------------------
-        // Synthesized Audio System
-        // -------------------------------------------------------------
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         function playTickSound() {
@@ -392,9 +376,6 @@
             });
         }
 
-        // -------------------------------------------------------------
-        // Wheel Rendering
-        // -------------------------------------------------------------
         function drawWheel() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -445,7 +426,6 @@
                 ctx.restore();
             }
 
-            // Center Hub Ring Border
             ctx.beginPath();
             ctx.arc(center, center, 120, 0, 2 * Math.PI);
             ctx.lineWidth = 9;
@@ -464,9 +444,6 @@
 
         drawWheel();
 
-        // -------------------------------------------------------------
-        // Rim Light Bulbs
-        // -------------------------------------------------------------
         const bulbs = [];
         const numBulbs = 12;
         for (let i = 0; i < numBulbs; i++) {
@@ -494,9 +471,6 @@
             bulbStep++;
         }, 450);
 
-        // -------------------------------------------------------------
-        // Confetti Celebration
-        // -------------------------------------------------------------
         function triggerMassiveConfetti() {
             confetti({
                 particleCount: 150,
@@ -544,9 +518,6 @@
             }, 350);
         }
 
-        // -------------------------------------------------------------
-        // Exact-Target Spin Execution
-        // -------------------------------------------------------------
         function startSpin() {
             if (isSpinning) return;
             isSpinning = true;
@@ -554,22 +525,16 @@
             statusToast.classList.add("spinning");
             statusToast.innerText = "⚡ Spinning in progress...";
 
-            // 1. Pick target segment adhering to all constraints
             const chosenIndex = determineNextSegmentIndex();
             const chosen = segments[chosenIndex];
 
-            // 2. Calculate exact angle needed so the pointer (at 270° / top) points at center of chosenIndex
-            // Segment center in canvas space = (chosenIndex + 0.5) * (360 / totalSegments)
-            // Needle points at top (270°). To align segment center with 270°:
-            // (currentRotation + spinDelta + segmentCenter) % 360 === 270
-            const degPerSegment = 360 / totalSegments;
+            // Corrected angle targeting: needle is at top (270 degrees in canvas coordinates)
             const segmentCenter = (chosenIndex + 0.5) * degPerSegment;
             const targetMod = (270 - segmentCenter + 360) % 360;
 
             const currentMod = currentRotation % 360;
             let forwardDelta = (targetMod - currentMod + 360) % 360;
 
-            // Add 6 to 8 full spins so it twirls fast and dramatically
             const fullSpins = (6 + Math.floor(Math.random() * 3)) * 360;
             const spinDelta = fullSpins + forwardDelta;
 
@@ -579,7 +544,6 @@
 
             canvas.style.transform = `rotate(${currentRotation}deg)`;
 
-            // 3. Audio tick tracking
             let lastSliceIndex = -1;
             const startTime = performance.now();
             const duration = 5000;
@@ -601,12 +565,10 @@
             }
             requestAnimationFrame(checkTicks);
 
-            // 4. On finish landing
             setTimeout(() => {
                 isSpinning = false;
                 statusToast.classList.remove("spinning");
 
-                // Save state to sessionStorage
                 spinCount++;
                 sessionStorage.setItem("spin_count", spinCount.toString());
                 sessionStorage.setItem("last_game_id", lastPlayedGameId);
